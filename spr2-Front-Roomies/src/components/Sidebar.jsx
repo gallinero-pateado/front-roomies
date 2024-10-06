@@ -1,3 +1,5 @@
+import React from 'react';
+import { Link } from 'react-router-dom'; // Usamos Link para navegar
 
 export function Sidebar(){
 
@@ -13,8 +15,12 @@ export function Sidebar(){
             </div>
             <section className="opciones">
                 <ul >
-                    <li><a href="">Perfil</a></li>
-                    <li><a href="">Favoritos</a></li>
+                    <li>
+                        <Link to="/profile">Perfil</Link>
+                    </li>
+                    <li>
+                        <Link to="/roomielist">Favoritos</Link>
+                    </li>
                     <li><a href="">Mensajes</a></li>
                 </ul>
         </section>
