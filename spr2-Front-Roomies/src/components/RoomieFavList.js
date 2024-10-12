@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RoomieCard } from "./RoomieCard"; 
+import { RoomieCard } from "../components_PRoomie/RoomieCard"; 
 
 ///En este momento los usuarios de prueba mostrados son todos los usuarios, pero una vez descomentado el codigo real, solo debe cargar los perfiles vinculados a la id del usuario
 export function RoomiesList({id}) {
