@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { RoomieCard } from "../components_PRoomie/RoomieCard"; 
+import { RoomieCard } from "./RoomieCard"; 
 
 ///En este momento los usuarios de prueba mostrados son todos los usuarios, pero una vez descomentado el codigo real, solo debe cargar los perfiles vinculados a la id del usuario
 export function RoomiesList({id}) {
     
     // Perfiles favoritos de prueba
-    const usuarios = [
+    const userFav= [
         {
             id: 1,
             userName: "Valeria Henriquez",
@@ -90,17 +90,19 @@ export function RoomiesList({id}) {
 
 
 
+
+
     return (
-        <section className="RoomiesList">
-            {usuarios.map((user) => (
-                <RoomieCard 
-                //por cada favorito, carga un componente roomiecard para ser mostrado
-                    key={user.id} 
-                    //img ={user.img}
-                    userName={user.userName} 
-                    info={user.info} 
+        <section className="flex flex-wrap gap-4 p-4">
+            {userFav.map((user) => (
+                <RoomieCard
+                    key={user.id}
+                    userName={user.userName}
+                    info={user.info}
                     ubicacion={user.ubicacion}
-                    isFav={user.isFav} 
+                    isFav={user.isFav}
+                    // Propiedad para notificar al padre cuando el estado de favorito cambie
+                   
                 />
             ))}
         </section>

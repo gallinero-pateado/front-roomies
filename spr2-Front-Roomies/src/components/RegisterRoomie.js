@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import comunas from './comunas';
-import intereses from './intereses'
-import preferences from './preferences'
+import comunas from './Const/comunas';
+import intereses from './Const/intereses'
+import preferences from './Const/preferences'
 
 
 const RegisterRoomie = () => {
   const [formData, setFormData] = useState({
+    name: 'Sebastian  poblete',
+    correo:'spobletec@utem.cl',
+    fecha_nacimiento:'09/02/2003',
+    genero: 'Masculino',
+    universidad:'Universidad Tecnolgoica Metropolitana',
+    carreras:'Ingenieria informatica',
+    año_ingreso: '2021',
     ubication:'',
     biography:'',
-    interests:'',
-    preferences: ''
+    interests:[],
+    preferences: []
   });
 
   const navigate = useNavigate();
@@ -22,6 +29,10 @@ const RegisterRoomie = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Register attempt with:', formData);
+
+    /*Registro utilizando localStorage*/
+     // Guardar los datos en localStorage
+    localStorage.setItem('roomieProfile', JSON.stringify(formData));
     // Aquí iría la lógica de registro
     /* agregar el metodo post para crear el usuario como roomie*/ 
 

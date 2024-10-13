@@ -19,7 +19,7 @@ const Sidebar = () =>{
                     <Link to="/profile">Perfil</Link>
                 </li>
                 <li>
-                    <Link to="/roomielist">Favoritos</Link>
+                    <Link to="/fav">Favoritos</Link>
                 </li>
             </ul>
     </section>

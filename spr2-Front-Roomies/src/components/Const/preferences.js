@@ -1,4 +1,4 @@
-const intereses = [
+const preferences = [
     'Respeto por el espacio personal',
     'Limpieza y orden',
     'Horarios compatibles',
@@ -21,5 +21,5 @@ const intereses = [
     'Interés en actividades al aire libre'
   ];
   
-  export default intereses;
+  export default preferences;
   
