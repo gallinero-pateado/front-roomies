@@ -2,45 +2,38 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';//
 import 'react-toastify/dist/ReactToastify.css';
-import carreras from './carreras';
-import comunas from './comunas';
-import intereses from './intereses'
-import preferences from './preferences'
+import carreras from './Const/carreras';
+import comunas from './Const/comunas';
+import intereses from './Const/intereses'
+import preferences from './Const/preferences'
 
 
 //se le pasa la id de roomie como prop, para luego trabajar con este usuario
 const Profile= ({id}) => {
 
 
-//DATOS DE PRUEBA, en la version final deben ser eliminados  
-  
-  const bio = "aaaa"
-
-  
+//DATOS DE PRUEBA utilizando localStorage, en la version final deben ser eliminados  
   // Estado para los datos del perfil, con datos de pruebas
-  const [perfil, setPerfil] = useState({
-    name: "Sebastian Poblete",
-    correo: "spobletec@utem.cl",
-    fecha_nac: "09/02/2003",
-    genero: "Masculino",
-    universidad: "Universidad Tecnologica Metropolitana",
-    carrera: "ing Informatica",
-    año_ingreso: 2021,
-    biografia: bio,
-    preferencias: [],
-    intereses: [],
-    ubicacion: 'San Ramon'
+  const [profileData, setProfileData] = useState({
+    ubication: '',
+    biography: '',
+    interests: [],
+    preferences: []
   });
 
-
-
-
+  // Cargar los datos del localStorage al montar el componente
+  useEffect(() => {
+    const storedData = localStorage.getItem('roomieProfile');
+    if (storedData) {
+      setProfileData(JSON.parse(storedData));
+    }
+  }, []);
 
   // Función para manejar los cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPerfil({
-      ...perfil, // Crea una copia del estado actual del perfil
+    setProfileData({
+      ...profileData, // Crea una copia del estado actual del perfil
       [name]: value, // Actualiza el campo correspondiente
     });
   };
@@ -94,26 +87,26 @@ const Profile= ({id}) => {
   // Confirmar los intereses seleccionados y cerrar el modal
   const confirmInterests = () => {
     setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
-    setPerfil({ ...perfil, intereses: tempSelectedInterests });
+    setProfileData({ ...profileData, interests: tempSelectedInterests });
     setIsModalOpen(false);
   };
 
   // Confirmar los preferencias seleccionados y cerrar el modal
   const confirmPreferences = () => {
     setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
-    setPerfil({ ...perfil, preferencias: tempSelectedPreferences });
+    setProfileData({ ...profileData, preferences: tempSelectedPreferences });
     setIsModalOpenP(false);
   };
 
 
   // Abrir el modal
   const openModal = () => {
-    setTempSelectedInterests(perfil.intereses); // Cargar los intereses actuales al modal
+    setTempSelectedInterests(profileData.interests); // Cargar los intereses actuales al modal
     setIsModalOpen(true);
   };
 
   const openModalPref = () => {
-    setTempSelectedPreferences(perfil.preferencias); // Cargar los intereses actuales al modal
+    setTempSelectedPreferences(profileData.preferences); // Cargar los intereses actuales al modal
     setIsModalOpenP(true);
   };
 
@@ -192,7 +185,7 @@ const [isEditing, setIsEditing] = useState(false);
 // Función para alternar entre perfil y formulario
 const toggleEdit = () => {
   if (!isEditing) {
-    setPerfilBackup(perfil); // Guarda una copia del perfil antes de editar
+    setPerfilBackup(profileData); // Guarda una copia del perfil antes de editar
   } else {
     setPerfilBackup(null); // Restablece el backup si se cancela la edición
   }
@@ -202,7 +195,7 @@ const toggleEdit = () => {
  // Función para manejar el clic en el botón de cancelar
  const handleCancel = () => {
   if (perfilBackup) {
-    setPerfil(perfilBackup); // Restaurar el perfil a su estado antes de editar
+    setProfileData(perfilBackup); // Restaurar el perfil a su estado antes de editar
   }
   setIsEditing(false); // Volver a la vista del perfil
 };
@@ -210,7 +203,7 @@ const toggleEdit = () => {
 
 
 return (
-  <aside className="profile">
+  <aside className="profile ">
   <ToastContainer />
   {/*si isEditing es true, mostrara el formulario*/ }
     {isEditing ? (
@@ -222,18 +215,19 @@ return (
               name="name"
               type="text"
               id="name"
-              value={perfil.name}
+              value={profileData.name}
               onChange={handleChange}
               className="editable"
             />
-            <p>{perfil.correo}</p>
+            <p>{profileData.correo}</p>
           </div>
           <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+          className="bg-[#0091BD] hover:bg-blue-700 text-black font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
           onClick={toggleEdit}
         >
-          Comifirmar
-          {console.log(perfil)}
+          Comfirmar
+          {console.log(profileData)}
+
         </button>
           <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
@@ -247,13 +241,13 @@ return (
           <section className="info-personal">
             <h2>Información Personal</h2>
             <h3>Fecha de nacimiento:</h3>
-            <p>{perfil.fecha_nac}</p>
+            <p>{profileData.fecha_nac}</p>
 
             <label htmlFor="genero">Género: </label>
             <select
               className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
               name="genero"
-              value={perfil.genero}
+              value={profileData.genero}
               onChange={handleChange}
             >
               <option value="male">Masculino</option>
@@ -262,12 +256,12 @@ return (
               <option value="prefer-not-to-say">Prefiero no decir</option>
             </select>
 
-            <label htmlFor="ubicacion">Ubicacion: </label>
+            <label htmlFor="ubication">Ubicacion: </label>
             <select className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-            name="ubicacion" id="ubicacion" value={perfil.ubicacion} onChange={handleChange} >
-              {comunas.map((ubicacion)=>(
-                <option key={ubicacion.value} value={ubicacion.value}>
-                  {ubicacion.label} 
+            name="ubication" id="ubicacion" value={profileData.ubication} onChange={handleChange} >
+              {comunas.map((ubication)=>(
+                <option key={ubication.value} value={ubication.value}>
+                  {ubication.label} 
                 </option>
               ))}
             </select>
@@ -276,11 +270,11 @@ return (
           <section className="info-academica">
             <h2>Información académica</h2>
             <h3>Universidad:</h3>
-            <p>{perfil.universidad}</p>
+            <p>{profileData.universidad}</p>
 
             <label htmlFor="carrera">Carrera</label>
             <select className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-            name="carrera" id="carrera" value={perfil.carrera} onChange={handleChange} >
+            name="carrera" id="carrera" value={profileData.carrera} onChange={handleChange} >
               {carreras.map((carrera)=>(
                 <option key={carrera.value} value={carrera.value}>
                   {carrera.label} 
@@ -296,7 +290,7 @@ return (
               id="año_ingreso"
               min="1900"
               max={new Date().getFullYear()}
-              value={perfil.año_ingreso}
+              value={profileData.año_ingreso}
               onChange={handleChange}
             />
           </section>
@@ -310,41 +304,41 @@ return (
               id="biografia"
               rows="10"
               cols="50"
-              value={perfil.biografia}
+              value={profileData.biography}
               onChange={handleChange}
             />
           </div>
 
           <div className="int-pref">
             
-            {/* Intereses */}
-            <div className="mb-6">
-              <label className="block text-blue-700 font-bold mb-2">Intereses</label>
-              <button
-                type="button"
-                onClick={openModal}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-              >
-                Seleccionar Intereses
-              </button>
+             {/* Intereses */}
+        <div className="mb-6">
+          <label className="block text-blue-700 font-bold mb-2">Intereses</label>
+          <button
+            type="button"
+            onClick={openModal}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+          >
+            Seleccionar Intereses
+          </button>
 
-              {/* Mostrar intereses confirmados debajo */}
-              {confirmedInterests.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-blue-700 font-bold mb-2">Intereses seleccionados:</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {confirmedInterests.map((interest) => (
-                      <span
-                        key={interest}
-                        className="bg-blue-500 text-white px-3 py-1 rounded-full"
-                      >
-                        {interest}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+          {/* Mostrar intereses confirmados debajo */}
+          {confirmedInterests.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-blue-700 font-bold mb-2">Intereses seleccionados:</h3>
+              <div className="flex flex-wrap gap-2">
+                {confirmedInterests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="bg-blue-500 text-white px-3 py-1 rounded-full"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
             </div>
+          )}
+        </div>
 
 
             {/* Preferencias*/}
@@ -387,8 +381,8 @@ return (
         <div className="miperfil-profile">
           <img src="src\img-prueba.jpeg" alt="Imagen de perfil" />
           <div className="nombre-correo">
-            <h3>{perfil.name}</h3>
-            <p>{perfil.correo}</p>
+            <h3>{profileData.name}</h3>
+            <p>{profileData.correo}</p>
           </div>
           
           <button
@@ -403,32 +397,32 @@ return (
           <section className="info-personal">
             <h2>Información Personal</h2>
             <h3>Fecha de nacimiento:</h3>
-            <p>{perfil.fecha_nac}</p>
+            <p>{profileData.fecha_nacimiento}</p>
 
             <h3>Género:</h3>
-            <p>{perfil.genero}</p>
+            <p>{profileData.genero}</p>
 
             <h3>Ubicacion:</h3>
-            <p>{perfil.ubicacion}</p>
+            <p>{profileData.ubication}</p>
           </section>
 
           <section className="info-academica">
             <h2>Información académica</h2>
             <h3>Universidad:</h3>
-            <p>{perfil.universidad}</p>
+            <p>{profileData.universidad}</p>
 
             <h3>Carrera:</h3>
-            <p>{perfil.carrera}</p>
+            <p>{profileData.carrera}</p>
 
             <h3>Año de ingreso:</h3>
-            <p>{perfil.año_ingreso}</p>
+            <p>{profileData.año_ingreso}</p>
           </section>
         </div>
 
         <div className="bio-int-pref">
           <div className="bio">
             <h2>Biografía</h2>
-            <p>{perfil.biografia}</p>
+            <p>{profileData.biography}</p>
           </div>
           
           <div className="int-pref">
@@ -453,14 +447,14 @@ return (
             {confirmedPreferences.length > 0 && (
                 <div className="mt-4">
                   <div className="flex flex-wrap gap-2">
-                    {confirmedPreferences.map((preference) => (
-                      <span
-                        key={preference}
-                        className="bg-blue-500 text-white px-3 py-1 rounded-full"
-                      >
-                        {preference}
-                      </span>
-                    ))}
+                  {confirmedInterests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="bg-blue-500 text-white px-3 py-1 rounded-full"
+                  >
+                    {interest}
+                  </span>
+                ))}
                   </div>
                 </div>
               )}

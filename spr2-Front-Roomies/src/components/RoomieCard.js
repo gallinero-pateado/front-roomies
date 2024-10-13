@@ -4,8 +4,7 @@ export function RoomieCard({ key,userName, info, ubicacion, isFav: initialFav })
     
     // Usa el estado para manejar si es favorito o no
     const [isFav, setIsFav] = useState(initialFav);
-    const botonFav = isFav ? 'RoomieCard-button is-fav' : 'RoomieCard-button';
-
+    
     const handleClick = () => {
         setIsFav(!isFav);
     };
@@ -25,22 +24,27 @@ export function RoomieCard({ key,userName, info, ubicacion, isFav: initialFav })
         }*/
 
     return (
-        <article className='RoomieCard'>
-            <header className='RoomieCard-header'>
-                <img className="RoomieCard-img" src="src/img-prueba.jpeg" alt={`${userName} perfilImg`} />
-                <div className='RoomieCard-info'>
-                    <strong>{userName}</strong>
-                    <p>{info}</p>
-                    <span className='RoomieCard-infoUserName'>Ubicación: {ubicacion}</span>
-                </div>
-            </header>
+        <article className="bg-white shadow-md rounded-lg p-4 min-w-[900px] ">
+        <header className="flex items-center mb-4">
+            <img className="w-16 h-16 rounded-full mr-4" src="src/img-prueba.jpeg" alt={`${userName} perfil`} />
+            <div>
+                <strong>{userName}</strong>
+                <p>{info}</p>
+                <span className="text-sm text-gray-500">Ubicación: {ubicacion}</span>
+            </div>
+        </header>
 
-            <aside>
-                <button className={botonFav} onClick={handleClick}>
-                    {isFav ? 'Favorito' : 'Agregar a Favoritos'}
-                </button>
-                <button className='RoomieCard-button'>Mensaje</button>
-            </aside>
-        </article>
+        <aside className="flex justify-between">
+            <button
+                className={`py-2 px-4 rounded ${isFav ? 'bg-red-500 text-white' : 'bg-gray-200 text-black'}`}
+                onClick={handleClick}
+            >
+                {isFav ? 'Favorito' : 'Agregar a Favoritos'}
+            </button>
+            <button className="py-2 px-4 bg-[#0091BD] text-white rounded">
+                Mensaje
+            </button>
+        </aside>
+    </article>
     );
 }
