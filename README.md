@@ -21,3 +21,8 @@ Falta:
 - Filtro para roomies
 
 IGNORAR CARPETA FRONT-ROOMIE, esta vacia, de ser posible eliminarla
+
+Procediiento para trabajar con este repo:
+clonar el repositorio
+ejecutar npm install en la terminal y carpeta clonada
+ejecutar npm run start
