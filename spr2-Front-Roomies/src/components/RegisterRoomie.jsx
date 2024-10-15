@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import comunas from './Const/comunas';
 import intereses from './Const/intereses'
 import preferences from './Const/preferences'
 
 
 const RegisterRoomie = () => {
   const [formData, setFormData] = useState({
-    name: 'Sebastian  poblete',
-    correo:'spobletec@utem.cl',
-    fecha_nacimiento:'09/02/2003',
-    genero: 'Masculino',
-    universidad:'Universidad Tecnolgoica Metropolitana',
-    carreras:'Ingenieria informatica',
-    año_ingreso: '2021',
-    ubication:'',
-    biography:'',
-    interests:[],
-    preferences: []
+    Nombres: 'Sebastian  poblete',
+    Correo:'spobletec@utem.cl',
+    Fecha_Nacimiento: '09/02/2003',
+    Ano_ingreso : '2021',
+    Universidad:'Universidad Tecnolgoica Metropolitana',
+    Carrera: 'Ingenieria informatica', // verificar como es este tipo de dato
+    Genero: '',
+    Biografia:'',
+    Intereses: [],
+    Preferencias: [],
   });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const navigate = useNavigate();
 
@@ -26,19 +27,51 @@ const RegisterRoomie = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
     console.log('Register attempt with:', formData);
 
     /*Registro utilizando localStorage*/
      // Guardar los datos en localStorage
     localStorage.setItem('roomieProfile', JSON.stringify(formData));
-    // Aquí iría la lógica de registro
-    /* agregar el metodo post para crear el usuario como roomie*/ 
 
+    // Aquí iría la lógica de registro
+    /* agregar el metodo post para crear el usuario como roomie*/
+    /*try {
+      // Aquí debes ajustar la URL a la ruta de tu API que maneje el registro
+      const response = await fetch('/api/C_Usuario_Roomie', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al registrar el usuario'); // Lanza un error si la respuesta no es exitosa
+      }
+  
+      const data = await response.json(); // Aquí puedes obtener datos adicionales del servidor
+  
+      console.log('Registro exitoso:', data);
+      setSuccess('Registro exitoso');
+      
+      // Redirigir al perfil de roomie
+      navigate('/profile');
+    } catch (error) {
+      console.error('Error en el registro:', error);
+      setError('Error en el registro. Por favor, intenta de nuevo.'); // Mostrar el error
+    } */
     // Despues de terminar el registro, redirigir al perfil de roomie
     navigate('/profile');
   };
+
+  
+
+
 
   //modal para manejar las etiquetas de int y pref
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
@@ -70,26 +103,26 @@ const RegisterRoomie = () => {
   // Confirmar los intereses seleccionados y cerrar el modal
   const confirmInterests = () => {
     setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
-    setFormData({ ...formData, interests: tempSelectedInterests });
+    setFormData({ ...formData, Intereses: tempSelectedInterests });
     setIsModalOpen(false);
   };
 
   // Confirmar los preferencias seleccionados y cerrar el modal
   const confirmPreferences = () => {
     setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
-    setFormData({ ...formData, preferences: tempSelectedPreferences });
+    setFormData({ ...formData, Preferencias: tempSelectedPreferences });
     setIsModalOpenP(false);
   };
 
 
   // Abrir el modal
   const openModal = () => {
-    setTempSelectedInterests(formData.interests); // Cargar los intereses actuales al modal
+    setTempSelectedInterests(formData.Preferencias); // Cargar los intereses actuales al modal
     setIsModalOpen(true);
   };
 
   const openModalPref = () => {
-    setTempSelectedPreferences(formData.preferences); // Cargar los intereses actuales al modal
+    setTempSelectedPreferences(formData.Preferencias); // Cargar los intereses actuales al modal
     setIsModalOpenP(true);
   };
 
@@ -110,7 +143,7 @@ const RegisterRoomie = () => {
     <div className="min-h-screen bg-sky-100 flex items-center justify-center  ">
       <form onSubmit={handleSubmit} className="bg-white shadow-2xl rounded-3xl px-10 pt-10 pb-12 mb-4 w-full max-w-3xl">
         <div className="text-center">
-          <h2 className="text-4xl font-bold mb-8 text-blue-800 text-center">Perfil Roomie</h2>
+          <h2 className="text-5xl font-bold mb-12 text-[#0092BC] text-center">Perfil Roomie</h2>
           <span className="text-lg  mb-8 text-center"> Termina de completar tu perfil para buscar un roomie</span>
         </div>
         
@@ -118,13 +151,13 @@ const RegisterRoomie = () => {
         {/* Biografia */}
         <div className="mb-6">
             
-          <label className="block text-blue-700  font-bold mb-2 " htmlFor="biography">
+          <label className="block text-[#0092BC] text-xl font-bold mb-2" htmlFor="biography">
             Biografia:
           </label>
           <div className="grid grid-cols-2 gap-6 ">
             <textarea
-                name="biography"
-                id="biography"
+                name="Biografia"
+                id="Biografia"
                 rows="7"
                 cols="50"
                 placeholder='Escribe una biografia para que los posibles roomies te conozcan un poco mas'
@@ -136,11 +169,11 @@ const RegisterRoomie = () => {
         
         {/* Intereses */}
         <div className="mb-6">
-          <label className="block text-blue-700 font-bold mb-2">Intereses</label>
+          <label className="block text-[#0092BC] text-xl font-bold mb-2">Intereses</label>
           <button
             type="button"
             onClick={openModal}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2"
           >
             Seleccionar Intereses
           </button>
@@ -148,7 +181,6 @@ const RegisterRoomie = () => {
           {/* Mostrar intereses confirmados debajo */}
           {confirmedInterests.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-blue-700 font-bold mb-2">Intereses seleccionados:</h3>
               <div className="flex flex-wrap gap-2">
                 {confirmedInterests.map((interest) => (
                   <span
@@ -165,11 +197,11 @@ const RegisterRoomie = () => {
 
         {/* Preferencias*/}
         <div className="mb-6">
-          <label className="block text-blue-700 font-bold mb-2">Preferencias</label>
+          <label className="block text-[#0092BC] text-xl font-bold mb-2">Preferencias</label>
           <button
             type="button"
             onClick={openModalPref}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2"
           >
             Seleccionar Preferencias
           </button>
@@ -177,14 +209,13 @@ const RegisterRoomie = () => {
           {/* Mostrar Preferenncias confirmados debajo */}
           {confirmedPreferences.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-blue-700 font-bold mb-2">Preferencias seleccionadas:</h3>
               <div className="flex flex-wrap gap-2">
-                {confirmedPreferences.map((preferences) => (
+                {confirmedPreferences.map((preference) => (
                   <span
-                    key={preferences}
+                    key={preference}
                     className="bg-blue-500 text-white px-3 py-1 rounded-full"
                   >
-                    {preferences}
+                    {preference}
                   </span>
                 ))}
               </div>
@@ -192,26 +223,26 @@ const RegisterRoomie = () => {
           )}
         </div>
 
-          {/*Ubicacion*/ }
+          {/*Genero*/ }
           <div className="mb-6">
             
-          <label className="block text-blue-700  font-bold mb-2" htmlFor="ubication">
-            Ubicacion:
-          </label>
-          <div className="grid grid-cols-2 gap-6">
-          <select className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-            name="ubication" id="ubication" value={formData.ubication} onChange={handleChange} >
-              {comunas.map((ubication)=>(
-                <option key={ubication.value} value={ubication.value}>
-                  {ubication.label} 
-                </option>
-              ))}
+          <label htmlFor="Genero">Género: </label>
+            <select
+              className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+              name="Genero"
+              value={formData.Genero}
+              onChange={handleChange}
+            >
+              <option value="">Seleccionar genero</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Otro">Otro</option>
+              <option value=" Prefiero no decir">Prefiero no decir</option>s
             </select>
-          </div>
         </div>
-        <div>
+        <div className="flex justify-center mb-8">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+          className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
           onClick={handleSubmit}
         >
           Finalizar
@@ -246,7 +277,7 @@ const RegisterRoomie = () => {
             <div className="flex justify-end p-5">
               <button
                 onClick={confirmInterests}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mr-2"
+                className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2"
               >
                 Confirmar
               </button>
@@ -287,7 +318,7 @@ const RegisterRoomie = () => {
             <div className="flex justify-end p-5">
               <button
                 onClick={confirmPreferences }
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mr-2"
+                className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2"
               >
                 Confirmar
               </button>
