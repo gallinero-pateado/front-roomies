@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from './Sidebar';
-import {RoomiesList} from './RoomieFavList';
+import {RoomiesFavList} from './RoomieFavList';
 import '../App.css'
 
 
@@ -10,7 +10,7 @@ const FavProfile = () =>{
             {/* Sidebar ocupa 1/4 del ancho */}
             <Sidebar/>
             {/* Profile ocupa 3/4 del ancho */}
-            <RoomiesList />
+            <RoomiesFavList />
         </div>
     )
 }

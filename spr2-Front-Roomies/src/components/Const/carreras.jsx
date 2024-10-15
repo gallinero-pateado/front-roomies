@@ -1,13 +1,9 @@
 //arreglo que contiene las carreras de la universidad
 const carreras = [
   {value:'Derecho', label:'Derecho'},
-
   {value:'Psicología', label:'Psicología'},
-
   {value:'Administración Pública', label:'Administración Pública'},
-
   {value:'Bibliotecología y Documentación', label:'Bibliotecología y Documentación'},
-
   {value:'Contador Público y Auditor', label:'Contador Público y Auditor'},
   {value:'Ingeniería Comercial', label:'Ingeniería Comercial'},
   {value:'Ingeniería en Comercio Internacional', label:'Ingeniería en Comercio Internacional'},
