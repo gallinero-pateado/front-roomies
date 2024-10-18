@@ -3,7 +3,6 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';//
 import 'react-toastify/dist/ReactToastify.css';
 import carreras from './Const/carreras';
-import comunas from './Const/comunas';
 import intereses from './Const/intereses'
 import preferences from './Const/preferences'
 
