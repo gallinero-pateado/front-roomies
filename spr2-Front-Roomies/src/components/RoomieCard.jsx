@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 export function RoomieCard({ userName, info, ubicacion, id }) {
+
     // Obtener el estado inicial de favoritos del localStorage
     const [isFav, setIsFav] = useState(() => {
         const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -32,7 +33,7 @@ export function RoomieCard({ userName, info, ubicacion, id }) {
     // Función para verificar si el usuario es favorito al montar el componente
     const fetchIsFavorite = async () => {
         try {
-            const response = await fetch(`/api/}`); // Endpoint para verificar si el usuario es favorito
+            const response = await fetch(`/api/`); // Endpoint para verificar si el usuario es favorito, agregar enpoint correspondiente
             if (!response.ok) {
                 throw new Error('Error al obtener el estado de favorito');
             }
@@ -58,7 +59,7 @@ export function RoomieCard({ userName, info, ubicacion, id }) {
         try {
             if (newIsFav) {
                 // Agregar a favoritos
-                await fetch(`/api/`, {//ennpoint para agregar un favorito
+                await fetch(`/api/`, {//endpoint para agregar un favorito
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -92,13 +93,13 @@ export function RoomieCard({ userName, info, ubicacion, id }) {
 
             <aside className="flex justify-between">
                 <button
-                    className={`py-2 px-4 rounded ${isFav ? 'bg-red-500 text-white' : 'bg-gray-200 text-black'}`}
+                    className={`py-2 px-4 rounded ${isFav ? 'bg-[#0092BC] text-white' : 'bg-gray-200 text-black'}`}
                     onClick={handleClick}
                 >
                     {isFav ? 'Favorito' : 'Agregar a Favoritos'}
                 </button>
-                <button className="py-2 px-4 bg-[#0091BD] text-white rounded">
-                    Mensaje
+                <button className="py-2 px-4 bg-[#0092BC] text-white rounded">
+                    Ver perfil
                 </button>
             </aside>
         </article>

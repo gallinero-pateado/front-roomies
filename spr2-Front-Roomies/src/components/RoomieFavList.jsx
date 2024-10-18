@@ -3,8 +3,8 @@ import { RoomieCard } from "./RoomieCard";
 
 export function RoomiesFavList() {
     const [favoriteUsers, setFavoriteUsers] = useState([]);
-    const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
-    const [error, setError] = useState(null); // Estado para manejar errores
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null);
 
     /*METODO CON LOCALSTORAGE*/ 
     useEffect(() => {
