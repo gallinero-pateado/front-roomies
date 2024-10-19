@@ -250,49 +250,50 @@ const toggleEdit = () => {
 
 
 return (
-  <aside className="profile ">
+  <aside className="mx-auto p-4 bg-white rounded-lg shadow-lg max-w-3xl ml-72">
   <ToastContainer />
   {/*si isEditing es true, mostrara el formulario*/ }
     {isEditing ? (
       <form onSubmit={handleSubmit}>
-        <div className="miperfil-profile">
-          <img src="src\img-prueba.jpeg" alt="imagen de perfil" />
-          <div className="nombre-correo">
+        <div className="flex items-center gap-8 ">
+          <img src="src\img-prueba.jpeg" alt="imagen de perfil" className="rounded-full w-52 h-52" />
+          <div className="flex flex-col">
             <input
               name="Nombres"
               type="text"
               id="Nombres"
+              
               value={profileData.Nombres}
               onChange={handleChange}
-              className="editable"
+              className="font-bold bg-transparent text-2xl border-none"
             />
-            <p>{profileData.Correo}</p>
+            <p className="text-gray-500">{profileData.Correo}</p>
           </div>
           <button
-          className="bg-[#0091BD] hover:bg-blue-700 text-black font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+          className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
           onClick={toggleEdit}
         >
-          Comfirmar
+          Confirmar
           {console.log(profileData)}
 
         </button>
           <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
           onClick={handleCancel}
         >
           Cancelar
         </button>
         </div>
 
-        <div className="info">
-          <section className="info-personal">
-            <h2>Información Personal</h2>
-            <h3>Fecha de nacimiento:</h3>
-            <p>{profileData.Fecha_Nacimiento}</p>
+        <div className="flex justify-between py-5">
+          <section className="w-1/2">
+            <h2 className='font-bold mb-2'>Información Personal</h2>
+            <h3 className="font-bold text-lg mb-1" >Fecha de nacimiento:</h3>
+            <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
 
-            <label htmlFor="Genero">Género: </label>
+            <label htmlFor="Genero" className="font-bold text-lg py-2">Género: </label>
             <select
-              className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+              className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
               name="Genero"
               value={profileData.Genero}
               onChange={handleChange}
@@ -305,13 +306,13 @@ return (
 
           </section>
 
-          <section className="info-academica">
-            <h2>Información académica</h2>
-            <h3>Universidad:</h3>
-            <p>{profileData.Universidad}</p>
+          <section className="w-1/2">
+            <h2 className="font-bold mb-2">Información académica</h2>
+            <h3 className="font-bold text-lg mb-1">Universidad:</h3>
+            <p className="text-lg">{profileData.Universidad}</p>
 
-            <label htmlFor="Carrera">Carrera</label>
-            <select className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+            <label htmlFor="Carrera" className="font-bold text-lg py-2">Carrera</label>
+            <select  className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
             name="Carrera" id="Carrera" value={profileData.Carrera} onChange={handleChange} >
               {carreras.map((carreraa)=>(
                 <option key={carreraa.value} value={carreraa.value}>
@@ -321,7 +322,7 @@ return (
             </select>
             
 
-            <label htmlFor="Ano_ingreso">Año de ingreso</label>
+            <label htmlFor="Ano_ingreso" className="font-bold text-lg py-2">Año de ingreso</label>
             <input
               name="Ano_ingreso"
               type="number"
@@ -330,32 +331,36 @@ return (
               max={new Date().getFullYear()}
               value={profileData.Ano_ingreso}
               onChange={handleChange}
+              className="w-full p-2 rounded border border-gray-300"
             />
           </section>
         </div>
 
-        <div className="bio-int-pref">
+        <div className="pt-5">
           <div className="bio">
-            <label htmlFor="biografia">Biografía:</label>
+            <label htmlFor="biografia" className="font-bold text-lg py-2">Biografía:</label>
             <textarea
               name="Biografia"
               id="Biografia"
-              rows="10"
+              rows="7"
               cols="50"
+              maxLength={400}
               value={profileData.Biografia}
               onChange={handleChange}
+              className="bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max"
+              
             />
           </div>
 
-          <div className="int-pref">
+          <div className="flex justify-between gap-5">
             
           {/* Intereses */}
-        <div className="mb-6">
-          <label className="block text-blue-700 font-bold mb-2">Intereses</label>
+        <div className="mb-10">
+          <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
           <button
             type="button"
             onClick={openModal}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
           >
             Seleccionar Intereses
           </button>
@@ -363,12 +368,12 @@ return (
           {/* Mostrar intereses confirmados debajo */}
           {confirmedInterests.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-blue-700 font-bold mb-2">Intereses seleccionados:</h3>
-              <div className="flex flex-wrap gap-2">
+              <h3 className="text-black font-bold mb-2">Intereses seleccionados:</h3>
+              <div className="flex flex-wrap gap-4">
                 {confirmedInterests.map((Intereses) => (
                   <span
                     key={Intereses}
-                    className="bg-blue-500 text-white px-3 py-1 rounded-full"
+                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
                   >
                     {Intereses}
                   </span>
@@ -380,12 +385,12 @@ return (
 
 
             {/* Preferencias*/}
-            <div className="mb-6">
-              <label className="block text-blue-700 font-bold mb-2">Preferencias</label>
+            <div className="mb-10">
+              <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
               <button
                 type="button"
                 onClick={openModalPref}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
               >
                 Seleccionar Preferencias
               </button>
@@ -393,12 +398,12 @@ return (
               {/* Mostrar Preferenncias confirmados debajo */}
               {confirmedPreferences.length > 0 && (
                 <div className="mt-4">
-                  <h3 className="text-blue-700 font-bold mb-2">Preferencias seleccionadas:</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
+                  <div className="flex flex-wrap gap-4">
                     {confirmedPreferences.map((Preferencias) => (
                       <span
                         key={Preferencias}
-                        className="bg-blue-500 text-white px-3 py-1 rounded-full"
+                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
                       >
                         {Preferencias}
                       </span>
@@ -413,11 +418,11 @@ return (
         
       </form>
     ) : (
-      <div className="perfil-view">
+      <div >
         {/*Si isEditing es false, se mostrara la vista de perfil*/ }
           
-        <div className="miperfil-profile">
-          <img src="src\img-prueba.jpeg" alt="Imagen de perfil" />
+        <div className="flex items-center gap-8 ">
+          <img src="src\img-prueba.jpeg" alt="Imagen de perfil" className='rounded-full w-52 h-52'/>
           <div className="nombre-correo">
             <h3>{profileData.Nombres}</h3>
             <p>{profileData.Correo}</p>
@@ -457,7 +462,7 @@ return (
         <div className="bio-int-pref">
           <div className="Biografia">
             <h2>Biografía</h2>
-            <p>{profileData.Biografia}</p>
+            <p className='break-words'>{profileData.Biografia}</p>
           </div>
           
           <div className="int-pref">
