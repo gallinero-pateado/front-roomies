@@ -4,9 +4,11 @@ Se creo el register para roomie, seleccionando biografia, intereses, preferencia
 
 se adapto el estilo a uno mas general con las demas celulas
 
--Se actualizaron campos del formulario como la seleccion de carrera, o los intereses y preferencias que ahora son "etiquetas"
+Se actualizaron campos del formulario como la seleccion de carrera, o los intereses y preferencias que ahora son "etiquetas"
 
 se creo la vista aparte para mostrar todos los roomies, ademas de una vista solo para los favoritos
+
+Se arreglaron la mayoria de detalles señalados por el QA
 
 Falta:
 
@@ -14,13 +16,11 @@ Falta:
 
 - verificar que los endpoint sean los correctos
 
-- detalles del front, como diseño de etiquetas
-
-- mantener cambios una vez que se cambia entre paginas, por ejempllo los cambion se guardan, pero si te dirigues a otra pag como roomies, y vuelves a perfil, los cambios no persisten
+- Hacer todo responisve
 
 - Filtro para roomies
 
-IGNORAR CARPETA FRONT-ROOMIE, esta vacia, de ser posible eliminarla
+
 
 Procediiento para trabajar con este repo:
 clonar el repositorio
