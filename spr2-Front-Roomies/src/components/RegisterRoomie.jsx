@@ -27,12 +27,43 @@ const RegisterRoomie = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Función de validación
+  const validateForm = () => {
+    let error = {};
+
+    // Validar que la biografía no esté vacía
+    if (!formData.Biografia.trim()) {
+        error.Biografia = 'La biografía no puede estar vacía.';
+    }
+
+    // Validar que haya al menos un interés seleccionado
+    if (formData.Intereses.length < 1) {
+        error.Intereses = 'Debe seleccionar al menos un interés.';
+    }
+
+    // Validar que haya al menos una preferencia seleccionada
+    if (formData.Preferencias.length < 1) {
+        error.Preferencias = 'Debe seleccionar al menos una preferencia.';
+    }
+
+    // Validar que el género sea uno de los valores permitidos
+    const allowedGenders = ['Masculino', 'Femenino', 'Otro', 'Prefiero no decir'];
+    if (!allowedGenders.includes(formData.Genero)) {
+        error.Genero = 'Debe seleccionar un género válido.';
+    }
+
+    setError(error);
+    // Si no hay errores, devuelve true, de lo contrario false
+    return Object.keys(error).length === 0;
+};
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-
-    console.log('Register attempt with:', formData);
+    if(validateForm()){
+      console.log('Register attempt with:', formData);
 
     /*Registro utilizando localStorage*/
     // Guardar los datos en localStorage
@@ -67,9 +98,16 @@ const RegisterRoomie = () => {
     } */
     // Despues de terminar el registro, redirigir al perfil de roomie
     navigate('/profile');
+
+    }
+    else{
+      alert('Por favor, Complete todos los campos antes de enviar el formulario.');
+    }
+
+    
   };
 
-
+  
 
 //modal para manejar las etiquetas de int y pref
 const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
@@ -164,8 +202,10 @@ const closeModalP = () => {
           <label className="block text-[#0092BC] text-xl font-bold mb-2 max-" htmlFor="biography">
             Biografía:
           </label>
+          {error.Biografia && <p style={{ color: 'red' }}>{error.Biografia}</p>}
           <div className="grid grid-cols-2 gap-6 ">
             <textarea
+              
               name="Biografia"
               id="Biografia"
               rows="8"
@@ -205,6 +245,7 @@ const closeModalP = () => {
               </div>
             </div>
           )}
+          {error.Intereses && <p style={{ color: 'red' }}>{error.Intereses}</p>}
         </div>
 
         {/* preferncias */}
@@ -234,6 +275,7 @@ const closeModalP = () => {
               </div>
             </div>
           )}
+          {error.Preferencias && <p style={{ color: 'red' }}>{error.Preferencias}</p>}
         </div>
 
         {/*Genero*/}
@@ -246,17 +288,17 @@ const closeModalP = () => {
             value={formData.Genero}
             onChange={handleChange}
           >
-
+            <option value="" disabled selected>Selecciona un género</option>
             <option value="Masculino">Masculino</option>
             <option value="Femenino">Femenino</option>
             <option value="Otro">Otro</option>
-            <option value=" Prefiero no decir">Prefiero no decir</option>s
+            <option value="Prefiero no decir">Prefiero no decir</option>
           </select>
+          {error.Genero && <p style={{ color: 'red' }}>{error.Genero}</p>}
         </div>
         <div className="flex justify-center mb-8">
           <button
             className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
-            onClick={handleSubmit}
           >
             Finalizar
           </button>
