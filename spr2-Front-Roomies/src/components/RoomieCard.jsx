@@ -26,6 +26,8 @@ export function RoomieCard({ userName, info, ubicacion, id }) {
             return newIsFav;
         });
     };
+
+    
 /* Por el momento trabajar con datos de prueba y localstorage 
 // Obtener el estado inicial de favoritos desde la base de datos
     const [isFav, setIsFav] = useState(false);

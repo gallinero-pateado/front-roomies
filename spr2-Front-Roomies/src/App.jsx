@@ -6,6 +6,7 @@ import PageProfile from './components/ProfilePage';
 import FavPage from './components/FavPage'
 import MainPage from './mainpage'; // Importa el componente principal con opciones
 import {RoomiesList} from './components/Roomies'
+import {RoomiesFavList} from './components/RoomiesFavList'
 
 
 
