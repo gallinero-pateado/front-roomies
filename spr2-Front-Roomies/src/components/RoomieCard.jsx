@@ -1,45 +1,108 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export function RoomieCard({ key,userName, info, ubicacion, isFav: initialFav }) {
-    
-    // Usa el estado para manejar si es favorito o no
-    const [isFav, setIsFav] = useState(initialFav);
-    const botonFav = isFav ? 'RoomieCard-button is-fav' : 'RoomieCard-button';
+export function RoomieCard({ userName, info, ubicacion, id }) {
+
+    // Obtener el estado inicial de favoritos del localStorage
+    const [isFav, setIsFav] = useState(() => {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        return favorites.includes(id);
+    });
 
     const handleClick = () => {
-        setIsFav(!isFav);
+        setIsFav(prevIsFav => {
+            const newIsFav = !prevIsFav;
+
+            // Actualizar el localStorage
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            if (newIsFav) {
+                favorites.push(id);
+            } else {
+                const index = favorites.indexOf(id);
+                if (index > -1) {
+                    favorites.splice(index, 1);
+                }
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            return newIsFav;
+        });
     };
 
-    /* Esta es la funcion que se encarga de eliminar o actualizar un favorio en el perfil del usuariom se debe borrar la de arriba en la version fnal
-    const handleClick = async () => {
-        setIsFav(!isFav);
+    
+/* Por el momento trabajar con datos de prueba y localstorage 
+// Obtener el estado inicial de favoritos desde la base de datos
+    const [isFav, setIsFav] = useState(false);
+
+    // Función para verificar si el usuario es favorito al montar el componente
+    const fetchIsFavorite = async () => {
         try {
-        //poner la url del endopint correspondiente
-            await fetch(`/api/favorites/${key}`, {// no estoy segunro si la id que se pasa es del favorito o del perfil que lo tiene de favorito
-                method: isFav ? 'DELETE' : 'POST',// si  es fav, lo elimina de la lsita de favoritos, sino lo añade
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId }),
-            });
+            const response = await fetch(`/api/`); // Endpoint para verificar si el usuario es favorito, agregar enpoint correspondiente
+            if (!response.ok) {
+                throw new Error('Error al obtener el estado de favorito');
+            }
+            const data = await response.json(); // Convertir la respuesta a JSON
+            setIsFav(data.isFavorite); // Actualizar el estado con el valor obtenido
         } catch (error) {
-            console.error('Error al actualizar favorito:', error);
-        }*/
+            console.error(error.message); // Manejo de errores
+        }
+    };
+
+    // useEffect para verificar si el usuario es favorito al montar el componente
+    useEffect(() => {
+        fetchIsFavorite(); // Llamar a la función para verificar si es favorito
+    }, [id]);
+
+    // Función para manejar el clic en el botón de favorito
+    const handleClick = async () => {
+        const newIsFav = !isFav; // Cambiar el estado de favorito
+
+        // Actualizar el estado local
+        setIsFav(newIsFav);
+
+        try {
+            if (newIsFav) {
+                // Agregar a favoritos
+                await fetch(`/api/`, {//endpoint para agregar un favorito
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId: id }), // Enviar el ID del usuario para agregarlo a favoritos
+                });
+            } else {
+                // Eliminar de favoritos
+                await fetch(`/api/`, {
+                    method: 'DELETE', // Endpoint para eliminar de favoritos
+                });
+            }
+        } catch (error) {
+            console.error('Error al actualizar favoritos:', error.message); // Manejo de errores
+            // Revertir el estado local en caso de error
+            setIsFav(!newIsFav);
+        }
+    };*/ 
+
 
     return (
-        <article className='RoomieCard'>
-            <header className='RoomieCard-header'>
-                <img className="RoomieCard-img" src="src/img-prueba.jpeg" alt={`${userName} perfilImg`} />
-                <div className='RoomieCard-info'>
+        <article className="bg-white shadow-md rounded-lg p-4 min-w-[900px]">
+            <header className="flex items-center mb-4">
+                <img className="w-16 h-16 rounded-full mr-4" src="src/img-prueba.jpeg" alt={`${userName} perfil`} />
+                <div>
                     <strong>{userName}</strong>
                     <p>{info}</p>
-                    <span className='RoomieCard-infoUserName'>Ubicación: {ubicacion}</span>
+                    <span className="text-sm text-gray-500">Ubicación: {ubicacion}</span>
                 </div>
             </header>
 
-            <aside>
-                <button className={botonFav} onClick={handleClick}>
+            <aside className="flex justify-between">
+                <button
+                    className={`py-2 px-4 rounded ${isFav ? 'bg-[#0092BC] text-white' : 'bg-gray-200 text-black'}`}
+                    onClick={handleClick}
+                >
                     {isFav ? 'Favorito' : 'Agregar a Favoritos'}
                 </button>
-                <button className='RoomieCard-button'>Mensaje</button>
+                <button className="py-2 px-4 bg-[#0092BC] text-white rounded">
+                    Ver perfil
+                </button>
             </aside>
         </article>
     );
