@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { RoomieCard } from "./RoomieCard";
+import intereses from "./Const/intereses";
+import preferences from "./Const/preferences";
 
 export function RoomiesFavList() {
     const [favoriteUsers, setFavoriteUsers] = useState([]);
@@ -11,11 +13,11 @@ export function RoomiesFavList() {
         //obtiene los roomies de prueba del local storage
         const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         const allUsers = [
-            { id: 1, userName: "Valeria Henriquez", info: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "Santiago centro" },
-            { id: 2, userName: "John Marston", info: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "Ñuñoa" },
-            { id: 3, userName: "Alberto Hurtado", info: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "La cisterna" },
-            { id: 4, userName: "Carolina Rojas", info: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "Macul" },
-            { id: 5, userName: "Arthur Morgan", info: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "La florida" },
+            { id: 1, userName: "Valeria Henriquez", correo:"vhenriquez@gmail.com", biografia: "biografia generica de prueba para valeria hernandez sandksns sankskd sknaksdan ksandkd ", ubicacion: "Santiago centro", intereses:["Interes 1", "Interes 2"], preferencias:["Pref 1", "pref 2", "pref 3", "pref 4"], carrera:"Ingenieria informatica",genero:"Femenino"},
+            { id: 2, userName: "John Marston", correo:"jmarston@gmail.com",biografia: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "Ñuñoa", intereses:["Interes 1", "Interes 2"], preferencias:["Pref 1", "Pref 2", "pref 3"], carrera:"Arquitectura",genero:"Masculino" },
+            { id: 3, userName: "Alberto Hurtado",correo:"ahurtado@gmail.com", biografia: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "La cisterna", intereses:["interes 1", "interes 2", "interes 3"], preferencias: ["pref 1"], carrera:"Derecho",genero:"Prefiero no decir" },
+            { id: 4, userName: "Carolina Rojas",correo:"crojas@gmail.com", biografia: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "Macul", intereses:["int 1", "int 5"], preferencias:["pref 1", "pref 4"], carrera:"Ingenieria civil",genero:"Femenino" },
+            { id: 5, userName: "Arthur Morgan",correo:"amorgan@gmail.com", biografia: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.", ubicacion: "La florida", intereses:["int 2","int 3", "int4", "int 6"], preferencias:["pref 1", "pref 2", "pref 4", "pref 5", "pref 6"], carrera:"Ingenieria comercial", genero:"Prefiero no decir"},
         ];
 
         // Filtrar solo los usuarios que son favoritos
@@ -68,8 +70,14 @@ export function RoomiesFavList() {
                     key={user.id}
                     id={user.id}
                     userName={user.userName}
-                    info={user.info}
+                    correo = {user.correo}
+                    biografia={user.biografia}
                     ubicacion={user.ubicacion}
+                    intereses = {user.intereses}
+                    preferencias = {user.preferencias}
+                    carrera = {user.carrera}
+                    genero={user.genero}
+
                 />
             ))}
         </section>
