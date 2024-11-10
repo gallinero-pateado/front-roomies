@@ -251,7 +251,7 @@ const toggleEdit = () => {
 
 
 return (
-  <aside class="mx-auto p-4 bg-white rounded-lg shadow-lg  max-w-3xl ml-72 ">
+  <aside className="mx-auto p-4 bg-white rounded-lg shadow-lg  max-w-3xl ml-72 ">
   <ToastContainer />
   {/*si isEditing es true, mostrara el formulario*/ }
     {isEditing ? (

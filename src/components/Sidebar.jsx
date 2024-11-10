@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import React from 'react';
 import { Link } from 'react-router-dom'; // Usamos Link para navegar
 
-const Sidebar = () =>{
 
-        
+
+const Sidebar = () =>{
 
     return(
 
@@ -23,6 +24,7 @@ const Sidebar = () =>{
                 <li className='pb-4 font-bold text-left'>
                     <Link to="/my-messages" className="text-black hover:text-white">Mensajes</Link>
                 </li>
+
             </ul>
     </section>
     </aside>

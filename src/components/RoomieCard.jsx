@@ -82,7 +82,6 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
     };*/ 
 
 
-    //vista de perfil para enviar mensaje
     
     //modal para manejar las etiquetas de int y pref
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
@@ -97,9 +96,52 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
         setIsModalOpen(false);
     };
 
-    const sendMessage = ()=>{
-        window.alert("Mensaje enviado");
-        /*logica para enviar mensaje, se completara una vez se puedan usar los usuarios de prueba*/ 
+    const [subject, setSubject] = useState("");
+    const [message, setMessage] = useState("");
+
+    const sendMessage = (e)=>{
+
+        e.preventDefault();
+
+        //obtener la hora del envio del mensaje
+        const now = new Date();
+        const formattedDateTime = now.toLocaleString("es-ES", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        });
+
+        /*logica para enviar mensaje, En este caso se guardaran los datos del mensaje en el local storague,
+        en el repositorio de unificacion se manejaran con las tablas de las bd creadas */
+        
+        const userMessague = 
+            { 
+                id: id,//aca va la id del roomie
+                emisor:"Sebastian Poblete",//en la unificacion, aca el nombre o la id del usuario logeado
+                receptor: userName,
+                correo: correo,
+                fechaEnvio: formattedDateTime,
+                asunto: subject,
+                mensaje: message,
+                estado:"recibido",
+                estMensaje: "Enviado"
+
+            };
+        
+
+        // Obtener los mensajes previos del localStorage o crear una lista nueva
+        const existingMessages = JSON.parse(localStorage.getItem("userMessages")) || [];
+        // Agregar el nuevo mensaje a la lista de mensajes
+        existingMessages.push(userMessague);
+        // Guardar la lista actualizada en el localStorage
+        localStorage.setItem("userMessages", JSON.stringify(existingMessages));
+
+        console.log(localStorage.getItem("userMessages"));
+
+        window.alert("Mensaje enviado con exito")
        
         closeModal();
     }
@@ -187,10 +229,12 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
                         <form >
                         <div className="mb-4 flex flex-col">
                             <label htmlFor="Asunto" className="font-bold">Asunto:</label>
-                            <input type="text" className="rounded border border-gray-600 my-3 py-1" />
+                            <input type="text" className="rounded border border-gray-600 my-3 py-1" value={subject} onChange={(e)=>setSubject(e.target.value)} />
                             <textarea
                                 name="message"
                                 id="message"
+                                value={message}
+                                onChange={(e)=>setMessage(e.target.value)}
                                 rows="4"
                                 className="bg-gray-300 rounded p-2 text-sm border border-gray-300 w-full resize-none"
                                 placeholder="Escribe tu mensaje aquí..."
