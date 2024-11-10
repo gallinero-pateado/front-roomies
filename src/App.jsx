@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import RegisterRoomie from './components/RegisterRoomie';
 import PageProfile from './components/ProfilePage';
 import FavPage from './components/FavPage'
+import Messpage from './components/MessPage'
 import MainPage from './mainpage'; // Importa el componente principal con opciones
 import {RoomiesList} from './components/Roomies'
 // import {RoomiesFavList} from './components/RoomiesFavList'
@@ -23,7 +24,7 @@ function App() {
           <Route path = "/profile" element={<PageProfile />} />
           <Route path = '/fav' element={< FavPage/>} />
           <Route path = '/roomies' element={< RoomiesList/>} />
-
+          <Route path = '/my-messages' element={<Messpage/>}/>
           
         </Route>
       </Routes>
