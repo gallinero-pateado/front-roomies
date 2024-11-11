@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import { RoomieCard } from "./RoomieCard";
+import Filter from './Filter';
 
 export function RoomiesFavList() {
+    const [filters, setFilters] = useState({
+        comuna: '',
+        intereses: [],
+        preferencias: [],
+        carrera: '',
+    });
+
     const [favoriteUsers, setFavoriteUsers] = useState([]);
-    const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
+    const [error, setError] = useState(null); // Estado para manejar errores
 
     /*METODO CON LOCALSTORAGE*/ 
     useEffect(() => {
@@ -21,6 +29,7 @@ export function RoomiesFavList() {
         // Filtrar solo los usuarios que son favoritos
         const filteredFavorites = allUsers.filter(user => favorites.includes(user.id));
         setFavoriteUsers(filteredFavorites);
+        setLoading(false); // Terminar el proceso de carga
     }, []);
 
     /*METODO CON LOS ENPOINT DEL BACK
@@ -55,23 +64,45 @@ export function RoomiesFavList() {
 
     // Mostrar un mensaje de error si algo salió mal
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div>Error: {error}</div>;s
     }
     */
-    
 
+    const handleFilter = (newFilters) => {
+        setFilters(newFilters);
+    };
+
+    const filteredUsers = favoriteUsers.filter((user) => {
+        const matchesComuna = filters.comuna ? user.ubicacion === filters.comuna : true;
+        const matchesIntereses = filters.intereses.length ? filters.intereses.every((interes) => user.intereses.includes(interes)) : true;
+        const matchesPreferencias = filters.preferencias.length ? filters.preferencias.every((preferencia) => user.preferencias.includes(preferencia)) : true;
+        const matchesCarrera = filters.carrera ? user.carrera === filters.carrera : true;
+        return matchesComuna && matchesIntereses && matchesPreferencias && matchesCarrera;
+    });
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
-        <section className="flex flex-wrap gap-4 p-4">
-            {favoriteUsers.map((user) => (
-                <RoomieCard
-                    key={user.id}
-                    id={user.id}
-                    userName={user.userName}
-                    info={user.info}
-                    ubicacion={user.ubicacion}
-                />
-            ))}
-        </section>
+        <div className="container mx-auto p-4">
+            <Filter onFilter={handleFilter} />
+            <section className="flex flex-wrap gap-4 p-4">
+                {filteredUsers.map((user) => (
+                    <RoomieCard
+                        key={user.id}
+                        id={user.id}
+                        userName={user.userName}
+                        info={user.info}
+                        ubicacion={user.ubicacion}
+                    />
+                ))}
+            </section>
+        </div>
     );
 }
+

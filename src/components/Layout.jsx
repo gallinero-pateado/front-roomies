@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-
+import Notification from './components/Notification'; // Importa el componente de notificación
 
 const Layout = () => {
   return (
@@ -10,19 +10,15 @@ const Layout = () => {
         <div className="flex justify-between items-center mx-auto">
           <h1 className="text-5xl font-bold italic">ULINK</h1>
           <div>
-            <a href="/roomies" className="bg-[#A3D9D3] text-[#0092BC] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#0092BC] hover:text-white
-            transition duration-300">
+            <a href="/roomies" className="bg-[#A3D9D3] text-[#0092BC] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#0092BC] hover:text-white transition duration-300">
               Roomies
             </a>
-            <a href="/profile" className="bg-[#A3D9D3] text-[#0092BC] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#0092BC] hover:text-white
-            transition duration-300">
+            <a href="/profile" className="bg-[#A3D9D3] text-[#0092BC] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#0092BC] hover:text-white transition duration-300">
               Perfil
             </a>
-            <a href="main" className="bg-[#A3D9D3] text-[#0092BC] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#0092BC] hover:text-white
-            transition duration-300">
+            <a href="main" className="bg-[#A3D9D3] text-[#0092BC] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#0092BC] hover:text-white transition duration-300">
               Volver
             </a>
-            
           </div>
         </div>
       </header>
@@ -32,7 +28,6 @@ const Layout = () => {
         <div className="flex flex-col items-start max-w-2xl w-full">
           <Outlet /> {/* Aquí se renderizarán los componentes de las rutas internas */}
         </div>
-        
       </main>
 
       {/* Footer */}
@@ -41,6 +36,9 @@ const Layout = () => {
         <p>tallersistemasdesoftware@utem.cl / Teléfono (---) --- --- ---</p>
         <p>&copy; 2024 ULINK. Todos los derechos reservados.</p>
       </footer>
+
+      {/* Notification */}
+      <Notification /> {/* Agrega el componente de notificación */}
     </div>
   );
 };
