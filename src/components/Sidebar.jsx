@@ -20,6 +20,9 @@ const Sidebar = () =>{
                 <li className='pb-4 font-bold text-left'>
                     <Link to="/fav" className="text-black hover:text-white">Favoritos</Link>
                 </li>
+                <li className='pb-4 font-bold text-left'>
+                    <Link to="/my-messages" className="text-black hover:text-white">Mensajes</Link>
+                </li>
             </ul>
     </section>
     </aside>

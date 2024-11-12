@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import comunas from '../comunas';
-import intereses from '../intereses';
-import preferencias from '../preferences';
-import carreras from '../carreras';
+import comunas from './Const/comunas';
+import intereses from './Const/intereses';
+import preferencias from './Const/preferences';
+import carreras from './Const/carreras';
 
 const Filter = ({ onFilter }) => {
   const [selectedComuna, setSelectedComuna] = useState('');

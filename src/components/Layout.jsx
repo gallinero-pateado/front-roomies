@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Notification from './components/Notification'; // Importa el componente de notificación
+import Notification from './Notification'; // Importa el componente de notificación
 
 const Layout = () => {
   return (
