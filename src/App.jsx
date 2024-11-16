@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout';
-import RegisterRoomie from './components/RegisterRoomie';
-import PageProfile from './components/ProfilePage';
-import FavPage from './components/FavPage'
-import Messpage from './components/MessPage'
+import { Navigate } from 'react-router-dom';
+import Layout from './components/NavComponents/Layout';
+import RegisterRoomie from './components/RegisterComponents/RegisterRoomie';
+import PageProfile from './components/ProfileComponents/ProfilePage';
+import FavPage from './components/FavComponents/FavPage'
+import Messpage from './components/MessageComponents/MessPage'
 import MainPage from './mainpage'; // Importa el componente principal con opciones
-import {RoomiesList} from './components/Roomies'
+import {RoomiesList} from './components/RoomieComponents/Roomies'
 // import {RoomiesFavList} from './components/RoomiesFavList'
 
 
@@ -15,19 +16,19 @@ function App() {
   return (
     <Router>
       <Routes>
-      <Route path='/main'  index element={<MainPage />} />
       <Route path="/" element={<Layout />}>
-          {/* Mostrar RegisterRoomie como la página principal */}
-          {/*Al unificar con practicas y descuentos, index element = {<RegisterRoomie />}, el de abajo se boora, igual que el index de arriba,
-          en el front de practicas esta para redirigir a cada celula*/}
-          <Route path="/registRoomie" element={<RegisterRoomie />} />
-          <Route path = "/profile" element={<PageProfile />} />
-          <Route path = '/fav' element={< FavPage/>} />
-          <Route path = '/roomies' element={< RoomiesList/>} />
-          <Route path = '/my-messages' element={<Messpage/>}/>
-          
-        </Route>
-      </Routes>
+      <Route path="/" element={<Navigate to="/main" replace />} />
+          <Route path="/register" element={<RegisterRoomie />} />
+        <Route  index element={<RegisterRoomie />} />
+        <Route path="/main" element={<PageProfile />} /> 
+        <Route path="fav" element={<FavPage />} />
+        <Route path="roomies" element={<RoomiesList />} />
+        <Route path="my-messages" element={<Messpage />} />
+
+        {/*Redirecciona al main pague para elegir servicio */}
+        <Route path="main" element={<MainPage />} />
+      </Route>
+    </Routes>
     </Router>
   );
 }

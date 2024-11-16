@@ -1,27 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import intereses from './Const/intereses'
-import preferencias from './Const/preferences'
+import axios from 'axios';
+import intereses from '../Const/intereses'
+import preferencias from '../Const/preferences'
 
 
 const RegisterRoomie = () => {
   const [formData, setFormData] = useState({
-    Nombres: 'Sebastian  poblete',
-    Correo: 'spobletec@utem.cl',
-    Fecha_Nacimiento: '09/02/2003',
-    Ano_ingreso: '2021',
-    Universidad: 'Universidad Tecnolgoica Metropolitana',
-    Carrera: 'Ingenieria informatica', // verificar como es este tipo de dato
+    //Datos referenciados al perfil de roomie
     Genero: '',
     Biografia: '',
-    Intereses: [],
-    Preferencias: [],
+    Intereses: '',
+    Preferencias: '',
   });
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
   const navigate = useNavigate();
+
+  useEffect(()=>{
+
+    //obtener el uid  del usuario
+    const id = 202 // id para probar con usuario de la bd, en proyecto final esta se obtendra al iniciar sesion y traer por localstorage
+
+    const checkRoomieProfile = async()=>{
+      try{
+          const response = await axios.get(`http://localhost:8080/Usuario/${id}`,{
+            
+          });
+         
+          //redirigue si existe el perfil de roomie
+          if(response.data.Nombres){
+            console.log(response);
+            //navigate('/profile');
+          }
+
+      }catch(error){
+        console.error('Error al verificar la completación del perfil:', error);
+      }
+    }
+
+    checkRoomieProfile();
+  },[navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,43 +80,17 @@ const RegisterRoomie = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    
     if(validateForm()){
+
+      //const profileFormData = {
+        
+    //};
       console.log('Register attempt with:', formData);
 
-    /*Registro utilizando localStorage*/
-    // Guardar los datos en localStorage
-    localStorage.setItem('roomieProfile', JSON.stringify(formData));
+    
 
-    // Aquí iría la lógica de registro
-    /* agregar el metodo post para crear el usuario como roomie*/
-    /*try {
-      // Aquí debes ajustar la URL a la ruta de tu API que maneje el registro
-      const response = await fetch('/api/C_Usuario_Roomie', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error al registrar el usuario'); // Lanza un error si la respuesta no es exitosa
-      }
-  
-      const data = await response.json(); // Aquí puedes obtener datos adicionales del servidor
-  
-      console.log('Registro exitoso:', data);
-      setSuccess('Registro exitoso');
-      
-      // Redirigir al perfil de roomie
-      navigate('/profile');
-    } catch (error) {
-      console.error('Error en el registro:', error);
-      setError('Error en el registro. Por favor, intenta de nuevo.'); // Mostrar el error
-    } */
-    // Despues de terminar el registro, redirigir al perfil de roomie
+    
     navigate('/profile');
 
     }
@@ -194,8 +188,6 @@ const closeModalP = () => {
           <h2 className="text-5xl font-bold mb-12 text-[#0092BC] text-center">Perfil Roomie</h2>
           <span className="text-lg  mb-8 text-center"> Termina de completar tu perfil para buscar un roomie</span>
         </div>
-
-
         {/* Biografia */}
         <div className="mb-6">
 

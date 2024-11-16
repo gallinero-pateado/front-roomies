@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';//
 import 'react-toastify/dist/ReactToastify.css';
-import carreras from './Const/carreras';
-import intereses from './Const/intereses'
-import preferencias from './Const/preferences'
+import carreras from '../Const/carreras';
+import intereses from '../Const/intereses'
+import preferencias from '../Const/preferences'
 
 
 //se le pasa la id de roomie como prop, para luego trabajar con este usuario
@@ -167,60 +167,6 @@ const closeModal = () => {
 const closeModalP = () => {
   setIsModalOpenP(false);
 };
-/*
-ESTA ES LA VERSION QUE SE CONECTA A LA BD, DESCOMENTAR UNA VEZ QUE SE PROBARON LOS DATOS DE PRUEBA Y SE TENGAN LOS ENDPOINT YA DESAROLLADOS
-ADEMAS DE LA CONECCION CON LA BD, SI HAY ALGUN CAMPO DE MAS O FALTA ALGUNO, O EL TIPO DE DATO ES INCORRECTO, FAVOR DE AVISAR PARA REALIZAR
-EL CAMBIO CORRESPONDIENTE
-
- 
-
- 
-
-  // Función para cargar los datos del perfil desde la API
-  useEffect(() => {
-    const obtenerPerfil = async () => {
-      try {
-        const response = await axios.get('/api/profiles/${id}'); // Ajustar la URL según el endpoint real creado para obtener perfil
-        setPerfil(response.data);
-      } catch (error) {
-        toast.error("Error al cargar los datos del perfil");// toast como notificiacion de error
-      }
-    };
-    obtenerPerfil();
-  }, []);
-
-  
-
-  // Manejar el cambio en los inputs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPerfil((prevPerfil) => ({
-      ...prevPerfil,
-      [name]: value,
-    }));
-  };
-
-  // enviar los cambios a la API, se debe borrar el handlesubmit no comentado
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await axios.put('/api/profiles/&{id}', perfil); // Ajusta la URL segun endopint creado para modificar perfil
-      // Mostrar un toast en lugar de una alerta
-      toast.success("Perfil editado correctamente", {
-        position: "top-right",
-        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        progress: undefined,
-    });
-      setIsEditing(false); // Volver a la vista de perfil
-    } catch (error) {
-      toast.error("Hubo un error al actualizar el perfil");
-    }
-  };
-*/
 
 // Estado para almacenar el perfil antes de editar
 const [perfilBackup, setPerfilBackup] = useState(null);

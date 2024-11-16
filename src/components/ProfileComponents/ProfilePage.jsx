@@ -1,19 +1,19 @@
 import React from "react";
-import Sidebar from './Sidebar';
-import {RoomiesFavList} from './RoomieFavList';
-import '../App.css'
+import Sidebar from '../NavComponents/Sidebar';
+import Profile from "./Profile";
 
 
-const FavProfile = () =>{
+
+const PageProfile = () =>{
     return(
         <div className="flex-direction-column">
             {/* Sidebar ocupa 1/4 del ancho */}
             <Sidebar/>
             {/* Profile ocupa 3/4 del ancho */}
-            <RoomiesFavList />
+            <Profile />
         </div>
     )
 }
 
-export default FavProfile;
+export default PageProfile;
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { RoomieCard } from "./RoomieCard";
-import intereses from "./Const/intereses";
-import preferences from "./Const/preferences";
+import { RoomieCard } from "../RoomieComponents/RoomieCard";
+import intereses from "../Const/intereses";
+import preferences from "../Const/preferences";
 
 export function RoomiesFavList() {
     const [favoriteUsers, setFavoriteUsers] = useState([]);
