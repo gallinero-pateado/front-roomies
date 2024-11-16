@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-export function RoomieCard({ userName, biografia, ubicacion, id, correo, intereses, preferencias, carrera, genero }) {
+export function RoomieCard({ ID, Nombres, Apellidos, Correo, Biografia, Genero, Ano_ingreso, Intereses, Preferencias, Carrera }) {
 
     // Obtener el estado inicial de favoritos del localStorage
     const [isFav, setIsFav] = useState(() => {
         const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-        return favorites.includes(id);
+        return favorites.includes(ID);
     });
 
     const handleClick = () => {
@@ -15,9 +15,9 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
             // Actualizar el localStorage
             const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
             if (newIsFav) {
-                favorites.push(id);
+                favorites.push(ID);
             } else {
-                const index = favorites.indexOf(id);
+                const index = favorites.indexOf(ID);
                 if (index > -1) {
                     favorites.splice(index, 1);
                 }
@@ -119,10 +119,10 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
         
         const userMessague = 
             { 
-                id: id,//aca va la id del roomie
+                id: ID,//aca va la id del roomie
                 emisor:"Sebastian Poblete",//en la unificacion, aca el nombre o la id del usuario logeado
-                receptor: userName,
-                correo: correo,
+                receptor: Nombres + Apellidos,
+                correo: Correo,
                 fechaEnvio: formattedDateTime,
                 asunto: subject,
                 mensaje: message,
@@ -150,11 +150,11 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
     return (
         <article className="bg-white shadow-md rounded-lg p-4 min-w-[900px]">
             <header className="flex items-center mb-4">
-                <img className="w-16 h-16 rounded-full mr-4" src="src/img-prueba.jpeg" alt={`${userName} perfil`} />
+                <img className="w-16 h-16 rounded-full mr-4" src="src/img-prueba.jpeg" alt={`${Nombres} perfil`} />
                 <div>
-                    <strong>{userName}</strong>
-                    <p>{biografia}</p>
-                    <span className="text-sm text-gray-500">Ubicación: {ubicacion}</span>
+                    <strong>{Nombres} {Apellidos}</strong>
+                    <p>{Biografia}</p>
+                    <span className="text-sm text-gray-500">Ubicación: ubicacion</span>
                 </div>
             </header>
 
@@ -176,37 +176,37 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
                         <div className="flex items-center gap-6 mb-4">
                             <img src="" alt="imagen de perfil" className="rounded-full w-16 h-16" />
                             <div className="flex flex-col">
-                                <h1 className="font-bold text-2xl">{userName}</h1>
-                                <p className="text-gray-500 text-2sm">{correo}</p>
+                                <h1 className="font-bold text-2xl">{Nombres} {Apellidos}</h1>
+                                <p className="text-gray-500 text-2sm">{Correo}</p>
                             </div>
                         </div>
 
                         <div className="flex flex-w mb-4 text-center">
                             <div className="w-1/3">
                                 <h2 className="font-bold text-md">Genero</h2>
-                                <p className="text-md">{genero}</p>
+                                <p className="text-md">{Genero}</p>
                             </div>
                             <div className="w-1/3">
                                 <h2 className="font-bold text-md">Carrera</h2>
-                                <p className="text-md">{carrera}</p>
+                                <p className="text-md">{Carrera}</p>
                             </div>
                             <div className="w-1/3">
                                 <h2 className="font-bold text-md">Año de ingreso</h2>
-                                <p className="text-md">2021</p>
+                                <p className="text-md">{Ano_ingreso}</p>
                             </div>
                             
                         </div>
 
                         <div className="mb-4">
                             <h2 className="font-bold text-md">Biografía:</h2>
-                            <p className="text-md text-justify">{biografia}</p>
+                            <p className="text-md text-justify">{Biografia}</p>
                         </div>
 
                         <div className="flex gap-4 mb-4">
                             <div className="w-1/2">
                                 <h2 className="font-bold text-md">Intereses:</h2>
                                 <div className="grid grid-cols-2 gap-2">
-                                    {intereses.map((interes, index) => (
+                                    {Intereses.map((interes, index) => (
                                         <p key={index} className="text-sm bg-[#0092BC] text-white px-2 py-1 rounded-full">
                                             {interes}
                                         </p>
@@ -217,7 +217,7 @@ export function RoomieCard({ userName, biografia, ubicacion, id, correo, interes
                             <div className="w-1/2">
                                 <h2 className="font-bold text-md">Preferencias:</h2>
                                 <div className="grid grid-cols-2 gap-2">
-                                    {preferencias.map((preferencia, index) => (
+                                    {Preferencias.map((preferencia, index) => (
                                         <p key={index} className="text-sm bg-[#0092BC] text-white px-2 py-1 rounded-full">
                                             {preferencia}
                                         </p>
