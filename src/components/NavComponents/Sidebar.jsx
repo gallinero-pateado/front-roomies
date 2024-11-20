@@ -1,35 +1,51 @@
-import { useState } from 'react';
 import React from 'react';
-import { Link } from 'react-router-dom'; // Usamos Link para navegar
+import { NavLink } from 'react-router-dom'; // Usamos NavLink para estilos dinámicos
 
-
-
-const Sidebar = () =>{
-
-    return(
-
-        <aside className="bg-[#0092BC] rounded-lg p-5 h-[450px] w-[250px] text-center float-left">
-        <div className="miperfil-sidebar">
-            <img src="src\img-prueba.jpeg" alt="Foto de perfil" className="rounded-full max-w-[40%] h-auto"/>{/*hacer lo mismo que con el nombre*/ }
-            
-        </div>
-        <section className="pt-7 text-xl">
-            <ul className='list-none'>
-                <li className='pb-4 font-bold text-left'>
-                    <Link to="/profile" className="text-black hover:text-white">Perfil</Link>
-                </li>
-                <li className='pb-4 font-bold text-left'>
-                    <Link to="/fav" className="text-black hover:text-white">Favoritos</Link>
-                </li>
-                <li className='pb-4 font-bold text-left'>
-                    <Link to="/my-messages" className="text-black hover:text-white">Mensajes</Link>
-                </li>
-
-            </ul>
-    </section>
+const Sidebar = () => {
+  return (
+    <aside className="bg-[#0092BC] rounded-lg p-5 h-[450px] w-[250px] text-center float-left">
+      <section className="pt-7 text-xl">
+        <ul className="list-none">
+          <li className="pb-4 font-bold text-left">
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                isActive
+                  ? 'text-white border-l-4 border-white pl-2'
+                  : 'text-[#1D4157] hover:text-white'
+              }
+            >
+              Perfil
+            </NavLink>
+          </li>
+          <li className="pb-4 font-bold text-left">
+            <NavLink
+              to="/fav"
+              className={({ isActive }) =>
+                isActive
+                  ? 'text-white border-l-4 border-white pl-2'
+                  : 'text-[#1D4157] hover:text-white'
+              }
+            >
+              Favoritos
+            </NavLink>
+          </li>
+          <li className="pb-4 font-bold text-left">
+            <NavLink
+              to="/my-messages"
+              className={({ isActive }) =>
+                isActive
+                  ? 'text-white border-l-4 border-white pl-2'
+                  : 'text-[#1D4157] hover:text-white'
+              }
+            >
+              Mensajes
+            </NavLink>
+          </li>
+        </ul>
+      </section>
     </aside>
-    )
-
-}
+  );
+};
 
 export default Sidebar;

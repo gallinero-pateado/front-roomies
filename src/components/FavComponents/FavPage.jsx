@@ -3,6 +3,7 @@ import Sidebar from '../NavComponents/Sidebar';
 import {RoomiesFavList} from './RoomieFavList';
 
 
+
 const FavProfile = () =>{
     return(
         <div className="flex-direction-column">
