@@ -1,16 +1,16 @@
 Ultimas actualizaciones:
 
-se creo la interfaz para enviar mensajes a un roomie, esta opcion aparece al apretar en ver perfil en cada uno de los roomies.
+Se conectarom todos los componentes que encesitan del back
 
-Se pueden ver los emnsajes enviados y recibidos
-
-el mensaje cambia de color si es leido
+Se dejaron 2 id en el primer componente que se muestra, una para probar todo con un usuario ya registrado como roomie, y otra con un usuario sin registrar
 
 Falta:
 
-- probar todo el fornt con los usuarios de prueba creados en la bd
+Optimizar corectamente el front, por alguna razon algunas peticiones se hacen mas de una vez, lo que genera que el back se caiga aveces, al correr el back, asegurarse que este tenga el codigo para liberar las peticiones, esto arregla un poco ese problema
 
-- conectar correctamente todo el front con el back
+-Alguna que otra correccion en el diseño de la pagina
+
+Si bien todas las funcionalidades estan operativas, algunas se caen por lo ya explicado, lo que hace que al momento de probar sea tedioso
 
 Procediiento para trabajar con este repo:
 clonar el repositorio

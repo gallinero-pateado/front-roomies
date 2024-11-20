@@ -3,36 +3,53 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import intereses from '../Const/intereses'
 import preferencias from '../Const/preferences'
-
+import comunas from '../Const/comunas'
 
 const RegisterRoomie = () => {
+  const [user, setUser]= useState({});
   const [formData, setFormData] = useState({
     //Datos referenciados al perfil de roomie
     Genero: '',
     Biografia: '',
     Intereses: '',
     Preferencias: '',
+    Ubicacion: '',
   });
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
+   //obtener uid del lcoalstorague, una vez inciciada la sesion, este se ocupa realmente
+    //const uid = localStorage.getItem('uid');
+
+    //uid para probar
+    const uid = "Ef9gVyieFkRMzrEdKGrHdxzKF3x1"//usuario con perfil roomie creado
+    //const uid = "JeFI5s1L3qNvZuYXNtdR61skPW02"//usuario con perfil roomie sin crear
+
   useEffect(()=>{
-
-    //obtener el uid  del usuario
-    const id = 202 // id para probar con usuario de la bd, en proyecto final esta se obtendra al iniciar sesion y traer por localstorage
-
     const checkRoomieProfile = async()=>{
       try{
-          const response = await axios.get(`http://localhost:8080/Usuario/${id}`,{
-            
-          });
+
+         // Verificar que el id y el authToken estén disponibles, descomentar una vez este conectado con el login y entrege estos datos
+        /*if (!uid || !localStorage.getItem('authToken')) {
+          console.log('Falta id o authToken');
+          return;
+        }*/
+          const response = await axios.get(`http://localhost:8080/Usuario/${uid}`);
+          setUser(response.data);
+
+        // Verificar si el perfil del roomie existe
+          const userId = response.data.Id;
+          const roomie = await axios.get(`http://localhost:8080/UsuarioRoomie/${userId}`)
+         
          
           //redirigue si existe el perfil de roomie
-          if(response.data.Nombres){
-            console.log(response);
-            //navigate('/profile');
+          if(roomie.data){
+            localStorage.setItem('roomieId',userId);
+            localStorage.setItem('uid',uid);// esto eliminar en la version final, ya que se supone que el uid ya estaba en localStorage
+            console.log(roomie);
+            
+            navigate('profile');
           }
 
       }catch(error){
@@ -72,33 +89,49 @@ const RegisterRoomie = () => {
         error.Genero = 'Debe seleccionar un género válido.';
     }
 
+
+
+    
+
     setError(error);
     // Si no hay errores, devuelve true, de lo contrario false
     return Object.keys(error).length === 0;
 };
 
 
+//enviar la informacion a la bd
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if(validateForm()){
+      try{
 
-      //const profileFormData = {
-        
-    //};
-      console.log('Register attempt with:', formData);
+        const profileFormData = {
+          Id: user.Id,
+          genero: formData.Genero,
+          biografia: formData.Biografia,
+          intereses: formData.Intereses,
+          preferencias: formData.Preferencias,
+          ubicacion: formData.Ubicacion,
+        };
+        //crea el roomie
+        await axios.post(`http://localhost:8080/UsuarioRoomie`,profileFormData,{
+      
+          
+        })
 
-    
-
-    
-    navigate('/profile');
-
+        console.log('Register attempt with:', formData);
+        window.alert("Se ha registrado como roomie correctamente!")
+        localStorage.setItem('roomieId',user.Id);
+        navigate('/profile');
+      }catch(error){
+        console.error('Error al crear el Roomie o actualizar el Usuario:', error);
+        alert('Hubo un error al crear el perfil de roomie. Intenta nuevamente.');
+      }
     }
     else{
       alert('Por favor, Complete todos los campos antes de enviar el formulario.');
     }
-
-    
   };
 
   
@@ -132,26 +165,20 @@ const togglePrefrerences = (preference) => {
 
 // Confirmar los intereses seleccionados y cerrar el modal
 const confirmInterests = () => {
-  setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
-  const updatedProfile = { ...formData, Intereses: tempSelectedInterests };
+  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
+  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
+  const updatedProfile = { ...formData, Intereses: interestsString }; // Guarda como string en formData
   setFormData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile));
-
-
   setIsModalOpen(false);
 };
 
+
 // Confirmar los preferencias seleccionados y cerrar el modal
 const confirmPreferences = () => {
-  setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
-  const updatedProfile = { ...formData, Preferencias: tempSelectedPreferences };
+  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
+  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
+  const updatedProfile = { ...formData, Preferencias: preferencesString }; // Guarda como string en formData
   setFormData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile))
-
   setIsModalOpenP(false);
 };
 
@@ -175,11 +202,6 @@ const closeModal = () => {
 const closeModalP = () => {
   setIsModalOpenP(false);
 };
-
-
-
-
-
 
   return (
     <div className="min-h-screen  flex items-center justify-center  ">
@@ -251,7 +273,7 @@ const closeModalP = () => {
             Seleccionar Preferencias
           </button>
 
-          {/* Mostrar intereses confirmados debajo */}
+          {/* Mostrar preferencias confirmados debajo */}
           {confirmedPreferences.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
@@ -288,8 +310,30 @@ const closeModalP = () => {
           </select>
           {error.Genero && <p style={{ color: 'red' }}>{error.Genero}</p>}
         </div>
+
+           {/*Ubicacion*/}
+        <div className="mb-6">
+
+          <label htmlFor="Ubicacion">Ubicacion: </label>
+          <select
+            className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+            name="Ubicacion"
+            value={formData.Ubicacion}
+            onChange={handleChange}
+            disabled={comunas.value === ''} 
+          >
+            {comunas.map((comuna)=>(
+                <option key={comuna.value} value={comuna.value}>
+                  {comuna.label} 
+                </option>
+              ))}
+          </select>
+          {error.Comuna && <p style={{ color: 'red' }}>{error.Comuna}</p>}
+        </div>
+
+
         <div className="flex justify-center mb-8">
-          <button
+          <button type="submit"
             className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
           >
             Finalizar
