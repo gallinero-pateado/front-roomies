@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RoomieFavCard } from "../RoomiesComponents/RoomieFavCard";
+import { RoomieFavCard } from '../RoomieComponents/RoomieFavCard';
 import axios from "axios";
 
 

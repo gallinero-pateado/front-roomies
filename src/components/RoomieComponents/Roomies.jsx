@@ -112,23 +112,29 @@ export function RoomiesList() {
             
             {filteredUsers.map((user) => (
                 <div className="mb-4">
-                <RoomieCard
-                    key={user.Id}
-                    ID={user.Id}
-                    Roomie={user.Usuario_Roomie.Id}
-                    Correo={user.Correo}
-                    Nombres={user.Nombres}
-                    Apellidos={user.Apellidos}
-                    Id_carrera={user.NombreCarrera}
-                    Ano_Ingreso={user.Ano_Ingreso}
-                    Foto_perfil= {user.Foto_perfil}
-                    Genero={user.Usuario_Roomie.Genero}
-                    Biografia={user.Usuario_Roomie.Biografia}
-                    Intereses = {user.Usuario_Roomie.Intereses.split(",").map(interes => interes.trim())}
-                    Preferencias = {user.Usuario_Roomie.Preferencias.split(",").map(interes => interes.trim())}
-                    Ubicacion = {user.Usuario_Roomie.Ubicacion}
-                    favoritos = {favorites}
-                />
+                  { user.Id !== id ?(
+                       <RoomieCard
+                       key={user.Id}
+                       ID={user.Id}
+                       Roomie={user.Usuario_Roomie.Id}
+                       Correo={user.Correo}
+                       Nombres={user.Nombres}
+                       Apellidos={user.Apellidos}
+                       Id_carrera={user.NombreCarrera}
+                       Ano_Ingreso={user.Ano_Ingreso}
+                       Foto_perfil= {user.Foto_perfil}
+                       Genero={user.Usuario_Roomie.Genero}
+                       Biografia={user.Usuario_Roomie.Biografia}
+                       Intereses = {user.Usuario_Roomie.Intereses.split(",").map(interes => interes.trim())}
+                       Preferencias = {user.Usuario_Roomie.Preferencias.split(",").map(interes => interes.trim())}
+                       Ubicacion = {user.Usuario_Roomie.Ubicacion}
+                       favoritos = {favorites}
+                   />
+
+                  ) : (
+                    <></>
+                  )}
+             
                 </div>
             ))}
                 

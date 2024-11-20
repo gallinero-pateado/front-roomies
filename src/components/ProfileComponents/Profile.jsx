@@ -69,6 +69,12 @@ const Profile= () => {
     return data ? data.label: "Carrera no encontrada";
 };
 
+//obtener el id de la carrera
+const getId = (nombre)=>{
+  const data = carreras.find(c => c.label === nombre);
+  return data ? data.value: "Carrera no encontrada";
+};
+
   // Función para manejar los cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,7 +102,7 @@ const Profile= () => {
         Correo: profileData.Apellidos,
         Fecha_Nacimiento: profileData.Fecha_Nacimiento,
         Ano_Ingreso: profileData.Ano_Ingreso,
-        Id_Carrera:profileData.Id_Carrera,
+        Id_Carrera:parseInt(getId(profileData.NombreCarrera)),
       };
   
       
@@ -130,6 +136,7 @@ const Profile= () => {
         Biografia: roomieData.Biografia,
         Intereses: roomieData.Intereses,
         Preferencias: roomieData.Preferencias,
+        Ubicacion: roomieData.Ubicacion,
       }
       
       //actualizar info de roomie
@@ -343,9 +350,9 @@ return (
             <h3 className="font-bold text-lg mb-1">Universidad:</h3>
             <p className="text-lg">Universidad Tecnologica Metropolitana</p>
 
-            <label htmlFor="Id_carrera" className="font-bold text-lg py-2">Carrera</label>
+            <label htmlFor="Id_Carrera" className="font-bold text-lg py-2">Carrera</label>
             <select  className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-            name="Id_carrera" id="Id_carrera" value={profileData.NombreCarrera} onChange={handleChange} >
+            name="Id_Carrera" id="Id_Carrera" value={profileData.Id_Carrera} onChange={handleChange} >
               {carreras.map((carreraa)=>(
                 <option key={carreraa.value} value={carreraa.value}>
                   {carreraa.label} 
@@ -398,11 +405,11 @@ return (
           </button>
 
           {/* Mostrar intereses confirmados debajo */}
-          {confirmedInterests.length > 0 && (
+          {intereses.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Intereses seleccionados:</h3>
               <div className="flex flex-wrap gap-4">
-                {confirmedInterests.map((Intereses) => (
+                {intereses.map((Intereses) => (
                   <span
                     key={Intereses}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -428,11 +435,11 @@ return (
           </button>
 
           {/* Mostrar preferencias confirmados debajo */}
-          {confirmedPreferences.length > 0 && (
+          {preferencias.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
               <div className="flex flex-wrap gap-4">
-                {confirmedPreferences.map((Preferencias) => (
+                {preferencias.map((Preferencias) => (
                   <span
                     key={Preferencias}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
