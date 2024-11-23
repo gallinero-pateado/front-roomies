@@ -1,4 +1,3 @@
-// src/components/ReportComponents/ReportList.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -8,7 +7,7 @@ const ReportList = ({ userId }) => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/reports/${userId}`);
+        const response = await axios.get(`http://localhost:8080/Reportes/Enviados/${userId}`);
         setReports(response.data);
       } catch (error) {
         console.error('Error al obtener los reportes', error);
@@ -25,10 +24,10 @@ const ReportList = ({ userId }) => {
       ) : (
         <ul>
           {reports.map((report) => (
-            <li key={report.id} className="mb-4 p-4 border border-gray-300 rounded">
-              <p><strong>Motivo:</strong> {report.reason}</p>
-              <p><strong>Descripción:</strong> {report.description}</p>
-              <p><strong>Estado:</strong> {report.status}</p>
+            <li key={report.ID} className="mb-4 p-4 border border-gray-300 rounded">
+              <p><strong>Motivo:</strong> {report.Motivo}</p>
+              <p><strong>Descripción:</strong> {report.Descripcion}</p>
+              <p><strong>Estado:</strong> {report.Estado}</p>
             </li>
           ))}
         </ul>

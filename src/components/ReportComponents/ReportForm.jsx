@@ -1,4 +1,3 @@
-// src/components/ReportComponents/ReportForm.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -10,11 +9,11 @@ const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
     e.preventDefault();
     try {
       await axios.post('http://localhost:8080/Reportes', {
-        reportedUserId,
-        reportingUserId,
-        reason,
-        description,
-        status: 'pending'
+        UsuarioReportadoID: reportedUserId,
+        UsuarioReportanteID: reportingUserId,
+        Motivo: reason,
+        Descripcion: description,
+        Estado: 'Pendiente'
       });
       onClose();
     } catch (error) {
