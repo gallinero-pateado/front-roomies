@@ -6,6 +6,7 @@ import carreras from '../Const/carreras';
 import Intereses from '../Const/intereses'
 import Preferencias from '../Const/preferences'
 import comunas from '../Const/comunas';
+import ReportForm from '../ReportComponents/ReportForm'
 
 
 const Profile= () => {
@@ -15,6 +16,7 @@ const Profile= () => {
   const [roomieData, setRoomieData] = useState({})
   const [intereses, setIntereses] = useState([]);
   const [preferencias, setPreferencias] = useState([]);
+  const [isReportFormOpen, setIsReportFormOpen] = useState(false)
 
   
     //obtener uid del lcoalstorague,
@@ -278,6 +280,14 @@ const toggleEdit = () => {
 };
 
 
+const openReportForm = () => {
+  setIsReportFormOpen(true);
+};
+
+const closeReportForm = () => {
+  setIsReportFormOpen(false);
+};
+
 
 return (
 <aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
@@ -457,6 +467,25 @@ return (
         
       </form>
     ) : (
+      <div>
+          {/* Mostrar datos del perfil */}
+          <h2 className="font-bold text-lg mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
+          <p className="text-gray-500">{profileData.Correo}</p>
+          <button
+            onClick={openReportForm}
+            className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+          >
+            Reportar Usuario
+          </button>
+          {isReportFormOpen && (
+            <ReportForm
+              reportedUserId={profileData.Id}
+              reportingUserId={localStorage.getItem('uid')}
+              onClose={closeReportForm}
+            />
+          )}
+        </div>
+    )} (
       <div >
         {/*Si isEditing es false, se mostrara la vista de perfil*/ }
           
@@ -560,7 +589,7 @@ return (
       </div>
 
       
-    )}
+    )
 
     {/* Modal para seleccionar intereses */}
     {isModalOpen && (
@@ -644,6 +673,8 @@ return (
         </div>
       )}
       </aside>
+
+      
 );
-}
+}; 
 export default Profile;
