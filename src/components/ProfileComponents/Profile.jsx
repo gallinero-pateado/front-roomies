@@ -17,9 +17,9 @@ const Profile= () => {
   const [preferencias, setPreferencias] = useState([]);
 
   
-    //obtener uid del lcoalstorague,
+    //obtener uid del localstorague,
     const uid = localStorage.getItem('uid');
-    const roomieId = localStorage.getItem('roomieId');
+    const roomieId = parseInt(localStorage.getItem('roomieId'));
   
   useEffect(() => {
   

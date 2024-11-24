@@ -23,8 +23,7 @@ const RegisterRoomie = () => {
     //const uid = localStorage.getItem('uid');
 
     //uid para probar
-    const uid = "Ef9gVyieFkRMzrEdKGrHdxzKF3x1"//usuario con perfil roomie creado
-    //const uid = "JeFI5s1L3qNvZuYXNtdR61skPW02"//usuario con perfil roomie sin crear
+    const uid = "G5BvmpulyqhCefrNgtRMlg5tw5Y2"//usuario con perfil roomie sin crear
 
   useEffect(()=>{
     const checkRoomieProfile = async()=>{
@@ -136,6 +135,7 @@ const RegisterRoomie = () => {
 
   
 
+
 //modal para manejar las etiquetas de int y pref
 const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
 const [isModalOpenP, setIsModalOpenP] = useState(false); // Estado para controlar el modal
@@ -165,20 +165,26 @@ const togglePrefrerences = (preference) => {
 
 // Confirmar los intereses seleccionados y cerrar el modal
 const confirmInterests = () => {
-  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
-  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
-  const updatedProfile = { ...formData, Intereses: interestsString }; // Guarda como string en formData
+  setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
+  const updatedProfile = { ...formData, Intereses: tempSelectedInterests };
   setFormData(updatedProfile);
+
+  // Guardar los datos actualizados en localStorage
+  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile));
+
+
   setIsModalOpen(false);
 };
 
-
 // Confirmar los preferencias seleccionados y cerrar el modal
 const confirmPreferences = () => {
-  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
-  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
-  const updatedProfile = { ...formData, Preferencias: preferencesString }; // Guarda como string en formData
+  setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
+  const updatedProfile = { ...formData, Preferencias: tempSelectedPreferences };
   setFormData(updatedProfile);
+
+  // Guardar los datos actualizados en localStorage
+  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile))
+
   setIsModalOpenP(false);
 };
 
