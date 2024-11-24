@@ -1,27 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import intereses from './Const/intereses'
-import preferencias from './Const/preferences'
-
+import axios from 'axios';
+import intereses from '../Const/intereses'
+import preferencias from '../Const/preferences'
+import comunas from '../Const/comunas'
 
 const RegisterRoomie = () => {
+  const [user, setUser]= useState({});
   const [formData, setFormData] = useState({
-    Nombres: 'Sebastian  poblete',
-    Correo: 'spobletec@utem.cl',
-    Fecha_Nacimiento: '09/02/2003',
-    Ano_ingreso: '2021',
-    Universidad: 'Universidad Tecnolgoica Metropolitana',
-    Carrera: 'Ingenieria informatica', // verificar como es este tipo de dato
+    //Datos referenciados al perfil de roomie
     Genero: '',
     Biografia: '',
-    Intereses: [],
-    Preferencias: [],
+    Intereses: '',
+    Preferencias: '',
+    Ubicacion: '',
   });
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
   const navigate = useNavigate();
+
+   //obtener uid del lcoalstorague, una vez inciciada la sesion, este se ocupa realmente
+    //const uid = localStorage.getItem('uid');
+
+    //uid para probar
+    const uid = "Ef9gVyieFkRMzrEdKGrHdxzKF3x1"//usuario con perfil roomie creado
+    //const uid = "JeFI5s1L3qNvZuYXNtdR61skPW02"//usuario con perfil roomie sin crear
+
+  useEffect(()=>{
+    const checkRoomieProfile = async()=>{
+      try{
+
+         // Verificar que el id y el authToken estén disponibles, descomentar una vez este conectado con el login y entrege estos datos
+        /*if (!uid || !localStorage.getItem('authToken')) {
+          console.log('Falta id o authToken');
+          return;
+        }*/
+          const response = await axios.get(`http://localhost:8080/Usuario/${uid}`);
+          setUser(response.data);
+
+        // Verificar si el perfil del roomie existe
+          const userId = response.data.Id;
+          const roomie = await axios.get(`http://localhost:8080/UsuarioRoomie/${userId}`)
+         
+         
+          //redirigue si existe el perfil de roomie
+          if(roomie.data){
+            localStorage.setItem('roomieId',userId);
+            localStorage.setItem('uid',uid);// esto eliminar en la version final, ya que se supone que el uid ya estaba en localStorage
+            console.log(roomie);
+            
+            navigate('profile');
+          }
+
+      }catch(error){
+        console.error('Error al verificar la completación del perfil:', error);
+      }
+    }
+
+    checkRoomieProfile();
+  },[navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,59 +89,49 @@ const RegisterRoomie = () => {
         error.Genero = 'Debe seleccionar un género válido.';
     }
 
+
+
+    
+
     setError(error);
     // Si no hay errores, devuelve true, de lo contrario false
     return Object.keys(error).length === 0;
 };
 
 
+//enviar la informacion a la bd
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    
     if(validateForm()){
-      console.log('Register attempt with:', formData);
+      try{
 
-    /*Registro utilizando localStorage*/
-    // Guardar los datos en localStorage
-    localStorage.setItem('roomieProfile', JSON.stringify(formData));
-
-    // Aquí iría la lógica de registro
-    /* agregar el metodo post para crear el usuario como roomie*/
-    /*try {
-      // Aquí debes ajustar la URL a la ruta de tu API que maneje el registro
-      const response = await fetch('/api/C_Usuario_Roomie', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error al registrar el usuario'); // Lanza un error si la respuesta no es exitosa
-      }
-  
-      const data = await response.json(); // Aquí puedes obtener datos adicionales del servidor
-  
-      console.log('Registro exitoso:', data);
-      setSuccess('Registro exitoso');
+        const profileFormData = {
+          Id: user.Id,
+          genero: formData.Genero,
+          biografia: formData.Biografia,
+          intereses: formData.Intereses,
+          preferencias: formData.Preferencias,
+          ubicacion: formData.Ubicacion,
+        };
+        //crea el roomie
+        await axios.post(`http://localhost:8080/UsuarioRoomie`,profileFormData,{
       
-      // Redirigir al perfil de roomie
-      navigate('/profile');
-    } catch (error) {
-      console.error('Error en el registro:', error);
-      setError('Error en el registro. Por favor, intenta de nuevo.'); // Mostrar el error
-    } */
-    // Despues de terminar el registro, redirigir al perfil de roomie
-    navigate('/profile');
+          
+        })
 
+        console.log('Register attempt with:', formData);
+        window.alert("Se ha registrado como roomie correctamente!")
+        localStorage.setItem('roomieId',user.Id);
+        navigate('/profile');
+      }catch(error){
+        console.error('Error al crear el Roomie o actualizar el Usuario:', error);
+        alert('Hubo un error al crear el perfil de roomie. Intenta nuevamente.');
+      }
     }
     else{
       alert('Por favor, Complete todos los campos antes de enviar el formulario.');
     }
-
-    
   };
 
   
@@ -138,26 +165,20 @@ const togglePrefrerences = (preference) => {
 
 // Confirmar los intereses seleccionados y cerrar el modal
 const confirmInterests = () => {
-  setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
-  const updatedProfile = { ...formData, Intereses: tempSelectedInterests };
+  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
+  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
+  const updatedProfile = { ...formData, Intereses: interestsString }; // Guarda como string en formData
   setFormData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile));
-
-
   setIsModalOpen(false);
 };
 
+
 // Confirmar los preferencias seleccionados y cerrar el modal
 const confirmPreferences = () => {
-  setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
-  const updatedProfile = { ...formData, Preferencias: tempSelectedPreferences };
+  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
+  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
+  const updatedProfile = { ...formData, Preferencias: preferencesString }; // Guarda como string en formData
   setFormData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile))
-
   setIsModalOpenP(false);
 };
 
@@ -182,11 +203,6 @@ const closeModalP = () => {
   setIsModalOpenP(false);
 };
 
-
-
-
-
-
   return (
     <div className="min-h-screen  flex items-center justify-center  ">
       <form onSubmit={handleSubmit} className="bg-white shadow-2xl rounded-3xl px-10 pt-10 pb-12 mb-4 w-full max-w-3xl">
@@ -194,8 +210,6 @@ const closeModalP = () => {
           <h2 className="text-5xl font-bold mb-12 text-[#0092BC] text-center">Perfil Roomie</h2>
           <span className="text-lg  mb-8 text-center"> Termina de completar tu perfil para buscar un roomie</span>
         </div>
-
-
         {/* Biografia */}
         <div className="mb-6">
 
@@ -259,7 +273,7 @@ const closeModalP = () => {
             Seleccionar Preferencias
           </button>
 
-          {/* Mostrar intereses confirmados debajo */}
+          {/* Mostrar preferencias confirmados debajo */}
           {confirmedPreferences.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
@@ -296,8 +310,30 @@ const closeModalP = () => {
           </select>
           {error.Genero && <p style={{ color: 'red' }}>{error.Genero}</p>}
         </div>
+
+           {/*Ubicacion*/}
+        <div className="mb-6">
+
+          <label htmlFor="Ubicacion">Ubicacion: </label>
+          <select
+            className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+            name="Ubicacion"
+            value={formData.Ubicacion}
+            onChange={handleChange}
+            disabled={comunas.value === ''} 
+          >
+            {comunas.map((comuna)=>(
+                <option key={comuna.value} value={comuna.value}>
+                  {comuna.label} 
+                </option>
+              ))}
+          </select>
+          {error.Comuna && <p style={{ color: 'red' }}>{error.Comuna}</p>}
+        </div>
+
+
         <div className="flex justify-center mb-8">
-          <button
+          <button type="submit"
             className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-4 px-8 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
           >
             Finalizar

@@ -2,52 +2,78 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';//
 import 'react-toastify/dist/ReactToastify.css';
-import carreras from './Const/carreras';
-import intereses from './Const/intereses'
-import preferencias from './Const/preferences'
+import carreras from '../Const/carreras';
+import Intereses from '../Const/intereses'
+import Preferencias from '../Const/preferences'
+import comunas from '../Const/comunas';
 
 
-//se le pasa la id de roomie como prop, para luego trabajar con este usuario
-const Profile= ({id}) => {
-
-
-//DATOS DE PRUEBA utilizando localStorage, en la version final deben ser eliminados  
-  // Estado para los datos del perfil, con datos de pruebas
-  const [profileData, setProfileData] = useState({
+const Profile= () => {
  
-    Genero: '',
-    Biografia:'',
-    Intereses: [],
-    Preferencias:[],
-  });
+  // Estado para los datos del perfil
+  const [profileData, setProfileData] = useState({});
+  const [roomieData, setRoomieData] = useState({})
+  const [intereses, setIntereses] = useState([]);
+  const [preferencias, setPreferencias] = useState([]);
 
-  useEffect(() => {
-    // Obtener los datos almacenados en localStorage
-    const storedProfile = localStorage.getItem('roomieProfile');
-    if (storedProfile) {
-      const parsedProfile = JSON.parse(storedProfile);
   
-      // Verificar que Intereses y Preferencias sean arrays, en caso contrario inicializar como arrays vacíos
-      setProfileData({
-        ...parsedProfile,
-      });
-    }
-  }, []);
-
-  /*
-  // Cargar los datos del perfil desde la API al montar el componente
+    //obtener uid del lcoalstorague,
+    const uid = localStorage.getItem('uid');
+    const roomieId = localStorage.getItem('roomieId');
+  
   useEffect(() => {
-    const obtenerPerfil = async () => {
-      try {
-        const response = await axios.get(`/api/R_usuario_roomie}`); // Cambiar la URL según tu API
-        setProfileData(response.data);
-      } catch (error) {
-        toast.error("Error al cargar los datos del perfil");
+  
+    const fecthProfile = async()=>{
+      try{
+        //obtener los datos del usuario
+        const userResponse = await axios.get(`http://localhost:8080/Usuario/${uid}`);
+        const data = userResponse.data;
+  
+        const finalData = {
+          ...data,
+          NombreCarrera : getCarrera(data.Id_carrera)
+        }
+        console.log(finalData);
+
+        setProfileData(finalData)
+
+        console.log(userResponse.data)
+      }catch(error){
+        console.error("Error al obtener los datos del perfil",error)
       }
-    };
-    obtenerPerfil();
-  }, [id]);*/ 
-  
+    }
+
+    const fetchRoomie = async()=>{
+      try{
+        const roomieResponse = await axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`);
+
+        const interesesArray = roomieResponse.data.Intereses.split(',');// Convertir el campo 'intereses' a un array
+        const preferencesArray = roomieResponse.data.Preferencias.split(',');// Convertir el campo 'preferencias' a un array
+        setRoomieData(roomieResponse.data);
+
+        // Agregar el array de intereses al estado 
+        setIntereses(interesesArray);
+        setPreferencias(preferencesArray);
+    }catch(error){
+      console.error("Error al obtener perfil de roomie",error);
+    }
+    }
+
+    fecthProfile();
+    fetchRoomie();
+  },[uid,roomieId]);
+
+  //obtener el nmobre de la carrera
+  const getCarrera = (Id_carrera)=>{
+    const data = carreras.find(c => c.value === Id_carrera);
+    return data ? data.label: "Carrera no encontrada";
+};
+
+//obtener el id de la carrera
+const getId = (nombre)=>{
+  const data = carreras.find(c => c.label === nombre);
+  return data ? data.value: "Carrera no encontrada";
+};
 
   // Función para manejar los cambios en los campos del formulario
   const handleChange = (e) => {
@@ -56,43 +82,98 @@ const Profile= ({id}) => {
       ...profileData, // Crea una copia del estado actual del perfil
       [name]: value, // Actualiza el campo correspondiente
     });
-    
+    setRoomieData({
+      ...roomieData,
+      [name]:value,
+    });
   };
 
   
 
   // Función para manejar el envío del formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsEditing(false); // Cambia a modo vista después de guardar
+  const handleSubmit = async(e) => {
+    e.preventDefault();  
+    let i = 0;//contador para los errores
+    try{
 
-    
-    localStorage.setItem('roomieProfile', JSON.stringify(profileData));
+      const userData = {
+        Nombres: profileData.Nombres,
+        Apellidos: profileData.Apellidos,
+        Correo: profileData.Apellidos,
+        Fecha_Nacimiento: profileData.Fecha_Nacimiento,
+        Ano_Ingreso: profileData.Ano_Ingreso,
+        Id_Carrera:parseInt(getId(profileData.NombreCarrera)),
+      };
+  
+      
+      //actualizar info del perfil
+      await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData,{
+        headers:{
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
 
-    // Mostrar un toast en lugar de una alerta
-    toast.success("Perfil editado correctamente", {
+      
+    }catch(error){
+      console.error("Error al editar el perfil",error);
+      i +=1;
+      toast.error("Error al editar el perfil",{
         position: "top-right",
         autoClose: 1000,  // El toast desaparecerá después de 1 segundos
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
         progress: undefined,
-    });
-    /*Editar el usuario roomie
-    try {
-      await axios.put(`/api/U_Usuario_Roomie); // 
-      toast.success("Perfil editado correctamente", {
+      });
+    }
+
+    try{
+      
+      //Actualizar datos como roomie
+      const newroomieData = {
+        Genero: roomieData.Genero,
+        Biografia: roomieData.Biografia,
+        Intereses: roomieData.Intereses,
+        Preferencias: roomieData.Preferencias,
+        Ubicacion: roomieData.Ubicacion,
+      }
+      
+      //actualizar info de roomie
+      await axios.put(`http://localhost:8080/UsuarioRoomie/${roomieId}`,newroomieData,{
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      })
+
+      
+    }catch(error){
+      console.error("Error al editar la informacion de roomie",error);
+      i+=1
+      toast.error("Error al editar el perfil",{
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
         progress: undefined,
       });
-      setIsEditing(false); // Volver a la vista de perfil
-    } catch (error) {
-      toast.error("Hubo un error al actualizar el perfil");
-    }*/ 
+    }
+    toggleEdit();
+
+    //si hay 0 errrores, mostrar la confirmacion de la edicion
+    if(i<1){
+      // Mostrar un toast en lugar de una alerta, solo si no hay ningun error
+      toast.success("Perfil editado correctamente", {
+        position: "top-right",
+        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        progress: undefined,
+      });
+    }
   };
 
 //modal para manejar las etiquetas de int y pref
@@ -100,7 +181,7 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar 
 const [isModalOpenP, setIsModalOpenP] = useState(false); // Estado para controlar el modal
 const [tempSelectedInterests, setTempSelectedInterests] = useState([]); // Estado temporal para los intereses seleccionados
 const [tempSelectedPreferences, setTempSelectedPreferences] = useState([]); // Estado temporal para los preferencias seleccionados
-const [confirmedInterest, setConfirmedInterests] = useState([]); // Estado para los intereses confirmados
+const [confirmedInterests, setConfirmedInterests] = useState([]); // Estado para los intereses confirmados
 const [confirmedPreferences, setConfirmedPreferences] = useState([]); // Estado para los preferencias confirmados
 
  // Manejar los intereses temporales en el modal
@@ -124,103 +205,51 @@ const togglePrefrerences = (preference) => {
 
 // Confirmar los intereses seleccionados y cerrar el modal
 const confirmInterests = () => {
-  setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
-  const updatedProfile = { ...profileData, Intereses: tempSelectedInterests };
-  setProfileData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile));
-
-
+  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
+  console.log(interestsString);
+  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
+  setRoomieData(prevUser =>({
+    ...prevUser, 
+    Intereses : interestsString
+  }))
   setIsModalOpen(false);
 };
 
+
 // Confirmar los preferencias seleccionados y cerrar el modal
 const confirmPreferences = () => {
-  setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
-  const updatedProfile = { ...profileData, Preferencias: tempSelectedPreferences };
-  setProfileData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile))
-
+  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
+  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
+  setProfileData(prevUser =>({
+    ...prevUser, //
+    Preferencias: preferencesString
+  }));
   setIsModalOpenP(false);
 };
 
 
 // Abrir el modal
 const openModal = () => {
-  setTempSelectedInterests(profileData.Intereses); // Cargar los intereses actuales al modal
+  setTempSelectedInterests(intereses); // Cargar los intereses actuales al modal
   setIsModalOpen(true);
 };
 
 const openModalPref = () => {
-  setTempSelectedPreferences(profileData.Preferencias); // Cargar los intereses actuales al modal
+  setTempSelectedPreferences(preferencias); // Cargar los intereses actuales al modal
   setIsModalOpenP(true);
 };
 
+
 // Cerrar el modal
 const closeModal = () => {
+  setIntereses(confirmedInterests)
   setIsModalOpen(false);
 };
 
 const closeModalP = () => {
+  setPreferencias(confirmedPreferences)
   setIsModalOpenP(false);
 };
-/*
-ESTA ES LA VERSION QUE SE CONECTA A LA BD, DESCOMENTAR UNA VEZ QUE SE PROBARON LOS DATOS DE PRUEBA Y SE TENGAN LOS ENDPOINT YA DESAROLLADOS
-ADEMAS DE LA CONECCION CON LA BD, SI HAY ALGUN CAMPO DE MAS O FALTA ALGUNO, O EL TIPO DE DATO ES INCORRECTO, FAVOR DE AVISAR PARA REALIZAR
-EL CAMBIO CORRESPONDIENTE
-
- 
-
- 
-
-  // Función para cargar los datos del perfil desde la API
-  useEffect(() => {
-    const obtenerPerfil = async () => {
-      try {
-        const response = await axios.get('/api/profiles/${id}'); // Ajustar la URL según el endpoint real creado para obtener perfil
-        setPerfil(response.data);
-      } catch (error) {
-        toast.error("Error al cargar los datos del perfil");// toast como notificiacion de error
-      }
-    };
-    obtenerPerfil();
-  }, []);
-
-  
-
-  // Manejar el cambio en los inputs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPerfil((prevPerfil) => ({
-      ...prevPerfil,
-      [name]: value,
-    }));
-  };
-
-  // enviar los cambios a la API, se debe borrar el handlesubmit no comentado
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await axios.put('/api/profiles/&{id}', perfil); // Ajusta la URL segun endopint creado para modificar perfil
-      // Mostrar un toast en lugar de una alerta
-      toast.success("Perfil editado correctamente", {
-        position: "top-right",
-        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        progress: undefined,
-    });
-      setIsEditing(false); // Volver a la vista de perfil
-    } catch (error) {
-      toast.error("Hubo un error al actualizar el perfil");
-    }
-  };
-*/
 
 // Estado para almacenar el perfil antes de editar
 const [perfilBackup, setPerfilBackup] = useState(null);
@@ -251,7 +280,7 @@ const toggleEdit = () => {
 
 
 return (
-  <aside class="mx-auto p-4 bg-white rounded-lg shadow-lg  max-w-3xl ml-72 ">
+<aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
   <ToastContainer />
   {/*si isEditing es true, mostrara el formulario*/ }
     {isEditing ? (
@@ -259,21 +288,11 @@ return (
         <div className="flex items-center gap-8 ">
           <img src="src\img-prueba.jpeg" alt="imagen de perfil" className="rounded-full w-52 h-52" />
           <div className="flex flex-col">
-            <input
-              name="Nombres"
-              type="text"
-              id="Nombres"
-              maxLength={20}
-              
-              value={profileData.Nombres}
-              onChange={handleChange}
-              className="font-bold bg-transparent text-2xl border-none"
-            />
+            <h2 className="font-bold text-lg mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
             <p className="text-gray-500">{profileData.Correo}</p>
           </div>
-          <button
+          <button type="submit"
           className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
-          onClick={toggleEdit}
         >
           Confirmar
           {console.log(profileData)}
@@ -297,7 +316,7 @@ return (
             <select
               className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
               name="Genero"
-              value={profileData.Genero}
+              value={roomieData.Genero}
               onChange={handleChange}
             >
               
@@ -307,16 +326,33 @@ return (
               <option value=" Prefiero no decir">Prefiero no decir</option>
             </select>
 
+            <label htmlFor="Ubicacion" className="font-bold text-lg py-2">Ubicacion: </label>
+            <select
+              className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+              name="Ubicacion"
+              value={roomieData.Ubicacion}
+              onChange={handleChange}
+              disabled={comunas.value === ''} 
+            >
+              {comunas.map((comuna)=>(
+                <option key={comuna.value} value={comuna.value}>
+                  {comuna.label} 
+                </option>
+              ))}
+              
+              
+            </select>
+
           </section>
 
           <section className="w-1/2">
             <h2 className="font-bold mb-2">Información académica</h2>
             <h3 className="font-bold text-lg mb-1">Universidad:</h3>
-            <p className="text-lg">{profileData.Universidad}</p>
+            <p className="text-lg">Universidad Tecnologica Metropolitana</p>
 
-            <label htmlFor="Carrera" className="font-bold text-lg py-2">Carrera</label>
+            <label htmlFor="Id_Carrera" className="font-bold text-lg py-2">Carrera</label>
             <select  className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-            name="Carrera" id="Carrera" value={profileData.Carrera} onChange={handleChange} >
+            name="Id_Carrera" id="Id_Carrera" value={profileData.Id_Carrera} onChange={handleChange} >
               {carreras.map((carreraa)=>(
                 <option key={carreraa.value} value={carreraa.value}>
                   {carreraa.label} 
@@ -325,14 +361,14 @@ return (
             </select>
             
 
-            <label htmlFor="Ano_ingreso" className="font-bold text-lg py-2">Año de ingreso</label>
+            <label htmlFor="Ano_Ingreso" className="font-bold text-lg py-2">Año de ingreso</label>
             <input
-              name="Ano_ingreso"
+              name="Ano_Ingreso"
               type="number"
-              id="Ano_ingreso"
+              id="Ano_Ingreso"
               min="1900"
               max={new Date().getFullYear()}
-              value={profileData.Ano_ingreso}
+              value={profileData.Ano_Ingreso}
               onChange={handleChange}
               className="w-full p-2 rounded border border-gray-300"
             />
@@ -348,7 +384,7 @@ return (
               rows="7"
               cols="50"
               maxLength={400}
-              value={profileData.Biografia}
+              value={roomieData.Biografia}
               onChange={handleChange}
               className="bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max"
               
@@ -358,36 +394,37 @@ return (
           <div className="flex justify-between gap-5">
             
           {/* Intereses */}
-          <div className="w-1/2 mb-10">
-            <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
-            <button
+       <div className="mb-10">
+          <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
+          <button
             type="button"
             onClick={openModal}
             className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-            >
+          >
             Seleccionar Intereses
-            </button>
+          </button>
 
           {/* Mostrar intereses confirmados debajo */}
-          {profileData.Intereses.length > 0 &&  (
-                <div className="mt-4 ">
-                  <div className="grid grid-cols-2 gap-2">
-                    {profileData.Intereses.map((interes) =>(
-                      <span
-                        key={interes}
-                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                      >
-                        {interes}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-          </div>
+          {intereses.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-black font-bold mb-2">Intereses seleccionados:</h3>
+              <div className="flex flex-wrap gap-4">
+                {intereses.map((Intereses) => (
+                  <span
+                    key={Intereses}
+                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                  >
+                    {Intereses}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
+        </div>
 
-            {/* preferncias */}
-       <div className="w-1/2 mb-10">
+        {/* preferncias */}
+       <div className="mb-10">
           <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
           <button
             type="button"
@@ -397,35 +434,36 @@ return (
             Seleccionar Preferencias
           </button>
 
-          {/* Mostrar intereses confirmados debajo */}
-          {profileData.Preferencias.length > 0 && (
-                <div className="mt-4 ">
-                  <div className="grid grid-cols-2 gap-2">
-                  {profileData.Preferencias.map((preferencia) => (
+          {/* Mostrar preferencias confirmados debajo */}
+          {preferencias.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
+              <div className="flex flex-wrap gap-4">
+                {preferencias.map((Preferencias) => (
                   <span
-                    key={preferencia}
+                    key={Preferencias}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
                   >
-                    {preferencia}
+                    {Preferencias}
                   </span>
                 ))}
               </div>
             </div>
           )}
-            </div>
+        </div>
           </div>
         </div>
 
         
       </form>
     ) : (
-      <div>
+      <div >
         {/*Si isEditing es false, se mostrara la vista de perfil*/ }
           
         <div className="flex items-center gap-8 ">
           <img src="src\img-prueba.jpeg" alt="Imagen de perfil" className='rounded-full w-52 h-52'/>
           <div className="flex flex-col">
-            <h2 className="font-bold text-lg mb-1">{profileData.Nombres}</h2>
+            <h2 className="font-bold text-xl mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
             <p className="text-gray-500">{profileData.Correo}</p>
           </div>
           
@@ -439,50 +477,47 @@ return (
 
         <div className="flex justify-between py-5">
           <section className="w-1/2">
-          <h2 className='font-bold text-lg mb-2'>Información Personal</h2>
-          <h3 className="font-bold text-lg mb-1" >Fecha de nacimiento:</h3>
+          <h2 className='font-bold text-lg mb-4'>Información Personal</h2>
+          <h3 className="font-bold text-lg mb-2" >Fecha de nacimiento:</h3>
           <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
 
-          <h3 className="font-bold text-lg mb-1">Género:</h3>
-          <p className="text-lg" >{profileData.Genero}</p>
+          <h3 className="font-bold text-lg mb-3">Género:</h3>
+          <p className="text-lg" >{roomieData.Genero}</p>
+
+          <h3 className="font-bold text-lg mb-3">Ubicacion:</h3>
+          <p className="text-lg" >{roomieData.Ubicacion}</p>
           </section>
 
           <section className="w-1/2">
-            <h2 className='font-bold text-lg mb-2'>Información académica</h2>
-            <h3 className="font-bold text-lg mb-1">Universidad:</h3>
-            <p className="text-lg">{profileData.Universidad}</p>
+            <h2 className='font-bold text-lg mb-4'>Información académica</h2>
+            <h3 className="font-bold text-lg mb-3">Universidad:</h3>
+            <p className="text-lg">Universidad Tecnologica Metropolitana</p>
 
-            <h3 className="font-bold text-lg mb-1">Carrera:</h3>
-            <p className="text-lg">{profileData.Carrera}</p>
+            <h3 className="font-bold text-lg mb-4">Carrera:</h3>
+            <p className="text-lg">{profileData.NombreCarrera}</p>
 
-            <h3 className="font-bold text-lg mb-1">Año de ingreso:</h3>
-            <p className="text-lg">{profileData.Ano_ingreso}</p>
+            <h3 className="font-bold text-lg mb-4">Año de ingreso:</h3>
+            <p className="text-lg">{profileData.Ano_Ingreso}</p>
           </section>
         </div>
 
         <div className="pt-5">
           <div className="Biografia">
             <h2 className='font-bold text-lg mb-2'>Biografía</h2>
-            <p className="break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]">{profileData.Biografia}</p>
+            <p className="break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]">{roomieData.Biografia}</p>
           </div>
           
           <div className="flex justify-between gap-5">
             {/* Intereses */}
           <div className="w-1/2 mb-10">
             <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
-            <button
-            type="button"
-            onClick={openModal}
-            className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-            >
-            Seleccionar Intereses
-            </button>
+            
 
           {/* Mostrar intereses confirmados debajo */}
-          {profileData.Intereses.length > 0 &&  (
+          {intereses.length > 0 &&  (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                    {profileData.Intereses.map((interes) =>(
+                    {intereses.map((interes) =>(
                       <span
                         key={interes}
                         className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -497,22 +532,16 @@ return (
               
             
 
-            {/* preferncias */}
+            { /*preferncias*/ }
        <div className="w-1/2 mb-10">
           <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
-          <button
-            type="button"
-            onClick={openModalPref}
-            className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-          >
-            Seleccionar Preferencias
-          </button>
+          
 
           {/* Mostrar intereses confirmados debajo */}
-          {profileData.Preferencias.length > 0 && (
+          {preferencias.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                  {profileData.Preferencias.map((preferencia) => (
+                  {preferencias.map((preferencia) => (
                   <span
                     key={preferencia}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -539,7 +568,7 @@ return (
           <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
             <h2 className="text-2xl font-bold mb-4">Selecciona tus intereses</h2>
             <div className="grid grid-cols-5 gap-4 ">
-              {intereses.map((interest) => (
+            {Intereses.map((interest) => (
                 <button
                   type="button"
                   key={interest}
@@ -580,7 +609,7 @@ return (
           <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
             <h2 className="text-2xl font-bold mb-4">Selecciona tus preferencias</h2>
             <div className="grid grid-cols-5 gap-4 ">
-              {preferencias.map((preference) => (
+            {Preferencias.map((preference) => (
                 <button
                   type="button"
                   key={preference}
@@ -614,7 +643,7 @@ return (
           </div>
         </div>
       )}
-  </aside>
+      </aside>
 );
 }
 export default Profile;
