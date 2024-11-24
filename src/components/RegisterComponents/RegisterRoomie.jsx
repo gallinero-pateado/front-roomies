@@ -23,7 +23,8 @@ const RegisterRoomie = () => {
     //const uid = localStorage.getItem('uid');
 
     //uid para probar
-    const uid = "G5BvmpulyqhCefrNgtRMlg5tw5Y2"//usuario con perfil roomie sin crear
+    //const uid = "G5BvmpulyqhCefrNgtRMlg5tw5Y2"//usuario con perfil roomie creado
+    const uid = "bqAzV9TdggXjson7uVI6PGHlIx13" //usuario con perfil roomie sin crear
 
   useEffect(()=>{
     const checkRoomieProfile = async()=>{
@@ -104,20 +105,25 @@ const RegisterRoomie = () => {
     
     if(validateForm()){
       try{
-
+        // Datos para crear el roomie
         const profileFormData = {
-          Id: user.Id,
+          Id: user.Id, // ID del usuario que también será el ID del roomie
           genero: formData.Genero,
           biografia: formData.Biografia,
-          intereses: formData.Intereses,
-          preferencias: formData.Preferencias,
+          intereses: formData.Intereses.join(','),
+          preferencias: formData.Preferencias.join(','),
           ubicacion: formData.Ubicacion,
         };
-        //crea el roomie
-        await axios.post(`http://localhost:8080/UsuarioRoomie`,profileFormData,{
-      
-          
-        })
+
+        console.log(profileFormData)
+
+        // Crea el roomie
+        await axios.post(`http://localhost:8080/UsuarioRoomie`, profileFormData)
+
+        // se intento actualziar el usuario con lso datos del roomie, pero manda error desde el back
+
+
+
 
         console.log('Register attempt with:', formData);
         window.alert("Se ha registrado como roomie correctamente!")

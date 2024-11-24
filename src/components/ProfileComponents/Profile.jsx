@@ -110,7 +110,7 @@ const getId = (nombre)=>{
       await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData,{
         headers:{
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          //'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
@@ -134,8 +134,8 @@ const getId = (nombre)=>{
       const newroomieData = {
         Genero: roomieData.Genero,
         Biografia: roomieData.Biografia,
-        Intereses: roomieData.Intereses,
-        Preferencias: roomieData.Preferencias,
+        Intereses: intereses.join(', '),
+        Preferencias: preferencias.join(','),
         Ubicacion: roomieData.Ubicacion,
       }
       
@@ -203,27 +203,19 @@ const togglePrefrerences = (preference) => {
 };
 
 
+
 // Confirmar los intereses seleccionados y cerrar el modal
 const confirmInterests = () => {
-  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
-  console.log(interestsString);
-  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
-  setRoomieData(prevUser =>({
-    ...prevUser, 
-    Intereses : interestsString
-  }))
+  setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
+  setIntereses(tempSelectedInterests);
   setIsModalOpen(false);
 };
 
 
 // Confirmar los preferencias seleccionados y cerrar el modal
 const confirmPreferences = () => {
-  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
-  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
-  setProfileData(prevUser =>({
-    ...prevUser, //
-    Preferencias: preferencesString
-  }));
+  setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
+  setPreferencias(tempSelectedPreferences);
   setIsModalOpenP(false);
 };
 
@@ -307,7 +299,7 @@ return (
         </div>
 
         <div className="flex justify-between py-5">
-          <section className="w-1/2">
+          <section className="w-1/2 flex flex-col pr-10">
             <h2 className='font-bold mb-2'>Información Personal</h2>
             <h3 className="font-bold text-lg mb-1" >Fecha de nacimiento:</h3>
             <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
@@ -345,7 +337,7 @@ return (
 
           </section>
 
-          <section className="w-1/2">
+          <section className="w-1/2 flex flex-col ">
             <h2 className="font-bold mb-2">Información académica</h2>
             <h3 className="font-bold text-lg mb-1">Universidad:</h3>
             <p className="text-lg">Universidad Tecnologica Metropolitana</p>
@@ -478,26 +470,26 @@ return (
         <div className="flex justify-between py-5">
           <section className="w-1/2">
           <h2 className='font-bold text-lg mb-4'>Información Personal</h2>
-          <h3 className="font-bold text-lg mb-2" >Fecha de nacimiento:</h3>
+          <h3 className="font-bold text-lg mb-5" >Fecha de nacimiento:</h3>
           <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
 
-          <h3 className="font-bold text-lg mb-3">Género:</h3>
-          <p className="text-lg" >{roomieData.Genero}</p>
+          <h3 className="font-bold text-lg ">Género:</h3>
+          <p className="text-lg mb-3" >{roomieData.Genero}</p>
 
-          <h3 className="font-bold text-lg mb-3">Ubicacion:</h3>
-          <p className="text-lg" >{roomieData.Ubicacion}</p>
+          <h3 className="font-bold text-lg ">Ubicacion:</h3>
+          <p className="text-lg mb-3" >{roomieData.Ubicacion}</p>
           </section>
 
           <section className="w-1/2">
             <h2 className='font-bold text-lg mb-4'>Información académica</h2>
-            <h3 className="font-bold text-lg mb-3">Universidad:</h3>
-            <p className="text-lg">Universidad Tecnologica Metropolitana</p>
+            <h3 className="font-bold text-lg ">Universidad:</h3>
+            <p className="text-lg mb-3">Universidad Tecnologica Metropolitana</p>
 
-            <h3 className="font-bold text-lg mb-4">Carrera:</h3>
-            <p className="text-lg">{profileData.NombreCarrera}</p>
+            <h3 className="font-bold text-lg">Carrera:</h3>
+            <p className="text-lg mb-3">{profileData.NombreCarrera}</p>
 
-            <h3 className="font-bold text-lg mb-4">Año de ingreso:</h3>
-            <p className="text-lg">{profileData.Ano_Ingreso}</p>
+            <h3 className="font-bold text-lg">Año de ingreso:</h3>
+            <p className="text-lg mb-3">{profileData.Ano_Ingreso}</p>
           </section>
         </div>
 
