@@ -23,8 +23,8 @@ const RegisterRoomie = () => {
     //const uid = localStorage.getItem('uid');
 
     //uid para probar
-    //const uid = "eeBFhdqHkqZIdPXwrKtccu9aMPl2"//usuario con perfil roomie creado
-    const uid = "pBiGl6771kZlhcpgZHqMYb9yzZ53" //usuario con perfil roomie sin crear
+    const uid = "eeBFhdqHkqZIdPXwrKtccu9aMPl2"//usuario con perfil roomie creado
+    //const uid = "pBiGl6771kZlhcpgZHqMYb9yzZ53" //usuario con perfil roomie sin crear
 
   useEffect(()=>{
     const checkRoomieProfile = async()=>{
