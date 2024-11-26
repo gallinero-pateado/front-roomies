@@ -24,10 +24,11 @@ export function RoomiesList() {
                 const response = await axios.get(`http://localhost:8080/UsuariosconRoomie`);
                 const data = response.data;
                 
-                 const finalData = data.map(user=>({
-                    ...user,
-                    NombreCarrera : getCarrera(user.Id_carrera)
-                 }))
+                const finalData = data.filter(user => user.Usuario_Roomie.Id !== 0).map(user => ({
+                  ...user,
+                  NombreCarrera: getCarrera(user.Id_carrera)
+                }));
+              
                 setUsers(finalData)
                 console.log(users);
                 

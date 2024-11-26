@@ -23,8 +23,8 @@ const RegisterRoomie = () => {
     //const uid = localStorage.getItem('uid');
 
     //uid para probar
-    //const uid = "G5BvmpulyqhCefrNgtRMlg5tw5Y2"//usuario con perfil roomie creado
-    const uid = "bqAzV9TdggXjson7uVI6PGHlIx13" //usuario con perfil roomie sin crear
+    //const uid = "eeBFhdqHkqZIdPXwrKtccu9aMPl2"//usuario con perfil roomie creado
+    const uid = "pBiGl6771kZlhcpgZHqMYb9yzZ53" //usuario con perfil roomie sin crear
 
   useEffect(()=>{
     const checkRoomieProfile = async()=>{
@@ -88,10 +88,6 @@ const RegisterRoomie = () => {
     if (!allowedGenders.includes(formData.Genero)) {
         error.Genero = 'Debe seleccionar un género válido.';
     }
-
-
-
-    
 
     setError(error);
     // Si no hay errores, devuelve true, de lo contrario false
