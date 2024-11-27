@@ -1,11 +1,20 @@
 import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import intereses from '../Const/intereses'
 import preferencias from '../Const/preferences'
 import comunas from '../Const/comunas'
 
 const RegisterRoomie = () => {
+
+  const cookieOptions = {
+    expires: 7, // Cookie expires in 7 days
+    secure: window.location.protocol === 'https:', // Only send cookie over HTTPS
+    sameSite: 'Lax', // Provides some CSRF protection while allowing normal navigation
+    path: '/' // Cookie available across the entire site
+};
+
   const [user, setUser]= useState({});
   const [formData, setFormData] = useState({
     //Datos referenciados al perfil de roomie
@@ -19,19 +28,22 @@ const RegisterRoomie = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-   //obtener uid del lcoalstorague, una vez inciciada la sesion, este se ocupa realmente
-    //const uid = localStorage.getItem('uid');
-
-    //uid para probar
-    const uid = "eeBFhdqHkqZIdPXwrKtccu9aMPl2"//usuario con perfil roomie creado
+  
+    //uid para probar, ELIMINAR EN LA VERSION DE PRODUCCION
+    const uid = "G5BvmpulyqhCefrNgtRMlg5tw5Y2"//usuario con perfil roomie creado
     //const uid = "pBiGl6771kZlhcpgZHqMYb9yzZ53" //usuario con perfil roomie sin crear
+
+    //DESCOMENTAR EN EL DEPLOY
+    //const uid = Cookies.get('uid');
+    const authToken = Cookies.get('authToken');
 
   useEffect(()=>{
     const checkRoomieProfile = async()=>{
       try{
 
+
          // Verificar que el id y el authToken estén disponibles, descomentar una vez este conectado con el login y entrege estos datos
-        /*if (!uid || !localStorage.getItem('authToken')) {
+        /*if (!uid || !authToken) {
           console.log('Falta id o authToken');
           return;
         }*/
@@ -42,10 +54,9 @@ const RegisterRoomie = () => {
           const userId = response.data.Id;
           const roomie = await axios.get(`http://localhost:8080/UsuarioRoomie/${userId}`)
          
-         
           //redirigue si existe el perfil de roomie
           if(roomie.data){
-            localStorage.setItem('roomieId',userId);
+            Cookies.set('roomieId', userId, cookieOptions); // Almacenar `roomieId` en cookies si es necesario
             localStorage.setItem('uid',uid);// esto eliminar en la version final, ya que se supone que el uid ya estaba en localStorage
             console.log(roomie);
             
@@ -114,10 +125,15 @@ const RegisterRoomie = () => {
         console.log(profileFormData)
 
         // Crea el roomie
-        await axios.post(`http://localhost:8080/UsuarioRoomie`, profileFormData)
+        await axios.post(`http://localhost:8080/UsuarioRoomie`, profileFormData,{
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+        }
+        })
         console.log('Register attempt with:', formData);
         window.alert("Se ha registrado como roomie correctamente!")
-        localStorage.setItem('roomieId',user.Id);
+        Cookies.set('roomieId', user.Id, cookieOptions);
+        localStorage.setItem('uid',uid);// esto eliminar en la version final, ya que se supone que el uid ya estaba en localStorage
         navigate('/profile');
       }catch(error){
         console.error('Error al crear el Roomie o actualizar el Usuario:', error);

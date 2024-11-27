@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { toast, ToastContainer } from 'react-toastify';//
 import 'react-toastify/dist/ReactToastify.css';
 import carreras from '../Const/carreras';
 import Intereses from '../Const/intereses'
 import Preferencias from '../Const/preferences'
 import comunas from '../Const/comunas';
+import Notification from '../NotificationComponents/Notifications'
 
 
 const Profile= () => {
@@ -17,9 +19,15 @@ const Profile= () => {
   const [pref, setPreferencias] = useState([]);
 
   
-    //obtener uid del localstorague,
+    //obtener uid del localstorague, para pruebas fuera de login
     const uid = localStorage.getItem('uid');
-    const roomieId = parseInt(localStorage.getItem('roomieId'));
+
+    //DESCOMENTAR EN VERSION FINAL
+    //const uid = Cookies.get('uid');
+    
+
+    const roomieId = Cookies.get('roomieId');
+    const authToken = Cookies.get('authToken');
   
     useEffect(() => {
       const fetchData = async () => {
@@ -100,7 +108,7 @@ const getId = (nombre)=>{
       await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData,{
         headers:{
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${authToken}`
         }
       });
 
@@ -133,7 +141,7 @@ const getId = (nombre)=>{
       await axios.put(`http://localhost:8080/UsuarioRoomie/${roomieId}`,newroomieData,{
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${authToken}`
         }
       })
 
@@ -270,6 +278,7 @@ const toggleEdit = () => {
 
 return (
 <aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
+  <Notification/>
   <ToastContainer />
   {/*si isEditing es true, mostrara el formulario*/ }
     {isEditing ? (

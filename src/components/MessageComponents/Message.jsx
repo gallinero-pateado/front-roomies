@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from 'js-cookie';
 import MessagueCard from './messagueCard';
 
 const Message = () => {
@@ -7,7 +8,9 @@ const Message = () => {
     const [enviados, setEnviados] = useState([]);
     const [page, setPage] = useState('true'); //true recibidos, false enviados
     
-    const id = localStorage.getItem('roomieId');
+
+  
+    const id = parseInt(Cookies.get('roomieId'));
 
     useEffect(()=>{
 
@@ -64,6 +67,7 @@ const Message = () => {
                     Asunto = {message.Asunto}
                     Contenido = {message.Contenido}
                     FechaHoraEnvio = {message.FechaHoraEnvio}
+                    Estado= {message.Estado}
                 />
                 ))}
                 </>
@@ -78,6 +82,7 @@ const Message = () => {
                         Asunto = {message.Asunto}
                         Contenido = {message.Contenido}
                         FechaHoraEnvio = {message.FechaHoraEnvio}
+                        Estado={message.Estado}
                     />
                 ))}
                 </>
