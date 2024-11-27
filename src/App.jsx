@@ -24,7 +24,7 @@ function App() {
     <Route path="/" element={<Layout />}>
         <Route path="/" element={<Navigate to="/main" replace />} />
         <Route path="/register" element={<RegisterRoomie />} />
-        <Route  index element={<ReportForm/>} />
+        <Route  index element={<Layout/>} />
     </Route>
 
   
