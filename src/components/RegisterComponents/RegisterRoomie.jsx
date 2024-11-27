@@ -115,12 +115,6 @@ const RegisterRoomie = () => {
 
         // Crea el roomie
         await axios.post(`http://localhost:8080/UsuarioRoomie`, profileFormData)
-
-        // se intento actualziar el usuario con lso datos del roomie, pero manda error desde el back
-
-
-
-
         console.log('Register attempt with:', formData);
         window.alert("Se ha registrado como roomie correctamente!")
         localStorage.setItem('roomieId',user.Id);
@@ -171,10 +165,6 @@ const confirmInterests = () => {
   const updatedProfile = { ...formData, Intereses: tempSelectedInterests };
   setFormData(updatedProfile);
 
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile));
-
-
   setIsModalOpen(false);
 };
 
@@ -183,9 +173,6 @@ const confirmPreferences = () => {
   setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
   const updatedProfile = { ...formData, Preferencias: tempSelectedPreferences };
   setFormData(updatedProfile);
-
-  // Guardar los datos actualizados en localStorage
-  localStorage.setItem('roomieProfile', JSON.stringify(updatedProfile))
 
   setIsModalOpenP(false);
 };

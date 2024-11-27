@@ -13,55 +13,45 @@ const Profile= () => {
   // Estado para los datos del perfil
   const [profileData, setProfileData] = useState({});
   const [roomieData, setRoomieData] = useState({})
-  const [intereses, setIntereses] = useState([]);
-  const [preferencias, setPreferencias] = useState([]);
+  const [inte, setIntereses] = useState([]);
+  const [pref, setPreferencias] = useState([]);
 
   
     //obtener uid del localstorague,
     const uid = localStorage.getItem('uid');
     const roomieId = parseInt(localStorage.getItem('roomieId'));
   
-  useEffect(() => {
-  
-    const fecthProfile = async()=>{
-      try{
-        //obtener los datos del usuario
-        const userResponse = await axios.get(`http://localhost:8080/Usuario/${uid}`);
-        const data = userResponse.data;
-  
-        const finalData = {
-          ...data,
-          NombreCarrera : getCarrera(data.Id_carrera)
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const [userResponse, roomieResponse] = await Promise.all([
+            axios.get(`http://localhost:8080/Usuario/${uid}`),
+            axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`)
+          ]);
+    
+          const userData = userResponse.data;
+          const finalProfileData = {
+            ...userData,
+            NombreCarrera: getCarrera(userData.Id_carrera),
+          };
+    
+          const roomieData = roomieResponse.data;
+          const interesesArray = roomieData.Intereses.split(',');
+          const preferencesArray = roomieData.Preferencias.split(',');
+    
+          // Actualizar los estados
+          setProfileData(finalProfileData);
+          setRoomieData(roomieData);
+          setIntereses(interesesArray);
+          setPreferencias(preferencesArray);
+        } catch (error) {
+          console.error("Error al obtener los datos", error);
         }
-        console.log(finalData);
-
-        setProfileData(finalData)
-
-        console.log(userResponse.data)
-      }catch(error){
-        console.error("Error al obtener los datos del perfil",error)
-      }
-    }
-
-    const fetchRoomie = async()=>{
-      try{
-        const roomieResponse = await axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`);
-
-        const interesesArray = roomieResponse.data.Intereses.split(',');// Convertir el campo 'intereses' a un array
-        const preferencesArray = roomieResponse.data.Preferencias.split(',');// Convertir el campo 'preferencias' a un array
-        setRoomieData(roomieResponse.data);
-
-        // Agregar el array de intereses al estado 
-        setIntereses(interesesArray);
-        setPreferencias(preferencesArray);
-    }catch(error){
-      console.error("Error al obtener perfil de roomie",error);
-    }
-    }
-
-    fecthProfile();
-    fetchRoomie();
-  },[uid,roomieId]);
+      };
+    
+      fetchData();
+    }, [uid, roomieId]);
+    
 
   //obtener el nmobre de la carrera
   const getCarrera = (Id_carrera)=>{
@@ -110,7 +100,7 @@ const getId = (nombre)=>{
       await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData,{
         headers:{
           'Content-Type': 'application/json',
-          //'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
@@ -134,8 +124,8 @@ const getId = (nombre)=>{
       const newroomieData = {
         Genero: roomieData.Genero,
         Biografia: roomieData.Biografia,
-        Intereses: intereses.join(', '),
-        Preferencias: preferencias.join(','),
+        Intereses: inte.join(','),
+        Preferencias: pref.join(','),
         Ubicacion: roomieData.Ubicacion,
       }
       
@@ -222,12 +212,12 @@ const confirmPreferences = () => {
 
 // Abrir el modal
 const openModal = () => {
-  setTempSelectedInterests(intereses); // Cargar los intereses actuales al modal
+  setTempSelectedInterests(inte); // Cargar los intereses actuales al modal
   setIsModalOpen(true);
 };
 
 const openModalPref = () => {
-  setTempSelectedPreferences(preferencias); // Cargar los intereses actuales al modal
+  setTempSelectedPreferences(pref); // Cargar los intereses actuales al modal
   setIsModalOpenP(true);
 };
 
@@ -245,6 +235,7 @@ const closeModalP = () => {
 
 // Estado para almacenar el perfil antes de editar
 const [perfilBackup, setPerfilBackup] = useState(null);
+const [roomieBackup, setRoomieBackup] = useState(null);
 
 // Estado para controlar la vista de formulario/perfil
 const [isEditing, setIsEditing] = useState(false);
@@ -253,8 +244,10 @@ const [isEditing, setIsEditing] = useState(false);
 const toggleEdit = () => {
   if (!isEditing) {
     setPerfilBackup(profileData); // Guarda una copia del perfil antes de editar
+    setRoomieBackup(roomieData)
   } else {
     setPerfilBackup(null); // Restablece el backup si se cancela la edición
+    setRoomieBackup(null)
   }
   setIsEditing(!isEditing); // Cambia entre vista y edición
 };
@@ -265,6 +258,10 @@ const toggleEdit = () => {
   e.preventDefault();
   if (perfilBackup) {
     setProfileData(perfilBackup); // Restaurar el perfil a su estado antes de editar
+  }
+
+  if (roomieBackup){
+    setRoomieBackup(roomieBackup); //
   }
   setIsEditing(false); // Volver a la vista del perfil
 };
@@ -397,11 +394,11 @@ return (
           </button>
 
           {/* Mostrar intereses confirmados debajo */}
-          {intereses.length > 0 && (
+          {inte.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Intereses seleccionados:</h3>
               <div className="flex flex-wrap gap-4">
-                {intereses.map((Intereses) => (
+                {inte.map((Intereses) => (
                   <span
                     key={Intereses}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -427,11 +424,11 @@ return (
           </button>
 
           {/* Mostrar preferencias confirmados debajo */}
-          {preferencias.length > 0 && (
+          {pref.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
               <div className="flex flex-wrap gap-4">
-                {preferencias.map((Preferencias) => (
+                {pref.map((Preferencias) => (
                   <span
                     key={Preferencias}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -506,17 +503,17 @@ return (
             
 
           {/* Mostrar intereses confirmados debajo */}
-          {intereses.length > 0 &&  (
+          {inte.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                    {intereses.map((interes) =>(
-                      <span
-                        key={interes}
-                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                      >
-                        {interes}
-                      </span>
-                    ))}
+                  {inte.map((intereses) => (
+                  <span
+                    key={intereses}
+                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                  >
+                    {intereses}
+                  </span>
+                ))}
                   </div>
                 </div>
               )}
@@ -530,10 +527,10 @@ return (
           
 
           {/* Mostrar intereses confirmados debajo */}
-          {preferencias.length > 0 && (
+          {pref.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                  {preferencias.map((preferencia) => (
+                  {pref.map((preferencia) => (
                   <span
                     key={preferencia}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
