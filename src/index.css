@@ -15,13 +15,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+body.light {
+  background-color: #f0f4f8;
+  color: #000;
+}
 
 body.dark {
   background-color: #1a202c;
-  color: #a0aec0;
-}
-
-body.light {
-  background-color: #f7fafc;
-  color: #2d3748;
+  color: #fff;
 }

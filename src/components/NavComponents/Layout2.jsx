@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { Outlet, useLocation, NavLink } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
+import DarkModeToggle from '../DarkModeToggle';
 
 const Layout2 = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const location = useLocation(); // Para conocer la ruta actual
 
   // Verifica si la ruta actual pertenece a alguna sección del Sidebar
@@ -48,9 +49,7 @@ const Layout2 = () => {
             >
               Volver
             </NavLink>
-            <button onClick={toggleTheme} className="bg-gray-800 text-white px-4 py-2 rounded">
-              {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
-            </button>
+            <DarkModeToggle />
           </div>
         </div>
       </header>

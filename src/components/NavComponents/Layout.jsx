@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
+import DarkModeToggle from '../DarkModeToggle';
 
 const Layout = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   return (
     <div className={`flex flex-col min-h-screen font-ubuntu ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-[#DAEDF2] text-black'}`}>
@@ -11,9 +12,7 @@ const Layout = () => {
       <header className="bg-[#0092BC] text-white p-6">
         <div className="flex justify-between items-center mx-auto">
           <h1 className="text-5xl font-bold italic">ULINK</h1>
-          <button onClick={toggleTheme} className="bg-gray-800 text-white px-4 py-2 rounded">
-            {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
-          </button>
+          <DarkModeToggle />
         </div>
       </header>
 
