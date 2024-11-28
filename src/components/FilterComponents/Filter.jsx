@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import comunas from '../Const/comunas';
 import intereses from '../Const/intereses';
 import preferencias from '../Const/preferences';
 import carreras from '../Const/carreras';
+import { ThemeContext } from "../../context/ThemeContext";
+import themeStyles from "../Const/themes"
 
 const Filter = ({ onFilter }) => {
+
+  const { theme } = useContext(ThemeContext);
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
+
   const [selectedComuna, setSelectedComuna] = useState('');
   const [selectedIntereses, setSelectedIntereses] = useState([]);
   const [selectedPreferencias, setSelectedPreferencias] = useState([]);
@@ -43,17 +49,16 @@ const Filter = ({ onFilter }) => {
     setSelectedIntereses('');
     setSelectedPreferencias('');
   };
-
   return (
-    <div className="w-64 bg-white border border-gray-200 rounded-lg p-4 shadow-md">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">Filtrar Roomies</h2>
+    <div className={`${styles.card}  w-64  ${styles.inputBorder} rounded-lg p-4 shadow-md`}>
+      <h2 className={`${styles.text} text-xl font-semibold mb-4 `}>Filtrar Roomies</h2>
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-600">Comuna:</label>
+        <label className={`${styles.text} block text-md `}>Comuna:</label>
         <select
           value={selectedComuna}
           onChange={handleComunaChange}
-          className="w-full mt-1 p-2 border border-gray-300 rounded "
+          className={`${styles.inputText} w-full mt-1 p-2 border border-gray-300 rounded `}
         >
           {comunas.map((comuna, index) => (
             <option key={`comuna-${index}`} value={comuna.value}>
@@ -82,7 +87,7 @@ const Filter = ({ onFilter }) => {
                   onChange={handleInteresesChange}
                   className="mr-2"
                 />
-                <span className="text-sm text-gray-700">{interes}</span>
+                <span className={`${styles.text} text-md  `}>{interes}</span>
               </div>
             ))}
           </div>
@@ -108,7 +113,7 @@ const Filter = ({ onFilter }) => {
                   onChange={handlePreferenciasChange}
                   className="mr-2"
                 />
-                <span className="text-sm text-gray-700">{preferencia}</span>
+                <span className={`${styles.text} text-md  `}>{preferencia}</span>
               </div>
             ))}
           </div>
@@ -116,11 +121,11 @@ const Filter = ({ onFilter }) => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-600">Carrera:</label>
+        <label className={`${styles.text} block text-md `}>Carrera:</label>
         <select
           value={selectedCarrera}
           onChange={handleCarreraChange}
-          className="w-full mt-1 p-2 border border-gray-300 rounded"
+          className={`${styles.inputText} w-full mt-1 p-2 border border-gray-300 rounded `}
         >
           {carreras.filter(carrera => carrera.value).map((carrera) => (
             <option key={carrera.value} value={carrera.value}>

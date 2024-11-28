@@ -15,7 +15,6 @@ const PageProfile = () => {
       {/* Profile con separación */}
       <div className="w-3/4 h-full px-10  ">
         <Profile />
-        <Notification />
       </div>
     </div>
   );

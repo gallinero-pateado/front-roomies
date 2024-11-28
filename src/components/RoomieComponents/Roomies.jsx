@@ -3,11 +3,15 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { RoomieCard } from "./RoomieCard";
 import carreras from "../Const/carreras";
-import Filter from "../FilterComponents/Filter"; //no entendi como ocuparlo
+import Filter from "../FilterComponents/Filter"; 
+
+
 const apiurl = "https://api-roomies.tssw.info";
 
 export function RoomiesList() {
   // Estado para almacenar los usuarios obtenidos de la base de datos
+
+
   const [users, setUsers] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -102,7 +106,7 @@ export function RoomiesList() {
           placeholder="Buscar usuario..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-4  border-b-4 border-b-[#7B4B94] rounded "
+          className="mb-4 rounded py-2 px-2"
         />
 
         {/*filtro*/}

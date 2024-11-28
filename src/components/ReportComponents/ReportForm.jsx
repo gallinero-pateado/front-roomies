@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
+import themeStyles from "../Const/themes"
 import axios from "axios";
 
 const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
   const [reason, setReason] = useState("");
   const [description, setDescription] = useState("");
+
+  const { theme } = useContext(ThemeContext);
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,10 +25,9 @@ const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
       console.error("Error al enviar el reporte", error);
     }
   };
-
-  return (
+return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg">
+      <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg`}>
         <h2 className="text-2xl font-bold mb-4">Reportar Usuario</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -33,10 +37,10 @@ const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className={`${styles.inputBg} bg-gray-300 shadow  border rounded  py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
               required
             >
-              <option value="">Selecciona un motivo</option>
+              <option value="" disabled>Selecciona un motivo</option>
               <option value="contenido inapropiado">
                 Contenido inapropiado
               </option>
@@ -52,7 +56,7 @@ const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className={`${styles.inputText} bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max`}
               rows="4"
               required
             ></textarea>

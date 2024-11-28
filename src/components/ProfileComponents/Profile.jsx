@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify"; //
@@ -7,26 +7,25 @@ import carreras from "../Const/carreras";
 import Intereses from "../Const/intereses";
 import Preferencias from "../Const/preferences";
 import comunas from "../Const/comunas";
-import Notification from "../NotificationComponents/Notifications";
-import ReportForm from "../ReportComponents/ReportForm";
+import { ThemeContext } from "../../context/ThemeContext";
+import themeStyles from "../Const/themes"
 const apiurl = "https://api-roomies.tssw.info";
 
 const Profile = () => {
+
+  const { theme } = useContext(ThemeContext);
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
+
   // Estado para los datos del perfil
   const [profileData, setProfileData] = useState({});
   const [roomieData, setRoomieData] = useState({});
   const [inte, setIntereses] = useState([]);
   const [pref, setPreferencias] = useState([]);
-  const [isReportFormOpen, setIsReportFormOpen] = useState(false);
 
-  //obtener uid del localstorague, para pruebas fuera de login
-  const uid = localStorage.getItem("uid");
 
-  //DESCOMENTAR EN VERSION FINAL
-  //const uid = Cookies.get('uid');
-
+  const uid = Cookies.get('uid') || undefined;
   const roomieId = Cookies.get("roomieId");
-  const authToken = Cookies.get("authToken");
+  const authToken = Cookies.get("authToken")  || undefined;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -261,29 +260,23 @@ const Profile = () => {
     setIsEditing(false); // Volver a la vista del perfil
   };
 
-  const openReportForm = () => {
-    setIsReportFormOpen(true);
-  };
-
-  const closeReportForm = () => {
-    setIsReportFormOpen(false);
-  };
+ 
 
   return (
-    <aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
-      <Notification />
+    <aside className={`${styles.card} shadow-md rounded-lg p-20 min-w-[900px] f`}  >
+  
       <ToastContainer />
       {/*si isEditing es true, mostrara el formulario*/}
       {isEditing ? (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
           <div className="flex items-center gap-8 ">
             <img
-              src="src\img-prueba.jpeg"
+              src={profileData.img}
               alt="imagen de perfil"
               className="rounded-full w-52 h-52"
             />
             <div className="flex flex-col">
-              <h2 className="font-bold text-lg mb-1">
+              <h2 className={`${styles.text}  font-bold text-lg mb-1`}>
                 {profileData.Nombres} {profileData.Apellidos}
               </h2>
               <p className="text-gray-500">{profileData.Correo}</p>
@@ -302,18 +295,18 @@ const Profile = () => {
               Cancelar
             </button>
           </div>
-
+  
           <div className="flex justify-between py-5">
             <section className="w-1/2 flex flex-col pr-10">
-              <h2 className="font-bold mb-2">Información Personal</h2>
-              <h3 className="font-bold text-lg mb-1">Fecha de nacimiento:</h3>
+              <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información Personal</h2>
+              <h3 className={`${styles.text} font-bold text-lg mb-1`}>Fecha de nacimiento:</h3>
               <p className="text-lg">{profileData.Fecha_Nacimiento}</p>
-
+  
               <label htmlFor="Genero" className="font-bold text-lg py-2">
-                Género:{" "}
+                Género:
               </label>
               <select
-                className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                className={`${styles.inputBg} shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
                 name="Genero"
                 value={roomieData.Genero}
                 onChange={handleChange}
@@ -323,12 +316,12 @@ const Profile = () => {
                 <option value="Otro">Otro</option>
                 <option value=" Prefiero no decir">Prefiero no decir</option>
               </select>
-
+  
               <label htmlFor="Ubicacion" className="font-bold text-lg py-2">
-                Ubicacion:{" "}
+                Ubicacion:
               </label>
               <select
-                className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                className={`${styles.inputBg} shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
                 name="Ubicacion"
                 value={roomieData.Ubicacion}
                 onChange={handleChange}
@@ -341,17 +334,17 @@ const Profile = () => {
                 ))}
               </select>
             </section>
-
+  
             <section className="w-1/2 flex flex-col ">
-              <h2 className="font-bold mb-2">Información académica</h2>
-              <h3 className="font-bold text-lg mb-1">Universidad:</h3>
+              <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información académica</h2>
+              <h3 className={`${styles.text} font-bold text-lg mb-1`}>Universidad:</h3>
               <p className="text-lg">Universidad Tecnologica Metropolitana</p>
-
+  
               <label htmlFor="Id_Carrera" className="font-bold text-lg py-2">
                 Carrera
               </label>
               <select
-                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                className={`${styles.inputBg} shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
                 name="Id_Carrera"
                 id="Id_Carrera"
                 value={profileData.Id_Carrera}
@@ -363,7 +356,7 @@ const Profile = () => {
                   </option>
                 ))}
               </select>
-
+  
               <label htmlFor="Ano_Ingreso" className="font-bold text-lg py-2">
                 Año de ingreso
               </label>
@@ -375,14 +368,15 @@ const Profile = () => {
                 max={new Date().getFullYear()}
                 value={profileData.Ano_Ingreso}
                 onChange={handleChange}
-                className="w-full p-2 rounded border border-gray-300"
+                className={`${styles.inputBg} ${styles.inputText} w-full p-2 rounded border border-gray-300`}
+  
               />
             </section>
           </div>
-
+  
           <div className="pt-5">
             <div className="bio">
-              <label htmlFor="biografia" className="font-bold text-lg py-2">
+              <label htmlFor="biografia" className={`${styles.accent} font-bold text-xl py-2`}>
                 Biografía:
               </label>
               <textarea
@@ -393,10 +387,10 @@ const Profile = () => {
                 maxLength={400}
                 value={roomieData.Biografia}
                 onChange={handleChange}
-                className="bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max"
+                className={`${styles.inputText} bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max`}
               />
             </div>
-
+  
             <div className="flex justify-between gap-5">
               {/* Intereses */}
               <div className="mb-10">
@@ -410,7 +404,7 @@ const Profile = () => {
                 >
                   Seleccionar Intereses
                 </button>
-
+  
                 {/* Mostrar intereses confirmados debajo */}
                 {inte.length > 0 && (
                   <div className="mt-4">
@@ -430,7 +424,7 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-
+  
               {/* preferncias */}
               <div className="mb-10">
                 <label className="block text-[#0092BC] font-bold mb-2">
@@ -443,7 +437,7 @@ const Profile = () => {
                 >
                   Seleccionar Preferencias
                 </button>
-
+  
                 {/* Mostrar preferencias confirmados debajo */}
                 {pref.length > 0 && (
                   <div className="mt-4">
@@ -467,146 +461,118 @@ const Profile = () => {
           </div>
         </form>
       ) : (
-        <div>
-          {/* Mostrar datos del perfil */}
-          <h2 className="font-bold text-lg mb-1">
-            {profileData.Nombres} {profileData.Apellidos}
-          </h2>
-          <p className="text-gray-500">{profileData.Correo}</p>
-          <button
-            onClick={openReportForm}
-            className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-          >
-            Reportar Usuario
-          </button>
-          {isReportFormOpen && (
-            <ReportForm
-              reportedUserId={profileData.Id}
-              reportingUserId={localStorage.getItem("uid")}
-              onClose={closeReportForm}
-            />
-          )}
-        </div>
-      )}{" "}
-      (
-      <div>
-        {/*Si isEditing es false, se mostrara la vista de perfil*/}
-
+        <div >
+        {/*Si isEditing es false, se mostrara la vista de perfil*/ }
+          
         <div className="flex items-center gap-8 ">
-          <img
-            src="src\img-prueba.jpeg"
-            alt="Imagen de perfil"
-            className="rounded-full w-52 h-52"
-          />
+          <img src="src\img-prueba.jpeg" alt="Imagen de perfil" className='rounded-full w-52 h-52'/>
           <div className="flex flex-col">
-            <h2 className="font-bold text-xl mb-1">
-              {profileData.Nombres} {profileData.Apellidos}
-            </h2>
+            <h2 className="font-bold text-xl mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
             <p className="text-gray-500">{profileData.Correo}</p>
           </div>
-
+          
           <button
-            className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
-            onClick={toggleEdit}
-          >
-            Editar
-          </button>
+          className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+          onClick={toggleEdit}
+        >
+          Editar
+        </button>
         </div>
-
+  
         <div className="flex justify-between py-5">
           <section className="w-1/2">
-            <h2 className="font-bold text-lg mb-4">Información Personal</h2>
-            <h3 className="font-bold text-lg mb-5">Fecha de nacimiento:</h3>
-            <p className="text-lg">{profileData.Fecha_Nacimiento}</p>
-
-            <h3 className="font-bold text-lg ">Género:</h3>
-            <p className="text-lg mb-3">{roomieData.Genero}</p>
-
-            <h3 className="font-bold text-lg ">Ubicacion:</h3>
-            <p className="text-lg mb-3">{roomieData.Ubicacion}</p>
+          <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información Personal</h2>
+          <h3 className="font-bold text-lg mb-5" >Fecha de nacimiento:</h3>
+          <p className="text-xl" >{profileData.Fecha_Nacimiento}</p>
+  
+          <h3 className="font-bold text-lg ">Género:</h3>
+          <p className="text-xl mb-3" >{roomieData.Genero}</p>
+  
+          <h3 className="font-bold text-lg ">Ubicacion:</h3>
+          <p className="text-xl mb-3" >{roomieData.Ubicacion}</p>
           </section>
-
+  
           <section className="w-1/2">
-            <h2 className="font-bold text-lg mb-4">Información académica</h2>
+            <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información académica</h2>
             <h3 className="font-bold text-lg ">Universidad:</h3>
-            <p className="text-lg mb-3">
-              Universidad Tecnologica Metropolitana
-            </p>
-
+            <p className="text-xl mb-3">Universidad Tecnologica Metropolitana</p>
+  
             <h3 className="font-bold text-lg">Carrera:</h3>
-            <p className="text-lg mb-3">{profileData.NombreCarrera}</p>
-
+            <p className={`  text-xl mb-3`}>{profileData.NombreCarrera}</p>
+  
             <h3 className="font-bold text-lg">Año de ingreso:</h3>
-            <p className="text-lg mb-3">{profileData.Ano_Ingreso}</p>
+            <p className={`text-xl mb-3`}>{profileData.Ano_Ingreso}</p>
           </section>
         </div>
-
+  
         <div className="pt-5">
           <div className="Biografia">
-            <h2 className="font-bold text-lg mb-2">Biografía</h2>
-            <p className="break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]">
-              {roomieData.Biografia}
-            </p>
+            <h2 className='font-bold text-lg mb-2'>Biografía</h2>
+            <p className={`text-black break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]`}>{roomieData.Biografia}</p>
           </div>
-
+          
           <div className="flex justify-between gap-5">
             {/* Intereses */}
-            <div className="w-1/2 mb-10">
-              <label className="block text-[#0092BC] font-bold mb-2">
-                Intereses
-              </label>
-
-              {/* Mostrar intereses confirmados debajo */}
-              {inte.length > 0 && (
+          <div className="w-1/2 mb-10">
+            <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
+            
+  
+          {/* Mostrar intereses confirmados debajo */}
+          {inte.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                    {inte.map((intereses) => (
-                      <span
-                        key={intereses}
-                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                      >
-                        {intereses}
-                      </span>
-                    ))}
+                  {inte.map((intereses) => (
+                  <span
+                    key={intereses}
+                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                  >
+                    {intereses}
+                  </span>
+                ))}
                   </div>
                 </div>
               )}
-            </div>
-
-            {/*preferncias*/}
-            <div className="w-1/2 mb-10">
-              <label className="block text-[#0092BC] font-bold mb-2">
-                Preferencias
-              </label>
-
-              {/* Mostrar intereses confirmados debajo */}
-              {pref.length > 0 && (
+          </div>
+              
+            
+  
+            { /*preferncias*/ }
+       <div className="w-1/2 mb-10">
+          <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
+          
+  
+          {/* Mostrar intereses confirmados debajo */}
+          {pref.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                    {pref.map((preferencia) => (
-                      <span
-                        key={preferencia}
-                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                      >
-                        {preferencia}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+                  {pref.map((preferencia) => (
+                  <span
+                    key={preferencia}
+                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                  >
+                    {preferencia}
+                  </span>
+                ))}
+              </div>
             </div>
+          )}
+            </div>
+  
+              
           </div>
         </div>
       </div>
-      ){/* Modal para seleccionar intereses */}
-      {isModalOpen && (
+  
+      
+    )}
+  
+    {/* Modal para seleccionar intereses */}
+    {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
-            <h2 className="text-2xl font-bold mb-4">
-              Selecciona tus intereses
-            </h2>
+           <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] `}>
+            <h2 className={`${styles.accent} text-2xl font-bold mb-4"`}>Selecciona tus intereses</h2>
             <div className="grid grid-cols-5 gap-4 ">
-              {Intereses.map((interest) => (
+            {Intereses.map((interest) => (
                 <button
                   type="button"
                   key={interest}
@@ -614,9 +580,11 @@ const Profile = () => {
                   className={` px-4 py-2 rounded-lg ${
                     tempSelectedInterests.includes(interest)
                       ? "bg-[#0092BC] text-white"
-                      : "bg-gray-200 text-black"
+                      : `${styles.btn} text-white`
                   }`}
+                  
                 >
+                  
                   {interest}
                 </button>
               ))}
@@ -638,15 +606,14 @@ const Profile = () => {
           </div>
         </div>
       )}
+  
       {/* Modal para seleccionar preferencias */}
       {isModalOpenP && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
-            <h2 className="text-2xl font-bold mb-4">
-              Selecciona tus preferencias
-            </h2>
+         <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[900px] `}>
+            <h2 className={`${styles.accent} text-2xl font-bold mb-4"`}>Selecciona tus preferencias</h2>
             <div className="grid grid-cols-5 gap-4 ">
-              {Preferencias.map((preference) => (
+            {Preferencias.map((preference) => (
                 <button
                   type="button"
                   key={preference}
@@ -654,9 +621,11 @@ const Profile = () => {
                   className={` px-4 py-2 rounded-lg ${
                     tempSelectedPreferences.includes(preference)
                       ? "bg-[#0092BC] text-white"
-                      : "bg-gray-200 text-black"
+                      : `${styles.btn} text-white`
                   }`}
+                  
                 >
+                  
                   {preference}
                 </button>
               ))}
@@ -680,5 +649,6 @@ const Profile = () => {
       )}
     </aside>
   );
-};
-export default Profile;
+  };
+  export default Profile;
+  
