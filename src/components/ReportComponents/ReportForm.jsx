@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
-  const [reason, setReason] = useState('');
-  const [description, setDescription] = useState('');
+  const [reason, setReason] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/Reportes', {
+      await axios.post("${apiurl}/Reportes", {
         UsuarioReportadoID: reportedUserId,
         UsuarioReportanteID: reportingUserId,
         Motivo: reason,
         Descripcion: description,
-        Estado: 'Pendiente'
+        Estado: "Pendiente",
       });
       onClose();
     } catch (error) {
-      console.error('Error al enviar el reporte', error);
+      console.error("Error al enviar el reporte", error);
     }
   };
 
@@ -27,7 +27,9 @@ const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
         <h2 className="text-2xl font-bold mb-4">Reportar Usuario</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Motivo del reporte:</label>
+            <label className="block text-sm font-bold mb-2">
+              Motivo del reporte:
+            </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -35,14 +37,18 @@ const ReportForm = ({ reportedUserId, reportingUserId, onClose }) => {
               required
             >
               <option value="">Selecciona un motivo</option>
-              <option value="contenido inapropiado">Contenido inapropiado</option>
+              <option value="contenido inapropiado">
+                Contenido inapropiado
+              </option>
               <option value="lenguaje ofensivo">Lenguaje ofensivo</option>
               <option value="spam">Spam</option>
               <option value="acoso">Acoso</option>
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Descripción detallada:</label>
+            <label className="block text-sm font-bold mb-2">
+              Descripción detallada:
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}

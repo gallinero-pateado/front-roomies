@@ -8,6 +8,8 @@ import Intereses from "../Const/intereses";
 import Preferencias from "../Const/preferences";
 import comunas from "../Const/comunas";
 import Notification from "../NotificationComponents/Notifications";
+import ReportForm from "../ReportComponents/ReportForm";
+const apiurl = "https://api-roomies.tssw.info";
 
 const Profile = () => {
   // Estado para los datos del perfil
@@ -15,6 +17,7 @@ const Profile = () => {
   const [roomieData, setRoomieData] = useState({});
   const [inte, setIntereses] = useState([]);
   const [pref, setPreferencias] = useState([]);
+  const [isReportFormOpen, setIsReportFormOpen] = useState(false);
 
   //obtener uid del localstorague, para pruebas fuera de login
   const uid = localStorage.getItem("uid");
@@ -29,8 +32,8 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const [userResponse, roomieResponse] = await Promise.all([
-          axios.get(`http://localhost:8080/Usuario/${uid}`),
-          axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`),
+          axios.get(`${apiurl}/Usuario/${uid}`),
+          axios.get(`${apiurl}/UsuarioRoomie/${roomieId}`),
         ]);
 
         const userData = userResponse.data;
@@ -96,7 +99,7 @@ const Profile = () => {
       };
 
       //actualizar info del perfil
-      await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData, {
+      await axios.put(`${apiurl}/Usuario/${roomieId}`, userData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
@@ -126,16 +129,12 @@ const Profile = () => {
       };
 
       //actualizar info de roomie
-      await axios.put(
-        `http://localhost:8080/UsuarioRoomie/${roomieId}`,
-        newroomieData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      await axios.put(`${apiurl}/UsuarioRoomie/${roomieId}`, newroomieData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
     } catch (error) {
       console.error("Error al editar la informacion de roomie", error);
       i += 1;

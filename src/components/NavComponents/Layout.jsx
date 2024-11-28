@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { Outlet } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import DarkModeToggle from "../DarkModeToggle";
+import Notification from "../Notification";
+const apiurl = "https://api-roomies.tssw.info";
 
 const Layout = () => {
   const { theme } = useContext(ThemeContext);
