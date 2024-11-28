@@ -19,14 +19,10 @@ const Profile = () => {
   const [pref, setPreferencias] = useState([]);
   const [isReportFormOpen, setIsReportFormOpen] = useState(false);
 
-  //obtener uid del localstorague, para pruebas fuera de login
-  const uid = localStorage.getItem("uid");
 
-  //DESCOMENTAR EN VERSION FINAL
-  //const uid = Cookies.get('uid');
-
+  const uid = Cookies.get('uid') || undefined;
   const roomieId = Cookies.get("roomieId");
-  const authToken = Cookies.get("authToken");
+  const authToken = Cookies.get("authToken")  || undefined;
 
   useEffect(() => {
     const fetchData = async () => {

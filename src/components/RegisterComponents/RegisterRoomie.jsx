@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
 import intereses from "../Const/intereses";
 import preferencias from "../Const/preferences";
 import comunas from "../Const/comunas";
+import { ThemeContext } from "../../context/ThemeContext";
+import themeStyles from "../Const/themes"
 const apiurl = "https://api-roomies.tssw.info";
 
 const RegisterRoomie = () => {
@@ -14,6 +16,9 @@ const RegisterRoomie = () => {
     sameSite: "Lax", // Provides some CSRF protection while allowing normal navigation
     path: "/", // Cookie available across the entire site
   };
+
+  const { theme } = useContext(ThemeContext);
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
 
   const [user, setUser] = useState({});
   const [formData, setFormData] = useState({
@@ -28,22 +33,17 @@ const RegisterRoomie = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  //uid para probar, ELIMINAR EN LA VERSION DE PRODUCCION
-  const uid = "kXToOX3IhYcspG5mcrziTvQIG4h1"; //usuario con perfil roomie creado
-  //const uid = "pBiGl6771kZlhcpgZHqMYb9yzZ53" //usuario con perfil roomie sin crear
-
-  //DESCOMENTAR EN EL DEPLOY
-  //const uid = Cookies.get('uid');
+  const uid = Cookies.get('uid');
   const authToken = Cookies.get("authToken");
 
   useEffect(() => {
     const checkRoomieProfile = async () => {
       try {
-        // Verificar que el id y el authToken estén disponibles, descomentar una vez este conectado con el login y entrege estos datos
-        /*if (!uid || !authToken) {
+        // Verificar que el id y el authToken estén disponibles
+        if (!uid || !authToken) {
           console.log('Falta id o authToken');
           return;
-        }*/
+        }
         const response = await axios.get(`${apiurl}/Usuario/${uid}`);
         setUser(response.data);
 
@@ -54,7 +54,6 @@ const RegisterRoomie = () => {
         //redirigue si existe el perfil de roomie
         if (roomie.data) {
           Cookies.set("roomieId", userId, cookieOptions); // Almacenar `roomieId` en cookies si es necesario
-          localStorage.setItem("uid", uid); // esto eliminar en la version final, ya que se supone que el uid ya estaba en localStorage
           console.log(roomie);
 
           navigate("profile");
@@ -133,7 +132,6 @@ const RegisterRoomie = () => {
         console.log("Register attempt with:", formData);
         window.alert("Se ha registrado como roomie correctamente!");
         Cookies.set("roomieId", user.Id, cookieOptions);
-        localStorage.setItem("uid", uid); // esto eliminar en la version final, ya que se supone que el uid ya estaba en localStorage
         navigate("/profile");
       } catch (error) {
         console.error(
@@ -223,10 +221,11 @@ const RegisterRoomie = () => {
   };
 
   return (
-    <div className="min-h-screen  flex items-center justify-center  ">
+    <div  className={`min-h-screen flex items-center justify-center `}>
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-2xl rounded-3xl px-10 pt-10 pb-12 mb-4 w-full max-w-3xl"
+        className={`${styles.card} shadow-2xl rounded-3xl px-10 pt-10 pb-12 mb-4 w-full max-w-3xl`}
+      
       >
         <div className="text-center">
           <h2 className="text-5xl font-bold mb-12 text-[#0092BC] text-center">
@@ -255,7 +254,7 @@ const RegisterRoomie = () => {
               maxLength={400}
               placeholder="Escribe una biografia para que los posibles roomies te conozcan un poco mas"
               onChange={handleChange}
-              className="bg-gray-300 p-2 rounded w-full md:w-[600px] min-w-[300px] resize-none "
+              className={`${styles.inputText} bg-gray-300 p-2 rounded w-full md:w-[600px] min-w-[300px] resize-none `}
             />
           </div>
         </div>
@@ -334,7 +333,8 @@ const RegisterRoomie = () => {
         <div className="mb-6">
           <label htmlFor="Genero">Género: </label>
           <select
-            className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+          className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
+            
             name="Genero"
             value={formData.Genero}
             onChange={handleChange}
@@ -354,7 +354,7 @@ const RegisterRoomie = () => {
         <div className="mb-6">
           <label htmlFor="Ubicacion">Ubicacion: </label>
           <select
-            className="shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+          className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
             name="Ubicacion"
             value={formData.Ubicacion}
             onChange={handleChange}

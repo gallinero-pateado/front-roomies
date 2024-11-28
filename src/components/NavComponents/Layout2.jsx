@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Outlet, useLocation, NavLink } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
+import Notification from '../NotificationComponents/Notifications';
 import DarkModeToggle from '../DarkModeToggle';
 
 const Layout2 = () => {
@@ -67,6 +68,8 @@ const Layout2 = () => {
         <p>tallersistemasdesoftware@utem.cl / Teléfono (---) --- --- ---</p>
         <p>&copy; 2024 ULINK. Todos los derechos reservados.</p>
       </footer>
+      {/* Notification */}
+       <Notification /> {/* Agrega el componente de notificación */}
     </div>
   );
 };
