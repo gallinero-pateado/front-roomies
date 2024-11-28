@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { RoomieFavCard } from '../RoomieComponents/RoomieFavCard';
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 
 export function RoomiesFavList() {
@@ -8,10 +9,8 @@ export function RoomiesFavList() {
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null);
 
-
-    const id = parseInt(localStorage.getItem('roomieId'));//esta se deberia ocupar correctamente, creo
-
-
+    const id = parseInt(Cookies.get('roomieId'));
+    
     useEffect(()=>{
         const fetchFav = async () =>{
             try {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { RoomieCard } from "./RoomieCard";
 import carreras from '../Const/carreras';
 import Filter from "../FilterComponents/Filter";//no entendi como ocuparlo
@@ -13,8 +14,7 @@ export function RoomiesList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredUsers, setFilteredUsers] = useState(users);
 
-    const id = parseInt(localStorage.getItem('roomieId'));
-    
+    const id = parseInt(Cookies.get('roomieId'));
 
 
     useEffect(()=>{
@@ -24,10 +24,11 @@ export function RoomiesList() {
                 const response = await axios.get(`http://localhost:8080/UsuariosconRoomie`);
                 const data = response.data;
                 
-                 const finalData = data.map(user=>({
-                    ...user,
-                    NombreCarrera : getCarrera(user.Id_carrera)
-                 }))
+                const finalData = data.filter(user => user.Usuario_Roomie.Id !== 0).map(user => ({
+                  ...user,
+                  NombreCarrera: getCarrera(user.Id_carrera)
+                }));
+              
                 setUsers(finalData)
                 console.log(users);
                 
