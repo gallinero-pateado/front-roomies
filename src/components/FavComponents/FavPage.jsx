@@ -1,7 +1,7 @@
 import React from "react";
-import Sidebar from './Sidebar';
+import Sidebar from '../NavComponents/Sidebar';
 import {RoomiesFavList} from './RoomieFavList';
-import '../App.css'
+
 
 
 const FavProfile = () =>{
