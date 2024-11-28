@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import {debounce} from 'lodash';
+import Cookies from 'js-cookie';
 
 export function RoomieCard({ ID, Roomie, Correo, Nombres, Apellidos,Id_carrera,Foto_perfil, Ano_Ingreso, Genero, Biografia, Intereses, Preferencias, Ubicacion, favoritos }) {
     
@@ -8,7 +9,9 @@ export function RoomieCard({ ID, Roomie, Correo, Nombres, Apellidos,Id_carrera,F
     const [isFav, setIsFav] = useState(false);// Obtener el estado inicial de favoritos del localStorage
     const [idFav, setIdFav] = useState('');
 
-    const id = parseInt(localStorage.getItem('roomieId'));
+    const authToken = Cookies.get('authToken');
+
+    const id = parseInt(Cookies.get('roomieId'));
     
         useEffect(()=>{
             const favFound = favoritos.find(user => user.usuario_favorito_id === ID);
@@ -25,7 +28,7 @@ export function RoomieCard({ ID, Roomie, Correo, Nombres, Apellidos,Id_carrera,F
             if(isFav){
                 await axios.delete(`http://localhost:8080/FavoritosRoomie/${idFav}`,{
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        'Authorization': `Bearer ${authToken}`
                     }
                     
                 })
@@ -88,8 +91,8 @@ export function RoomieCard({ ID, Roomie, Correo, Nombres, Apellidos,Id_carrera,F
 
             await axios.post(`http://localhost:8080/MensajesRoomie`, userMessague,{
                 headers: {
-                    'Content-Type': 'application/json '
-                    //'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Content-Type': 'application/json ',
+                    'Authorization': `Bearer ${authToken}`
                   }
             })
 

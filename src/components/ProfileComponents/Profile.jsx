@@ -1,79 +1,72 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';//
-import 'react-toastify/dist/ReactToastify.css';
-import carreras from '../Const/carreras';
-import Intereses from '../Const/intereses'
-import Preferencias from '../Const/preferences'
-import comunas from '../Const/comunas';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast, ToastContainer } from "react-toastify"; //
+import "react-toastify/dist/ReactToastify.css";
+import carreras from "../Const/carreras";
+import Intereses from "../Const/intereses";
+import Preferencias from "../Const/preferences";
+import comunas from "../Const/comunas";
+import Notification from "../NotificationComponents/Notifications";
 
-
-const Profile= () => {
- 
+const Profile = () => {
   // Estado para los datos del perfil
   const [profileData, setProfileData] = useState({});
-  const [roomieData, setRoomieData] = useState({})
-  const [intereses, setIntereses] = useState([]);
-  const [preferencias, setPreferencias] = useState([]);
+  const [roomieData, setRoomieData] = useState({});
+  const [inte, setIntereses] = useState([]);
+  const [pref, setPreferencias] = useState([]);
 
-  
-    //obtener uid del lcoalstorague,
-    const uid = localStorage.getItem('uid');
-    const roomieId = localStorage.getItem('roomieId');
-  
+  //obtener uid del localstorague, para pruebas fuera de login
+  const uid = localStorage.getItem("uid");
+
+  //DESCOMENTAR EN VERSION FINAL
+  //const uid = Cookies.get('uid');
+
+  const roomieId = Cookies.get("roomieId");
+  const authToken = Cookies.get("authToken");
+
   useEffect(() => {
-  
-    const fecthProfile = async()=>{
-      try{
-        //obtener los datos del usuario
-        const userResponse = await axios.get(`http://localhost:8080/Usuario/${uid}`);
-        const data = userResponse.data;
-  
-        const finalData = {
-          ...data,
-          NombreCarrera : getCarrera(data.Id_carrera)
-        }
-        console.log(finalData);
+    const fetchData = async () => {
+      try {
+        const [userResponse, roomieResponse] = await Promise.all([
+          axios.get(`http://localhost:8080/Usuario/${uid}`),
+          axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`),
+        ]);
 
-        setProfileData(finalData)
+        const userData = userResponse.data;
+        const finalProfileData = {
+          ...userData,
+          NombreCarrera: getCarrera(userData.Id_carrera),
+        };
 
-        console.log(userResponse.data)
-      }catch(error){
-        console.error("Error al obtener los datos del perfil",error)
-      }
-    }
+        const roomieData = roomieResponse.data;
+        const interesesArray = roomieData.Intereses.split(",");
+        const preferencesArray = roomieData.Preferencias.split(",");
 
-    const fetchRoomie = async()=>{
-      try{
-        const roomieResponse = await axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`);
-
-        const interesesArray = roomieResponse.data.Intereses.split(',');// Convertir el campo 'intereses' a un array
-        const preferencesArray = roomieResponse.data.Preferencias.split(',');// Convertir el campo 'preferencias' a un array
-        setRoomieData(roomieResponse.data);
-
-        // Agregar el array de intereses al estado 
+        // Actualizar los estados
+        setProfileData(finalProfileData);
+        setRoomieData(roomieData);
         setIntereses(interesesArray);
         setPreferencias(preferencesArray);
-    }catch(error){
-      console.error("Error al obtener perfil de roomie",error);
-    }
-    }
+      } catch (error) {
+        console.error("Error al obtener los datos", error);
+      }
+    };
 
-    fecthProfile();
-    fetchRoomie();
-  },[uid,roomieId]);
+    fetchData();
+  }, [uid, roomieId]);
 
   //obtener el nmobre de la carrera
-  const getCarrera = (Id_carrera)=>{
-    const data = carreras.find(c => c.value === Id_carrera);
-    return data ? data.label: "Carrera no encontrada";
-};
+  const getCarrera = (Id_carrera) => {
+    const data = carreras.find((c) => c.value === Id_carrera);
+    return data ? data.label : "Carrera no encontrada";
+  };
 
-//obtener el id de la carrera
-const getId = (nombre)=>{
-  const data = carreras.find(c => c.label === nombre);
-  return data ? data.value: "Carrera no encontrada";
-};
+  //obtener el id de la carrera
+  const getId = (nombre) => {
+    const data = carreras.find((c) => c.label === nombre);
+    return data ? data.value : "Carrera no encontrada";
+  };
 
   // Función para manejar los cambios en los campos del formulario
   const handleChange = (e) => {
@@ -84,43 +77,37 @@ const getId = (nombre)=>{
     });
     setRoomieData({
       ...roomieData,
-      [name]:value,
+      [name]: value,
     });
   };
 
-  
-
   // Función para manejar el envío del formulario
-  const handleSubmit = async(e) => {
-    e.preventDefault();  
-    let i = 0;//contador para los errores
-    try{
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let i = 0; //contador para los errores
+    try {
       const userData = {
         Nombres: profileData.Nombres,
         Apellidos: profileData.Apellidos,
         Correo: profileData.Apellidos,
         Fecha_Nacimiento: profileData.Fecha_Nacimiento,
         Ano_Ingreso: profileData.Ano_Ingreso,
-        Id_Carrera:parseInt(getId(profileData.NombreCarrera)),
+        Id_Carrera: parseInt(getId(profileData.NombreCarrera)),
       };
-  
-      
-      //actualizar info del perfil
-      await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData,{
-        headers:{
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
 
-      
-    }catch(error){
-      console.error("Error al editar el perfil",error);
-      i +=1;
-      toast.error("Error al editar el perfil",{
+      //actualizar info del perfil
+      await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+    } catch (error) {
+      console.error("Error al editar el perfil", error);
+      i += 1;
+      toast.error("Error al editar el perfil", {
         position: "top-right",
-        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
+        autoClose: 1000, // El toast desaparecerá después de 1 segundos
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -128,32 +115,33 @@ const getId = (nombre)=>{
       });
     }
 
-    try{
-      
+    try {
       //Actualizar datos como roomie
       const newroomieData = {
         Genero: roomieData.Genero,
         Biografia: roomieData.Biografia,
-        Intereses: roomieData.Intereses,
-        Preferencias: roomieData.Preferencias,
+        Intereses: inte.join(","),
+        Preferencias: pref.join(","),
         Ubicacion: roomieData.Ubicacion,
-      }
-      
-      //actualizar info de roomie
-      await axios.put(`http://localhost:8080/UsuarioRoomie/${roomieId}`,newroomieData,{
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      })
+      };
 
-      
-    }catch(error){
-      console.error("Error al editar la informacion de roomie",error);
-      i+=1
-      toast.error("Error al editar el perfil",{
+      //actualizar info de roomie
+      await axios.put(
+        `http://localhost:8080/UsuarioRoomie/${roomieId}`,
+        newroomieData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error al editar la informacion de roomie", error);
+      i += 1;
+      toast.error("Error al editar el perfil", {
         position: "top-right",
-        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
+        autoClose: 1000, // El toast desaparecerá después de 1 segundos
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -163,11 +151,11 @@ const getId = (nombre)=>{
     toggleEdit();
 
     //si hay 0 errrores, mostrar la confirmacion de la edicion
-    if(i<1){
+    if (i < 1) {
       // Mostrar un toast en lugar de una alerta, solo si no hay ningun error
       toast.success("Perfil editado correctamente", {
         position: "top-right",
-        autoClose: 1000,  // El toast desaparecerá después de 1 segundos
+        autoClose: 1000, // El toast desaparecerá después de 1 segundos
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -176,411 +164,460 @@ const getId = (nombre)=>{
     }
   };
 
-//modal para manejar las etiquetas de int y pref
-const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
-const [isModalOpenP, setIsModalOpenP] = useState(false); // Estado para controlar el modal
-const [tempSelectedInterests, setTempSelectedInterests] = useState([]); // Estado temporal para los intereses seleccionados
-const [tempSelectedPreferences, setTempSelectedPreferences] = useState([]); // Estado temporal para los preferencias seleccionados
-const [confirmedInterests, setConfirmedInterests] = useState([]); // Estado para los intereses confirmados
-const [confirmedPreferences, setConfirmedPreferences] = useState([]); // Estado para los preferencias confirmados
+  //modal para manejar las etiquetas de int y pref
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
+  const [isModalOpenP, setIsModalOpenP] = useState(false); // Estado para controlar el modal
+  const [tempSelectedInterests, setTempSelectedInterests] = useState([]); // Estado temporal para los intereses seleccionados
+  const [tempSelectedPreferences, setTempSelectedPreferences] = useState([]); // Estado temporal para los preferencias seleccionados
+  const [confirmedInterests, setConfirmedInterests] = useState([]); // Estado para los intereses confirmados
+  const [confirmedPreferences, setConfirmedPreferences] = useState([]); // Estado para los preferencias confirmados
 
- // Manejar los intereses temporales en el modal
- const toggleInterest = (interest) => {
-  if (tempSelectedInterests.includes(interest)) {
-    setTempSelectedInterests(tempSelectedInterests.filter((i) => i !== interest));
-  } else {
-    setTempSelectedInterests([...tempSelectedInterests, interest]);
-  }
-};
+  // Manejar los intereses temporales en el modal
+  const toggleInterest = (interest) => {
+    if (tempSelectedInterests.includes(interest)) {
+      setTempSelectedInterests(
+        tempSelectedInterests.filter((i) => i !== interest)
+      );
+    } else {
+      setTempSelectedInterests([...tempSelectedInterests, interest]);
+    }
+  };
 
-// Manejar los preferencias temporales en el modal
-const togglePrefrerences = (preference) => {
-  if (tempSelectedPreferences.includes(preference)) {
-    setTempSelectedPreferences(tempSelectedPreferences.filter((i) => i !== preference));
-  } else {
-    setTempSelectedPreferences([...tempSelectedPreferences, preference]);
-  }
-};
+  // Manejar los preferencias temporales en el modal
+  const togglePrefrerences = (preference) => {
+    if (tempSelectedPreferences.includes(preference)) {
+      setTempSelectedPreferences(
+        tempSelectedPreferences.filter((i) => i !== preference)
+      );
+    } else {
+      setTempSelectedPreferences([...tempSelectedPreferences, preference]);
+    }
+  };
 
+  // Confirmar los intereses seleccionados y cerrar el modal
+  const confirmInterests = () => {
+    setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
+    setIntereses(tempSelectedInterests);
+    setIsModalOpen(false);
+  };
 
-// Confirmar los intereses seleccionados y cerrar el modal
-const confirmInterests = () => {
-  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
-  console.log(interestsString);
-  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
-  setRoomieData(prevUser =>({
-    ...prevUser, 
-    Intereses : interestsString
-  }))
-  setIsModalOpen(false);
-};
+  // Confirmar los preferencias seleccionados y cerrar el modal
+  const confirmPreferences = () => {
+    setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
+    setPreferencias(tempSelectedPreferences);
+    setIsModalOpenP(false);
+  };
 
+  // Abrir el modal
+  const openModal = () => {
+    setTempSelectedInterests(inte); // Cargar los intereses actuales al modal
+    setIsModalOpen(true);
+  };
 
-// Confirmar los preferencias seleccionados y cerrar el modal
-const confirmPreferences = () => {
-  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
-  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
-  setProfileData(prevUser =>({
-    ...prevUser, //
-    Preferencias: preferencesString
-  }));
-  setIsModalOpenP(false);
-};
+  const openModalPref = () => {
+    setTempSelectedPreferences(pref); // Cargar los intereses actuales al modal
+    setIsModalOpenP(true);
+  };
 
+  // Cerrar el modal
+  const closeModal = () => {
+    setIntereses(confirmedInterests);
+    setIsModalOpen(false);
+  };
 
-// Abrir el modal
-const openModal = () => {
-  setTempSelectedInterests(intereses); // Cargar los intereses actuales al modal
-  setIsModalOpen(true);
-};
+  const closeModalP = () => {
+    setPreferencias(confirmedPreferences);
+    setIsModalOpenP(false);
+  };
 
-const openModalPref = () => {
-  setTempSelectedPreferences(preferencias); // Cargar los intereses actuales al modal
-  setIsModalOpenP(true);
-};
+  // Estado para almacenar el perfil antes de editar
+  const [perfilBackup, setPerfilBackup] = useState(null);
+  const [roomieBackup, setRoomieBackup] = useState(null);
 
+  // Estado para controlar la vista de formulario/perfil
+  const [isEditing, setIsEditing] = useState(false);
 
-// Cerrar el modal
-const closeModal = () => {
-  setIntereses(confirmedInterests)
-  setIsModalOpen(false);
-};
+  // Función para alternar entre perfil y formulario
+  const toggleEdit = () => {
+    if (!isEditing) {
+      setPerfilBackup(profileData); // Guarda una copia del perfil antes de editar
+      setRoomieBackup(roomieData);
+    } else {
+      setPerfilBackup(null); // Restablece el backup si se cancela la edición
+      setRoomieBackup(null);
+    }
+    setIsEditing(!isEditing); // Cambia entre vista y edición
+  };
 
-const closeModalP = () => {
-  setPreferencias(confirmedPreferences)
-  setIsModalOpenP(false);
-};
+  // Función para manejar el clic en el botón de cancelar
+  const handleCancel = (e) => {
+    e.preventDefault();
+    if (perfilBackup) {
+      setProfileData(perfilBackup); // Restaurar el perfil a su estado antes de editar
+    }
 
-// Estado para almacenar el perfil antes de editar
-const [perfilBackup, setPerfilBackup] = useState(null);
+    if (roomieBackup) {
+      setRoomieBackup(roomieBackup); //
+    }
+    setIsEditing(false); // Volver a la vista del perfil
+  };
 
-// Estado para controlar la vista de formulario/perfil
-const [isEditing, setIsEditing] = useState(false);
+  const openReportForm = () => {
+    setIsReportFormOpen(true);
+  };
 
-// Función para alternar entre perfil y formulario
-const toggleEdit = () => {
-  if (!isEditing) {
-    setPerfilBackup(profileData); // Guarda una copia del perfil antes de editar
-  } else {
-    setPerfilBackup(null); // Restablece el backup si se cancela la edición
-  }
-  setIsEditing(!isEditing); // Cambia entre vista y edición
-};
+  const closeReportForm = () => {
+    setIsReportFormOpen(false);
+  };
 
- // Función para manejar el clic en el botón de cancelar
- const handleCancel = (e) => {
+  return (
+    <aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
+      <Notification />
+      <ToastContainer />
+      {/*si isEditing es true, mostrara el formulario*/}
+      {isEditing ? (
+        <form onSubmit={handleSubmit}>
+          <div className="flex items-center gap-8 ">
+            <img
+              src="src\img-prueba.jpeg"
+              alt="imagen de perfil"
+              className="rounded-full w-52 h-52"
+            />
+            <div className="flex flex-col">
+              <h2 className="font-bold text-lg mb-1">
+                {profileData.Nombres} {profileData.Apellidos}
+              </h2>
+              <p className="text-gray-500">{profileData.Correo}</p>
+            </div>
+            <button
+              type="submit"
+              className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+            >
+              Confirmar
+              {console.log(profileData)}
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+              onClick={handleCancel}
+            >
+              Cancelar
+            </button>
+          </div>
 
-  e.preventDefault();
-  if (perfilBackup) {
-    setProfileData(perfilBackup); // Restaurar el perfil a su estado antes de editar
-  }
-  setIsEditing(false); // Volver a la vista del perfil
-};
+          <div className="flex justify-between py-5">
+            <section className="w-1/2 flex flex-col pr-10">
+              <h2 className="font-bold mb-2">Información Personal</h2>
+              <h3 className="font-bold text-lg mb-1">Fecha de nacimiento:</h3>
+              <p className="text-lg">{profileData.Fecha_Nacimiento}</p>
 
+              <label htmlFor="Genero" className="font-bold text-lg py-2">
+                Género:{" "}
+              </label>
+              <select
+                className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                name="Genero"
+                value={roomieData.Genero}
+                onChange={handleChange}
+              >
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+                <option value=" Prefiero no decir">Prefiero no decir</option>
+              </select>
 
+              <label htmlFor="Ubicacion" className="font-bold text-lg py-2">
+                Ubicacion:{" "}
+              </label>
+              <select
+                className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                name="Ubicacion"
+                value={roomieData.Ubicacion}
+                onChange={handleChange}
+                disabled={comunas.value === ""}
+              >
+                {comunas.map((comuna) => (
+                  <option key={comuna.value} value={comuna.value}>
+                    {comuna.label}
+                  </option>
+                ))}
+              </select>
+            </section>
 
-return (
-<aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
-  <ToastContainer />
-  {/*si isEditing es true, mostrara el formulario*/ }
-    {isEditing ? (
-      <form onSubmit={handleSubmit}>
+            <section className="w-1/2 flex flex-col ">
+              <h2 className="font-bold mb-2">Información académica</h2>
+              <h3 className="font-bold text-lg mb-1">Universidad:</h3>
+              <p className="text-lg">Universidad Tecnologica Metropolitana</p>
+
+              <label htmlFor="Id_Carrera" className="font-bold text-lg py-2">
+                Carrera
+              </label>
+              <select
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                name="Id_Carrera"
+                id="Id_Carrera"
+                value={profileData.Id_Carrera}
+                onChange={handleChange}
+              >
+                {carreras.map((carreraa) => (
+                  <option key={carreraa.value} value={carreraa.value}>
+                    {carreraa.label}
+                  </option>
+                ))}
+              </select>
+
+              <label htmlFor="Ano_Ingreso" className="font-bold text-lg py-2">
+                Año de ingreso
+              </label>
+              <input
+                name="Ano_Ingreso"
+                type="number"
+                id="Ano_Ingreso"
+                min="1900"
+                max={new Date().getFullYear()}
+                value={profileData.Ano_Ingreso}
+                onChange={handleChange}
+                className="w-full p-2 rounded border border-gray-300"
+              />
+            </section>
+          </div>
+
+          <div className="pt-5">
+            <div className="bio">
+              <label htmlFor="biografia" className="font-bold text-lg py-2">
+                Biografía:
+              </label>
+              <textarea
+                name="Biografia"
+                id="Biografia"
+                rows="7"
+                cols="50"
+                maxLength={400}
+                value={roomieData.Biografia}
+                onChange={handleChange}
+                className="bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max"
+              />
+            </div>
+
+            <div className="flex justify-between gap-5">
+              {/* Intereses */}
+              <div className="mb-10">
+                <label className="block text-[#0092BC] font-bold mb-2">
+                  Intereses
+                </label>
+                <button
+                  type="button"
+                  onClick={openModal}
+                  className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                >
+                  Seleccionar Intereses
+                </button>
+
+                {/* Mostrar intereses confirmados debajo */}
+                {inte.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-black font-bold mb-2">
+                      Intereses seleccionados:
+                    </h3>
+                    <div className="flex flex-wrap gap-4">
+                      {inte.map((Intereses) => (
+                        <span
+                          key={Intereses}
+                          className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                        >
+                          {Intereses}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* preferncias */}
+              <div className="mb-10">
+                <label className="block text-[#0092BC] font-bold mb-2">
+                  Preferencias
+                </label>
+                <button
+                  type="button"
+                  onClick={openModalPref}
+                  className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                >
+                  Seleccionar Preferencias
+                </button>
+
+                {/* Mostrar preferencias confirmados debajo */}
+                {pref.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-black font-bold mb-2">
+                      Preferencias seleccionadas:
+                    </h3>
+                    <div className="flex flex-wrap gap-4">
+                      {pref.map((Preferencias) => (
+                        <span
+                          key={Preferencias}
+                          className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                        >
+                          {Preferencias}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </form>
+      ) : (
+        <div>
+          {/* Mostrar datos del perfil */}
+          <h2 className="font-bold text-lg mb-1">
+            {profileData.Nombres} {profileData.Apellidos}
+          </h2>
+          <p className="text-gray-500">{profileData.Correo}</p>
+          <button
+            onClick={openReportForm}
+            className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+          >
+            Reportar Usuario
+          </button>
+          {isReportFormOpen && (
+            <ReportForm
+              reportedUserId={profileData.Id}
+              reportingUserId={localStorage.getItem("uid")}
+              onClose={closeReportForm}
+            />
+          )}
+        </div>
+      )}{" "}
+      (
+      <div>
+        {/*Si isEditing es false, se mostrara la vista de perfil*/}
+
         <div className="flex items-center gap-8 ">
-          <img src="src\img-prueba.jpeg" alt="imagen de perfil" className="rounded-full w-52 h-52" />
+          <img
+            src="src\img-prueba.jpeg"
+            alt="Imagen de perfil"
+            className="rounded-full w-52 h-52"
+          />
           <div className="flex flex-col">
-            <h2 className="font-bold text-lg mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
+            <h2 className="font-bold text-xl mb-1">
+              {profileData.Nombres} {profileData.Apellidos}
+            </h2>
             <p className="text-gray-500">{profileData.Correo}</p>
           </div>
-          <button type="submit"
-          className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
-        >
-          Confirmar
-          {console.log(profileData)}
 
-        </button>
           <button
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
-          onClick={handleCancel}
-        >
-          Cancelar
-        </button>
+            className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+            onClick={toggleEdit}
+          >
+            Editar
+          </button>
         </div>
 
         <div className="flex justify-between py-5">
           <section className="w-1/2">
-            <h2 className='font-bold mb-2'>Información Personal</h2>
-            <h3 className="font-bold text-lg mb-1" >Fecha de nacimiento:</h3>
-            <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
+            <h2 className="font-bold text-lg mb-4">Información Personal</h2>
+            <h3 className="font-bold text-lg mb-5">Fecha de nacimiento:</h3>
+            <p className="text-lg">{profileData.Fecha_Nacimiento}</p>
 
-            <label htmlFor="Genero" className="font-bold text-lg py-2">Género: </label>
-            <select
-              className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-              name="Genero"
-              value={roomieData.Genero}
-              onChange={handleChange}
-            >
-              
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
-              <option value="Otro">Otro</option>
-              <option value=" Prefiero no decir">Prefiero no decir</option>
-            </select>
+            <h3 className="font-bold text-lg ">Género:</h3>
+            <p className="text-lg mb-3">{roomieData.Genero}</p>
 
-            <label htmlFor="Ubicacion" className="font-bold text-lg py-2">Ubicacion: </label>
-            <select
-              className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-              name="Ubicacion"
-              value={roomieData.Ubicacion}
-              onChange={handleChange}
-              disabled={comunas.value === ''} 
-            >
-              {comunas.map((comuna)=>(
-                <option key={comuna.value} value={comuna.value}>
-                  {comuna.label} 
-                </option>
-              ))}
-              
-              
-            </select>
-
+            <h3 className="font-bold text-lg ">Ubicacion:</h3>
+            <p className="text-lg mb-3">{roomieData.Ubicacion}</p>
           </section>
 
           <section className="w-1/2">
-            <h2 className="font-bold mb-2">Información académica</h2>
-            <h3 className="font-bold text-lg mb-1">Universidad:</h3>
-            <p className="text-lg">Universidad Tecnologica Metropolitana</p>
+            <h2 className="font-bold text-lg mb-4">Información académica</h2>
+            <h3 className="font-bold text-lg ">Universidad:</h3>
+            <p className="text-lg mb-3">
+              Universidad Tecnologica Metropolitana
+            </p>
 
-            <label htmlFor="Id_Carrera" className="font-bold text-lg py-2">Carrera</label>
-            <select  className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-            name="Id_Carrera" id="Id_Carrera" value={profileData.Id_Carrera} onChange={handleChange} >
-              {carreras.map((carreraa)=>(
-                <option key={carreraa.value} value={carreraa.value}>
-                  {carreraa.label} 
-                </option>
-              ))}
-            </select>
-            
+            <h3 className="font-bold text-lg">Carrera:</h3>
+            <p className="text-lg mb-3">{profileData.NombreCarrera}</p>
 
-            <label htmlFor="Ano_Ingreso" className="font-bold text-lg py-2">Año de ingreso</label>
-            <input
-              name="Ano_Ingreso"
-              type="number"
-              id="Ano_Ingreso"
-              min="1900"
-              max={new Date().getFullYear()}
-              value={profileData.Ano_Ingreso}
-              onChange={handleChange}
-              className="w-full p-2 rounded border border-gray-300"
-            />
-          </section>
-        </div>
-
-        <div className="pt-5">
-          <div className="bio">
-            <label htmlFor="biografia" className="font-bold text-lg py-2">Biografía:</label>
-            <textarea
-              name="Biografia"
-              id="Biografia"
-              rows="7"
-              cols="50"
-              maxLength={400}
-              value={roomieData.Biografia}
-              onChange={handleChange}
-              className="bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full box-border resize-none max"
-              
-            />
-          </div>
-
-          <div className="flex justify-between gap-5">
-            
-          {/* Intereses */}
-       <div className="mb-10">
-          <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
-          <button
-            type="button"
-            onClick={openModal}
-            className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-          >
-            Seleccionar Intereses
-          </button>
-
-          {/* Mostrar intereses confirmados debajo */}
-          {intereses.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-black font-bold mb-2">Intereses seleccionados:</h3>
-              <div className="flex flex-wrap gap-4">
-                {intereses.map((Intereses) => (
-                  <span
-                    key={Intereses}
-                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                  >
-                    {Intereses}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-        </div>
-
-        {/* preferncias */}
-       <div className="mb-10">
-          <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
-          <button
-            type="button"
-            onClick={openModalPref}
-            className="bg-[#0092BC] hover:bg-[#0B6985FF] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-          >
-            Seleccionar Preferencias
-          </button>
-
-          {/* Mostrar preferencias confirmados debajo */}
-          {preferencias.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
-              <div className="flex flex-wrap gap-4">
-                {preferencias.map((Preferencias) => (
-                  <span
-                    key={Preferencias}
-                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                  >
-                    {Preferencias}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-          </div>
-        </div>
-
-        
-      </form>
-    ) : (
-      <div >
-        {/*Si isEditing es false, se mostrara la vista de perfil*/ }
-          
-        <div className="flex items-center gap-8 ">
-          <img src="src\img-prueba.jpeg" alt="Imagen de perfil" className='rounded-full w-52 h-52'/>
-          <div className="flex flex-col">
-            <h2 className="font-bold text-xl mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
-            <p className="text-gray-500">{profileData.Correo}</p>
-          </div>
-          
-          <button
-          className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
-          onClick={toggleEdit}
-        >
-          Editar
-        </button>
-        </div>
-
-        <div className="flex justify-between py-5">
-          <section className="w-1/2">
-          <h2 className='font-bold text-lg mb-4'>Información Personal</h2>
-          <h3 className="font-bold text-lg mb-2" >Fecha de nacimiento:</h3>
-          <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
-
-          <h3 className="font-bold text-lg mb-3">Género:</h3>
-          <p className="text-lg" >{roomieData.Genero}</p>
-
-          <h3 className="font-bold text-lg mb-3">Ubicacion:</h3>
-          <p className="text-lg" >{roomieData.Ubicacion}</p>
-          </section>
-
-          <section className="w-1/2">
-            <h2 className='font-bold text-lg mb-4'>Información académica</h2>
-            <h3 className="font-bold text-lg mb-3">Universidad:</h3>
-            <p className="text-lg">Universidad Tecnologica Metropolitana</p>
-
-            <h3 className="font-bold text-lg mb-4">Carrera:</h3>
-            <p className="text-lg">{profileData.NombreCarrera}</p>
-
-            <h3 className="font-bold text-lg mb-4">Año de ingreso:</h3>
-            <p className="text-lg">{profileData.Ano_Ingreso}</p>
+            <h3 className="font-bold text-lg">Año de ingreso:</h3>
+            <p className="text-lg mb-3">{profileData.Ano_Ingreso}</p>
           </section>
         </div>
 
         <div className="pt-5">
           <div className="Biografia">
-            <h2 className='font-bold text-lg mb-2'>Biografía</h2>
-            <p className="break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]">{roomieData.Biografia}</p>
+            <h2 className="font-bold text-lg mb-2">Biografía</h2>
+            <p className="break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]">
+              {roomieData.Biografia}
+            </p>
           </div>
-          
+
           <div className="flex justify-between gap-5">
             {/* Intereses */}
-          <div className="w-1/2 mb-10">
-            <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
-            
+            <div className="w-1/2 mb-10">
+              <label className="block text-[#0092BC] font-bold mb-2">
+                Intereses
+              </label>
 
-          {/* Mostrar intereses confirmados debajo */}
-          {intereses.length > 0 &&  (
+              {/* Mostrar intereses confirmados debajo */}
+              {inte.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                    {intereses.map((interes) =>(
+                    {inte.map((intereses) => (
                       <span
-                        key={interes}
+                        key={intereses}
                         className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
                       >
-                        {interes}
+                        {intereses}
                       </span>
                     ))}
                   </div>
                 </div>
               )}
-          </div>
-              
-            
+            </div>
 
-            { /*preferncias*/ }
-       <div className="w-1/2 mb-10">
-          <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
-          
+            {/*preferncias*/}
+            <div className="w-1/2 mb-10">
+              <label className="block text-[#0092BC] font-bold mb-2">
+                Preferencias
+              </label>
 
-          {/* Mostrar intereses confirmados debajo */}
-          {preferencias.length > 0 && (
+              {/* Mostrar intereses confirmados debajo */}
+              {pref.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                  {preferencias.map((preferencia) => (
-                  <span
-                    key={preferencia}
-                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                  >
-                    {preferencia}
-                  </span>
-                ))}
-              </div>
+                    {pref.map((preferencia) => (
+                      <span
+                        key={preferencia}
+                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                      >
+                        {preferencia}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-            </div>
-
-              
           </div>
         </div>
       </div>
-
-      
-    )}
-
-    {/* Modal para seleccionar intereses */}
-    {isModalOpen && (
+      ){/* Modal para seleccionar intereses */}
+      {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
-            <h2 className="text-2xl font-bold mb-4">Selecciona tus intereses</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              Selecciona tus intereses
+            </h2>
             <div className="grid grid-cols-5 gap-4 ">
-            {Intereses.map((interest) => (
+              {Intereses.map((interest) => (
                 <button
                   type="button"
                   key={interest}
                   onClick={() => toggleInterest(interest)}
                   className={` px-4 py-2 rounded-lg ${
                     tempSelectedInterests.includes(interest)
-                      ? 'bg-[#0092BC] text-white'
-                      : 'bg-gray-200 text-black'
+                      ? "bg-[#0092BC] text-white"
+                      : "bg-gray-200 text-black"
                   }`}
-                  
                 >
-                  
                   {interest}
                 </button>
               ))}
@@ -602,26 +639,25 @@ return (
           </div>
         </div>
       )}
-
       {/* Modal para seleccionar preferencias */}
       {isModalOpenP && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
-            <h2 className="text-2xl font-bold mb-4">Selecciona tus preferencias</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              Selecciona tus preferencias
+            </h2>
             <div className="grid grid-cols-5 gap-4 ">
-            {Preferencias.map((preference) => (
+              {Preferencias.map((preference) => (
                 <button
                   type="button"
                   key={preference}
                   onClick={() => togglePrefrerences(preference)}
                   className={` px-4 py-2 rounded-lg ${
                     tempSelectedPreferences.includes(preference)
-                      ? 'bg-[#0092BC] text-white'
-                      : 'bg-gray-200 text-black'
+                      ? "bg-[#0092BC] text-white"
+                      : "bg-gray-200 text-black"
                   }`}
-                  
                 >
-                  
                   {preference}
                 </button>
               ))}
@@ -643,7 +679,7 @@ return (
           </div>
         </div>
       )}
-      </aside>
-);
-}
+    </aside>
+  );
+};
 export default Profile;

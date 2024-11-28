@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export function RoomieFavCard({ IdFavorito,UsuarioId,UsuarioFavoritoId  }) {
     
@@ -10,7 +11,7 @@ export function RoomieFavCard({ IdFavorito,UsuarioId,UsuarioFavoritoId  }) {
     const [intereses, setIntereses] = useState([]);
     const [preferencias, setPreferencias] = useState([]);
 
-    
+    const authToken = Cookies.get('authToken');
 
     useEffect(()=>{
         const fetchRoomie = async ()=>{
@@ -45,7 +46,7 @@ export function RoomieFavCard({ IdFavorito,UsuarioId,UsuarioFavoritoId  }) {
         try{
             await axios.delete(`http://localhost:8080/FavoritosRoomie/${IdFavorito}`,{
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${authToken}`
                 }
             })  
             window.alert("Usuario eliminado de favoritos con exito");
@@ -94,8 +95,8 @@ export function RoomieFavCard({ IdFavorito,UsuarioId,UsuarioFavoritoId  }) {
 
             await axios.post(`http://localhost:8080/MensajesRoomie`, userMessague,{
                 headers: {
-                    'Content-Type': 'application/json '
-                    //'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Content-Type': 'application/json ',
+                    'Authorization': `Bearer ${authToken}`
                     
                   }
             })
