@@ -11,6 +11,9 @@ import MainPage from './mainpage'; // Importa el componente principal con opcion
 import RoomiesList from './components/RoomieComponents/Roomies'
 import './App.css'
 
+import Filter from './components/FilterComponents/Filter';
+import ReportForm from './components/ReportComponents/ReportForm';
+
 
 
 function App() {
@@ -21,7 +24,7 @@ function App() {
     <Route path="/" element={<Layout />}>
         <Route path="/" element={<Navigate to="/main" replace />} />
         <Route path="/register" element={<RegisterRoomie />} />
-        <Route  index element={<RegisterRoomie/>} />
+        <Route  index element={<ReportForm/>} />
     </Route>
 
   
