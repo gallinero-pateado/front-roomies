@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom'; // Usamos NavLink para estilos dinámicos
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Sidebar = () => {
+  const { theme } = useContext(ThemeContext);
+
   return (
-    <aside className="bg-[#0092BC] rounded-lg p-5 h-[450px] w-[250px] text-center float-left">
+    <aside className={`rounded-lg p-5 h-[450px] w-[250px] text-center float-left ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-[#0092BC] text-black'}`}>
       <section className="pt-7 text-xl">
         <ul className="list-none">
           <li className="pb-4 font-bold text-left">
