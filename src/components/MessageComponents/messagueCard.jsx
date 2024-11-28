@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from 'js-cookie';
 
-const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio}) => {
+const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio, Estado}) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
   const [messageStatus, setMessageStatus] = useState(''); // Estado para controlar si está "leído" o "no leído"
   const [userData, setUserData] = useState({});
 
+  const authToken = Cookies.get('authToken');
 
   //obtener toda la informacion de un mensaje por su id
   useEffect(()=>{
@@ -15,6 +17,8 @@ const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio}
           const userResponse = await axios.get(`http://localhost:8080/UsuarioId/${Emisor}`)//obtener datos del emisor
           const data = userResponse.data;
 
+          setMessageStatus(Estado)
+          console.log(messageStatus)
           setUserData(data);
       }catch(error){
         console.error("Error al cargar el mensaje",error);
@@ -26,8 +30,8 @@ const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio}
 
   // Abrir el modal
   const openModal = async () => {
-    if (messageStatus !== "leído") {
-      setMessageStatus("leído");
+    if (messageStatus !== "leido") {
+      setMessageStatus("leido");
       try {
         const setEstado = {
           Estado: "leido",
@@ -36,7 +40,7 @@ const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio}
         await axios.put(`http://localhost:8080/MensajesRoomie/${Id}`,setEstado,{
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': `Bearer ${authToken}`
           }
         })
 
@@ -74,7 +78,7 @@ const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio}
         await axios.post(`http://localhost:8080/MensajesRoomie`, userMessague,{
             headers: {
                 'Content-Type': 'application/json ',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${authToken}`
               }
         })
 
@@ -83,11 +87,13 @@ const MessagueCard = ({ Id, Emisor, Receptor, Asunto, Contenido, FechaHoraEnvio}
     }catch(error){
         console.error("Error al enviar el mensaje", error);
     }
+
+    setMessage('');
     closeModal();
 }
 
   return (
-    <article className={`shadow-md rounded-lg p-4 min-w-[900px] ${messageStatus === "leído" ? "bg-[#A3D9D3]" : "bg-white"}`}>
+    <article className={`shadow-md rounded-lg p-4 min-w-[900px] ${messageStatus === "leido" ? "bg-[#A3D9D3]" : "bg-white"}`}>
       
         <header className="flex items-center justify-between mb-4">
         <div className="flex items-center">

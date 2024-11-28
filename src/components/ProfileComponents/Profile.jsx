@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { toast, ToastContainer } from 'react-toastify';//
 import 'react-toastify/dist/ReactToastify.css';
 import carreras from '../Const/carreras';
 import Intereses from '../Const/intereses'
 import Preferencias from '../Const/preferences'
 import comunas from '../Const/comunas';
+import Notification from '../NotificationComponents/Notifications'
 
 
 const Profile= () => {
@@ -13,55 +15,51 @@ const Profile= () => {
   // Estado para los datos del perfil
   const [profileData, setProfileData] = useState({});
   const [roomieData, setRoomieData] = useState({})
-  const [intereses, setIntereses] = useState([]);
-  const [preferencias, setPreferencias] = useState([]);
+  const [inte, setIntereses] = useState([]);
+  const [pref, setPreferencias] = useState([]);
 
   
-    //obtener uid del lcoalstorague,
+    //obtener uid del localstorague, para pruebas fuera de login
     const uid = localStorage.getItem('uid');
-    const roomieId = localStorage.getItem('roomieId');
+
+    //DESCOMENTAR EN VERSION FINAL
+    //const uid = Cookies.get('uid');
+    
+
+    const roomieId = Cookies.get('roomieId');
+    const authToken = Cookies.get('authToken');
   
-  useEffect(() => {
-  
-    const fecthProfile = async()=>{
-      try{
-        //obtener los datos del usuario
-        const userResponse = await axios.get(`http://localhost:8080/Usuario/${uid}`);
-        const data = userResponse.data;
-  
-        const finalData = {
-          ...data,
-          NombreCarrera : getCarrera(data.Id_carrera)
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const [userResponse, roomieResponse] = await Promise.all([
+            axios.get(`http://localhost:8080/Usuario/${uid}`),
+            axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`)
+          ]);
+    
+          const userData = userResponse.data;
+          const finalProfileData = {
+            ...userData,
+            NombreCarrera: getCarrera(userData.Id_carrera),
+          };
+    
+          const roomieData = roomieResponse.data;
+          const interesesArray = roomieData.Intereses.split(',');
+          const preferencesArray = roomieData.Preferencias.split(',');
+    
+          // Actualizar los estados
+          setProfileData(finalProfileData);
+          setRoomieData(roomieData);
+          setIntereses(interesesArray);
+          setPreferencias(preferencesArray);
+        } catch (error) {
+          console.error("Error al obtener los datos", error);
         }
-        console.log(finalData);
-
-        setProfileData(finalData)
-
-        console.log(userResponse.data)
-      }catch(error){
-        console.error("Error al obtener los datos del perfil",error)
-      }
-    }
-
-    const fetchRoomie = async()=>{
-      try{
-        const roomieResponse = await axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`);
-
-        const interesesArray = roomieResponse.data.Intereses.split(',');// Convertir el campo 'intereses' a un array
-        const preferencesArray = roomieResponse.data.Preferencias.split(',');// Convertir el campo 'preferencias' a un array
-        setRoomieData(roomieResponse.data);
-
-        // Agregar el array de intereses al estado 
-        setIntereses(interesesArray);
-        setPreferencias(preferencesArray);
-    }catch(error){
-      console.error("Error al obtener perfil de roomie",error);
-    }
-    }
-
-    fecthProfile();
-    fetchRoomie();
-  },[uid,roomieId]);
+      };
+    
+      fetchData();
+    }, [uid, roomieId]);
+    
 
   //obtener el nmobre de la carrera
   const getCarrera = (Id_carrera)=>{
@@ -110,7 +108,7 @@ const getId = (nombre)=>{
       await axios.put(`http://localhost:8080/Usuario/${roomieId}`, userData,{
         headers:{
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${authToken}`
         }
       });
 
@@ -134,8 +132,8 @@ const getId = (nombre)=>{
       const newroomieData = {
         Genero: roomieData.Genero,
         Biografia: roomieData.Biografia,
-        Intereses: roomieData.Intereses,
-        Preferencias: roomieData.Preferencias,
+        Intereses: inte.join(','),
+        Preferencias: pref.join(','),
         Ubicacion: roomieData.Ubicacion,
       }
       
@@ -143,7 +141,7 @@ const getId = (nombre)=>{
       await axios.put(`http://localhost:8080/UsuarioRoomie/${roomieId}`,newroomieData,{
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${authToken}`
         }
       })
 
@@ -203,39 +201,31 @@ const togglePrefrerences = (preference) => {
 };
 
 
+
 // Confirmar los intereses seleccionados y cerrar el modal
 const confirmInterests = () => {
-  const interestsString = tempSelectedInterests.join(','); // Convierte el array a un string separado por comas
-  console.log(interestsString);
-  setConfirmedInterests(tempSelectedInterests); // Mantiene los intereses seleccionados en su forma de array
-  setRoomieData(prevUser =>({
-    ...prevUser, 
-    Intereses : interestsString
-  }))
+  setConfirmedInterests(tempSelectedInterests); // Solo los intereses seleccionados se confirman
+  setIntereses(tempSelectedInterests);
   setIsModalOpen(false);
 };
 
 
 // Confirmar los preferencias seleccionados y cerrar el modal
 const confirmPreferences = () => {
-  const preferencesString = tempSelectedPreferences.join(','); // Convierte el array a un string separado por comas
-  setConfirmedPreferences(tempSelectedPreferences); // Mantiene las preferencias seleccionadas en su forma de array
-  setProfileData(prevUser =>({
-    ...prevUser, //
-    Preferencias: preferencesString
-  }));
+  setConfirmedPreferences(tempSelectedPreferences); // Solo los intereses seleccionados se confirman
+  setPreferencias(tempSelectedPreferences);
   setIsModalOpenP(false);
 };
 
 
 // Abrir el modal
 const openModal = () => {
-  setTempSelectedInterests(intereses); // Cargar los intereses actuales al modal
+  setTempSelectedInterests(inte); // Cargar los intereses actuales al modal
   setIsModalOpen(true);
 };
 
 const openModalPref = () => {
-  setTempSelectedPreferences(preferencias); // Cargar los intereses actuales al modal
+  setTempSelectedPreferences(pref); // Cargar los intereses actuales al modal
   setIsModalOpenP(true);
 };
 
@@ -253,6 +243,7 @@ const closeModalP = () => {
 
 // Estado para almacenar el perfil antes de editar
 const [perfilBackup, setPerfilBackup] = useState(null);
+const [roomieBackup, setRoomieBackup] = useState(null);
 
 // Estado para controlar la vista de formulario/perfil
 const [isEditing, setIsEditing] = useState(false);
@@ -261,8 +252,10 @@ const [isEditing, setIsEditing] = useState(false);
 const toggleEdit = () => {
   if (!isEditing) {
     setPerfilBackup(profileData); // Guarda una copia del perfil antes de editar
+    setRoomieBackup(roomieData)
   } else {
     setPerfilBackup(null); // Restablece el backup si se cancela la edición
+    setRoomieBackup(null)
   }
   setIsEditing(!isEditing); // Cambia entre vista y edición
 };
@@ -274,6 +267,10 @@ const toggleEdit = () => {
   if (perfilBackup) {
     setProfileData(perfilBackup); // Restaurar el perfil a su estado antes de editar
   }
+
+  if (roomieBackup){
+    setRoomieBackup(roomieBackup); //
+  }
   setIsEditing(false); // Volver a la vista del perfil
 };
 
@@ -281,6 +278,7 @@ const toggleEdit = () => {
 
 return (
 <aside className="bg-white shadow-md rounded-lg p-20 min-w-[900px] f ">
+  <Notification/>
   <ToastContainer />
   {/*si isEditing es true, mostrara el formulario*/ }
     {isEditing ? (
@@ -307,7 +305,7 @@ return (
         </div>
 
         <div className="flex justify-between py-5">
-          <section className="w-1/2">
+          <section className="w-1/2 flex flex-col pr-10">
             <h2 className='font-bold mb-2'>Información Personal</h2>
             <h3 className="font-bold text-lg mb-1" >Fecha de nacimiento:</h3>
             <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
@@ -345,7 +343,7 @@ return (
 
           </section>
 
-          <section className="w-1/2">
+          <section className="w-1/2 flex flex-col ">
             <h2 className="font-bold mb-2">Información académica</h2>
             <h3 className="font-bold text-lg mb-1">Universidad:</h3>
             <p className="text-lg">Universidad Tecnologica Metropolitana</p>
@@ -405,11 +403,11 @@ return (
           </button>
 
           {/* Mostrar intereses confirmados debajo */}
-          {intereses.length > 0 && (
+          {inte.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Intereses seleccionados:</h3>
               <div className="flex flex-wrap gap-4">
-                {intereses.map((Intereses) => (
+                {inte.map((Intereses) => (
                   <span
                     key={Intereses}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -435,11 +433,11 @@ return (
           </button>
 
           {/* Mostrar preferencias confirmados debajo */}
-          {preferencias.length > 0 && (
+          {pref.length > 0 && (
             <div className="mt-4">
               <h3 className="text-black font-bold mb-2">Preferencias seleccionadas:</h3>
               <div className="flex flex-wrap gap-4">
-                {preferencias.map((Preferencias) => (
+                {pref.map((Preferencias) => (
                   <span
                     key={Preferencias}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
@@ -478,26 +476,26 @@ return (
         <div className="flex justify-between py-5">
           <section className="w-1/2">
           <h2 className='font-bold text-lg mb-4'>Información Personal</h2>
-          <h3 className="font-bold text-lg mb-2" >Fecha de nacimiento:</h3>
+          <h3 className="font-bold text-lg mb-5" >Fecha de nacimiento:</h3>
           <p className="text-lg" >{profileData.Fecha_Nacimiento}</p>
 
-          <h3 className="font-bold text-lg mb-3">Género:</h3>
-          <p className="text-lg" >{roomieData.Genero}</p>
+          <h3 className="font-bold text-lg ">Género:</h3>
+          <p className="text-lg mb-3" >{roomieData.Genero}</p>
 
-          <h3 className="font-bold text-lg mb-3">Ubicacion:</h3>
-          <p className="text-lg" >{roomieData.Ubicacion}</p>
+          <h3 className="font-bold text-lg ">Ubicacion:</h3>
+          <p className="text-lg mb-3" >{roomieData.Ubicacion}</p>
           </section>
 
           <section className="w-1/2">
             <h2 className='font-bold text-lg mb-4'>Información académica</h2>
-            <h3 className="font-bold text-lg mb-3">Universidad:</h3>
-            <p className="text-lg">Universidad Tecnologica Metropolitana</p>
+            <h3 className="font-bold text-lg ">Universidad:</h3>
+            <p className="text-lg mb-3">Universidad Tecnologica Metropolitana</p>
 
-            <h3 className="font-bold text-lg mb-4">Carrera:</h3>
-            <p className="text-lg">{profileData.NombreCarrera}</p>
+            <h3 className="font-bold text-lg">Carrera:</h3>
+            <p className="text-lg mb-3">{profileData.NombreCarrera}</p>
 
-            <h3 className="font-bold text-lg mb-4">Año de ingreso:</h3>
-            <p className="text-lg">{profileData.Ano_Ingreso}</p>
+            <h3 className="font-bold text-lg">Año de ingreso:</h3>
+            <p className="text-lg mb-3">{profileData.Ano_Ingreso}</p>
           </section>
         </div>
 
@@ -514,17 +512,17 @@ return (
             
 
           {/* Mostrar intereses confirmados debajo */}
-          {intereses.length > 0 &&  (
+          {inte.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                    {intereses.map((interes) =>(
-                      <span
-                        key={interes}
-                        className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
-                      >
-                        {interes}
-                      </span>
-                    ))}
+                  {inte.map((intereses) => (
+                  <span
+                    key={intereses}
+                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                  >
+                    {intereses}
+                  </span>
+                ))}
                   </div>
                 </div>
               )}
@@ -538,10 +536,10 @@ return (
           
 
           {/* Mostrar intereses confirmados debajo */}
-          {preferencias.length > 0 && (
+          {pref.length > 0 && (
                 <div className="mt-4 ">
                   <div className="grid grid-cols-2 gap-2">
-                  {preferencias.map((preferencia) => (
+                  {pref.map((preferencia) => (
                   <span
                     key={preferencia}
                     className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
