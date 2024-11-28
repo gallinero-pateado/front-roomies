@@ -10,7 +10,7 @@ import Messpage from './components/MessageComponents/MessPage'
 import MainPage from './mainpage'; // Importa el componente principal con opciones
 import RoomiesList from './components/RoomieComponents/Roomies'
 import './App.css'
-import ReportForm from './components/ReportComponents/ReportForm';
+
 
 
 

@@ -221,25 +221,24 @@ const RegisterRoomie = () => {
   };
 
   return (
-    <div  className={`min-h-screen flex items-center justify-center `}>
+    <div  className={`min-h-screen flex items-center justify-center  `}>
       <form
         onSubmit={handleSubmit}
         className={`${styles.card} shadow-2xl rounded-3xl px-10 pt-10 pb-12 mb-4 w-full max-w-3xl`}
       
       >
         <div className="text-center">
-          <h2 className="text-5xl font-bold mb-12 text-[#0092BC] text-center">
+          <h2 className={`text-5xl font-bold mb-8 ${styles.accent} text-center`}>
             Perfil Roomie
           </h2>
-          <span className="text-lg  mb-8 text-center">
-            {" "}
+          <span className="text-lg   text-center">
             Termina de completar tu perfil para buscar un roomie
           </span>
         </div>
         {/* Biografia */}
-        <div className="mb-6">
+        <div className="mb-6 mt-6">
           <label
-            className="block text-[#0092BC] text-xl font-bold mb-2 max-"
+            className={`${styles.accent} block text-[#0092BC] text-xl font-bold mb-2 max-`}
             htmlFor="biography"
           >
             Biografía:
@@ -261,7 +260,8 @@ const RegisterRoomie = () => {
 
         {/* Intereses */}
         <div className="mb-10">
-          <label className="block text-[#0092BC] font-bold mb-2">
+          <label className={`${styles.accent} block  font-bold mb-2`}>
+          
             Intereses
           </label>
           <button
@@ -275,7 +275,7 @@ const RegisterRoomie = () => {
           {/* Mostrar intereses confirmados debajo */}
           {confirmedInterests.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-black font-bold mb-2">
+              <h3 className={`${styles.accent} block  font-bold mb-2`}>
                 Intereses seleccionados:
               </h3>
               <div className="flex flex-wrap gap-4">
@@ -295,7 +295,7 @@ const RegisterRoomie = () => {
 
         {/* preferncias */}
         <div className="mb-10">
-          <label className="block text-[#0092BC] font-bold mb-2">
+          <label className={`${styles.accent} block  font-bold mb-2`}>
             Preferencias
           </label>
           <button
@@ -308,8 +308,8 @@ const RegisterRoomie = () => {
 
           {/* Mostrar preferencias confirmados debajo */}
           {confirmedPreferences.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-black font-bold mb-2">
+            <div className="mt-4 ">
+              <h3 className={`${styles.accent} block  font-bold mb-2`}>
                 Preferencias seleccionadas:
               </h3>
               <div className="flex flex-wrap gap-4">
@@ -331,7 +331,7 @@ const RegisterRoomie = () => {
 
         {/*Genero*/}
         <div className="mb-6">
-          <label htmlFor="Genero">Género: </label>
+          <label htmlFor="Genero" className={`${styles.accent} block  font-bold mb-2`}>Género: </label>
           <select
           className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
             
@@ -352,7 +352,7 @@ const RegisterRoomie = () => {
 
         {/*Ubicacion*/}
         <div className="mb-6">
-          <label htmlFor="Ubicacion">Ubicacion: </label>
+          <label htmlFor="Ubicacion" className={`${styles.accent} block  font-bold mb-2`}>Ubicacion: </label>
           <select
           className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
             name="Ubicacion"
@@ -381,8 +381,8 @@ const RegisterRoomie = () => {
 
       {/* Modal para seleccionar intereses */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
+        <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
+          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] `}>
             <h2 className="text-2xl font-bold mb-4">
               Selecciona tus intereses
             </h2>
@@ -395,7 +395,7 @@ const RegisterRoomie = () => {
                   className={` px-4 py-2 rounded-lg ${
                     tempSelectedInterests.includes(interest)
                       ? "bg-[#0092BC] text-white"
-                      : "bg-gray-200 text-black"
+                      : `${styles.btn} text-white`
                   }`}
                 >
                   {interest}
@@ -421,8 +421,8 @@ const RegisterRoomie = () => {
       )}
 
       {isModalOpenP && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] ">
+        <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
+          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[900px] `}>
             <h2 className="text-2xl font-bold mb-4">
               Selecciona tus preferencias
             </h2>
@@ -435,7 +435,7 @@ const RegisterRoomie = () => {
                   className={` px-4 py-2 rounded-lg ${
                     tempSelectedPreferences.includes(preference)
                       ? "bg-[#0092BC] text-white"
-                      : "bg-gray-200 text-black"
+                      : `${styles.btn} text-white`
                   }`}
                 >
                   {preference}

@@ -19,13 +19,15 @@ const Layout2 = () => {
       <header className="bg-[#0092BC] text-white p-6">
         <div className="flex justify-between items-center mx-auto">
           <h1 className="text-5xl font-bold italic">ULINK</h1>
-          <div>
+          
+          <div className='flex '>
+            <DarkModeToggle  />     
             <NavLink
               to="/roomies"
               className={({ isActive }) =>
                 isActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded mr-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
+                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-5 py-3 rounded  ml-5 font-bold italic text-lg'
+                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
               }
             >
               Roomies
@@ -34,8 +36,8 @@ const Layout2 = () => {
               to="/profile"
               className={() =>
                 isSidebarActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded mr-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
+                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded ml-5 font-bold italic text-lg'
+                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
               }
             >
               Perfil
@@ -44,13 +46,12 @@ const Layout2 = () => {
               to="/main"
               className={({ isActive }) =>
                 isActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded mr-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded mr-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
+                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded ml-5 font-bold italic text-lg'
+                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
               }
             >
               Volver
             </NavLink>
-            <DarkModeToggle />
           </div>
         </div>
       </header>
@@ -68,8 +69,6 @@ const Layout2 = () => {
         <p>tallersistemasdesoftware@utem.cl / Teléfono (---) --- --- ---</p>
         <p>&copy; 2024 ULINK. Todos los derechos reservados.</p>
       </footer>
-      {/* Notification */}
-       <Notification /> {/* Agrega el componente de notificación */}
     </div>
   );
 };
