@@ -2,17 +2,17 @@ import React, { useContext } from "react";
 import { Outlet } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import DarkModeToggle from "../DarkModeToggle";
-import Notification from "../Notification";
+import themeStyles from "../Const/themes"
 const apiurl = "https://api-roomies.tssw.info";
+
+
 
 const Layout = () => {
   const { theme } = useContext(ThemeContext);
-
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
   return (
     <div
-      className={`flex flex-col min-h-screen font-ubuntu ${
-        theme === "dark" ? "bg-gray-900 text-white" : "bg-[#DAEDF2] text-black"
-      }`}
+      className={`flex flex-col min-h-screen font-ubuntu ${styles.background} ${styles.text}`}
     >
       {/* Header */}
       <header className="bg-[#0092BC] text-white p-6">
@@ -34,8 +34,7 @@ const Layout = () => {
         <p>tallersistemasdesoftware@utem.cl / Teléfono (---) --- --- ---</p>
         <p>&copy; 2024 ULINK. Todos los derechos reservados.</p>
       </footer>
-      {/* Notification */}
-      <Notification /> {/* Agrega el componente de notificación */}
+
     </div>
   );
 };
