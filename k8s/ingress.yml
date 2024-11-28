@@ -10,7 +10,7 @@ spec:
   tls:
   - hosts: 
     - roomies.tssw.info
-    secretName: cert-ulink
+    secretName: cert-front-roomies
   rules:
     - host: roomies.tssw.info
       http:
