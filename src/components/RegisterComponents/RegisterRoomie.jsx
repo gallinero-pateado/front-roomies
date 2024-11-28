@@ -30,7 +30,7 @@ const RegisterRoomie = () => {
 
   
     //uid para probar, ELIMINAR EN LA VERSION DE PRODUCCION
-    const uid = "G5BvmpulyqhCefrNgtRMlg5tw5Y2"//usuario con perfil roomie creado
+    const uid = "kXToOX3IhYcspG5mcrziTvQIG4h1"//usuario con perfil roomie creado
     //const uid = "pBiGl6771kZlhcpgZHqMYb9yzZ53" //usuario con perfil roomie sin crear
 
     //DESCOMENTAR EN EL DEPLOY

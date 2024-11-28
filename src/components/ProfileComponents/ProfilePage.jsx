@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from '../NavComponents/Sidebar';
 import Profile from "./Profile";
+import Notification from "../NotificationComponents/Notifications";
 
 const PageProfile = () => {
     return (
@@ -12,6 +13,7 @@ const PageProfile = () => {
             {/* Profile con separación */}
             <div className="w-3/4 h-full px-10  ">
                 <Profile />
+                <Notification />
             </div>
         </div>
     );
