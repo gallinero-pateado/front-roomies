@@ -43,7 +43,7 @@ const Layout2 = () => {
               Perfil
             </NavLink>
             <NavLink
-              to="/main"
+              to="/main"//colocar la ruta correcta del main
               className={({ isActive }) =>
                 isActive
                   ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded ml-5 font-bold italic text-lg'
