@@ -11,11 +11,12 @@ export function RoomiesFavList() {
 
     const id = parseInt(localStorage.getItem('roomieId'));//esta se deberia ocupar correctamente, creo
 
+    const apiurl = "https://api-roomies.tssw.info"
 
     useEffect(()=>{
         const fetchFav = async () =>{
             try {
-                const response = await axios.get(`http://localhost:8080/FavoritosRoomie/${id}`)
+                const response = await axios.get(`${apiurl}/FavoritosRoomie/${id}`)
                 const data = response.data;
                  setFavoriteUsers(data);//guardar los favoritos del usuario
                  console.log(data);
