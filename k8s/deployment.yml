@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-roomies
+  labels:
+    app: front-roomies
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-roomies
+  template:
+    metadata:
+      labels:
+        app: front-roomies
+    spec:
+      containers:
+      - name: front-roomies
+        image: <IMAGE>
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 50m
+          limits:
+            memory: 128Mi
+            cpu: 100m

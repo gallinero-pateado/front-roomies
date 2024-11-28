@@ -1,17 +1,40 @@
-// src/components/Notification.jsx
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import Cookies from 'js-cookie';
 
 const Notification = () => {
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState('');
+  const [recibidos, setRecibidos] = useState(0);
+
+  const id = parseInt(localStorage.getItem('roomieId')); // PARA PROBAR SIN LOGIN
+
+  // DESCOMENTAR EN VERSIÓN FINAL
+  // const id = parseInt(Cookies.get('roomieId'));
 
   useEffect(() => {
-    // Simula la llegada de una notificación después de 5 segundos
-    setTimeout(() => {
-      setMessage('Tienes un nuevo mensaje');
-      setShow(true);
-    }, 5000);
-  }, []);
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/Mensajes/Recibidos/${id}`); // Mensajes recibidos
+        const mensajes = response.data;
+
+        // Filtrar los mensajes con estado "No leido"
+        const cantMessage = mensajes.filter(mensaje => mensaje.Estado === "No leido").length;
+
+        setRecibidos(cantMessage); // Guardar la cantidad en el estado
+
+        // Si hay mensajes no leídos, mostrar la notificación
+        if (cantMessage > 0) {
+          setMessage(`Tienes ${cantMessage} mensaje(s) sin leer`);
+          setShow(true);
+        }
+      } catch (error) {
+        console.error("Error al obtener los mensajes", error);
+      }
+    };
+
+    fetchMessages();
+  }, [id]);
 
   const handleClose = () => {
     setShow(false);
