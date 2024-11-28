@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const ReportList = ({ userId }) => {
   const [reports, setReports] = useState([]);
@@ -7,10 +7,12 @@ const ReportList = ({ userId }) => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/Reportes/Enviados/${userId}`);
+        const response = await axios.get(
+          `${apiurl}/Reportes/Enviados/${userId}`
+        );
         setReports(response.data);
       } catch (error) {
-        console.error('Error al obtener los reportes', error);
+        console.error("Error al obtener los reportes", error);
       }
     };
     fetchReports();
@@ -24,10 +26,19 @@ const ReportList = ({ userId }) => {
       ) : (
         <ul>
           {reports.map((report) => (
-            <li key={report.ID} className="mb-4 p-4 border border-gray-300 rounded">
-              <p><strong>Motivo:</strong> {report.Motivo}</p>
-              <p><strong>Descripción:</strong> {report.Descripcion}</p>
-              <p><strong>Estado:</strong> {report.Estado}</p>
+            <li
+              key={report.ID}
+              className="mb-4 p-4 border border-gray-300 rounded"
+            >
+              <p>
+                <strong>Motivo:</strong> {report.Motivo}
+              </p>
+              <p>
+                <strong>Descripción:</strong> {report.Descripcion}
+              </p>
+              <p>
+                <strong>Estado:</strong> {report.Estado}
+              </p>
             </li>
           ))}
         </ul>

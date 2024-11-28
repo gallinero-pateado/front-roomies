@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+const apiurl = "https://api-roomies.tssw.info";
 
 const Notification = () => {
   const [show, setShow] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [recibidos, setRecibidos] = useState(0);
 
-  const id = parseInt(localStorage.getItem('roomieId')); // PARA PROBAR SIN LOGIN
+  const id = parseInt(localStorage.getItem("roomieId")); // PARA PROBAR SIN LOGIN
 
   // DESCOMENTAR EN VERSIÓN FINAL
   // const id = parseInt(Cookies.get('roomieId'));
@@ -15,11 +16,13 @@ const Notification = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/Mensajes/Recibidos/${id}`); // Mensajes recibidos
+        const response = await axios.get(`${apiurl}/Mensajes/Recibidos/${id}`); // Mensajes recibidos
         const mensajes = response.data;
 
         // Filtrar los mensajes con estado "No leido"
-        const cantMessage = mensajes.filter(mensaje => mensaje.Estado === "No leido").length;
+        const cantMessage = mensajes.filter(
+          (mensaje) => mensaje.Estado === "No leido"
+        ).length;
 
         setRecibidos(cantMessage); // Guardar la cantidad en el estado
 
