@@ -104,7 +104,7 @@ const MessagueCard = ({
         <div className="flex items-center">
           <img
             className="w-16 h-16 rounded-full mr-4"
-            src="src/img-prueba.jpeg"
+            src={userData.Foto_perfil}
             alt={`${userData.Nombres} perfil`}
           />
           <div className="flex flex-col">

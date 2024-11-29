@@ -23,6 +23,7 @@ export function RoomieCard({
   Preferencias,
   Ubicacion,
   favoritos,
+  FotoPerfil,
 }) {
 
   const { theme } = useContext(ThemeContext);
@@ -161,7 +162,7 @@ export function RoomieCard({
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[850px] max-h-[90vh] overflow-y-auto`}>
                     <div className="flex items-center gap-6 mb-4">
-                        <img src="" alt="" className="rounded-full w-16 h-16" />
+                        <img src={FotoPerfil} alt={`${Nombres} perfil`} className="rounded-full w-16 h-16" />
                         <div className="flex flex-col">
                             <h1 className="font-bold text-2xl">{Nombres}  {Apellidos} </h1>
                             <p className="text-gray-500 text-2sm">{Correo}</p>
