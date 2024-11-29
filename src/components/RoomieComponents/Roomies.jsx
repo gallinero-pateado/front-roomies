@@ -139,6 +139,7 @@ export function RoomiesList() {
                 )}
                 Ubicacion={user.Usuario_Roomie.Ubicacion}
                 favoritos={favorites}
+                FotoPerfil = {user.Foto_perfil}
               />
             ) : (
               <></>

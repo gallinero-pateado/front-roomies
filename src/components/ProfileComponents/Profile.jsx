@@ -271,7 +271,7 @@ const Profile = () => {
         <form onSubmit={handleSubmit} >
           <div className="flex items-center gap-8 ">
             <img
-              src={profileData.img}
+              src={profileData.Foto_Perfil }
               alt="imagen de perfil"
               className="rounded-full w-52 h-52"
             />
@@ -465,7 +465,7 @@ const Profile = () => {
         {/*Si isEditing es false, se mostrara la vista de perfil*/ }
           
         <div className="flex items-center gap-8 ">
-          <img src="src\img-prueba.jpeg" alt="Imagen de perfil" className='rounded-full w-52 h-52'/>
+          <img src={profileData.Foto_Perfil } alt="" className='rounded-full w-52 h-52'/>
           <div className="flex flex-col">
             <h2 className="font-bold text-xl mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
             <p className="text-gray-500">{profileData.Correo}</p>
