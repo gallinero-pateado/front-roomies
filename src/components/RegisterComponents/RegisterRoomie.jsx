@@ -34,6 +34,7 @@ const RegisterRoomie = () => {
   const navigate = useNavigate();
 
   const uid = "YxWi75XB2yfUCAX50m98qDspgyX2"
+  //const uid = Cookies.get("uid");
   //const authToken = Cookies.get("authToken");
   
   useEffect(() => {
