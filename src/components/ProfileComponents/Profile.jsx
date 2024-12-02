@@ -23,16 +23,16 @@ const Profile = () => {
   const [pref, setPreferencias] = useState([]);
 
 
-  const uid = Cookies.get('uid') || undefined;
+  const uid ="YxWi75XB2yfUCAX50m98qDspgyX2"
   const roomieId = Cookies.get("roomieId");
-  const authToken = Cookies.get("authToken")  || undefined;
+  const authToken = Cookies.get("authToken");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [userResponse, roomieResponse] = await Promise.all([
-          axios.get(`${apiurl}/Usuario/${uid}`),
-          axios.get(`${apiurl}/UsuarioRoomie/${roomieId}`),
+          axios.get(`http://localhost:8080/Usuario/${uid}`),
+          axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`),
         ]);
 
         const userData = userResponse.data;
@@ -465,7 +465,7 @@ const Profile = () => {
         {/*Si isEditing es false, se mostrara la vista de perfil*/ }
           
         <div className="flex items-center gap-8 ">
-          <img src={profileData.Foto_Perfil } alt="" className='rounded-full w-52 h-52'/>
+          <img src={profileData.Foto_Perfil } alt="" className='w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-300 object-cover mb-4'/>
           <div className="flex flex-col">
             <h2 className="font-bold text-xl mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
             <p className="text-gray-500">{profileData.Correo}</p>

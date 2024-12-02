@@ -3,6 +3,7 @@ import { Outlet, useLocation, NavLink } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
 import Notification from '../NotificationComponents/Notifications';
 import DarkModeToggle from '../DarkModeToggle';
+import Cookies from 'js-cookie';
 
 const Layout2 = () => {
   const { theme } = useContext(ThemeContext);
@@ -13,6 +14,34 @@ const Layout2 = () => {
     location.pathname.startsWith(path)
   );
 
+ 
+
+
+  const Logout =() =>{
+
+    console.log('Tokens antes de eliminar:', {
+      authToken: Cookies.get('authToken'),
+      uid: Cookies.get('uid'),
+      roomieId: Cookies.get('roomieId')
+  });
+
+    const cookieOptions = {
+      path: '/',
+      secure: true ,
+      sameSite: 'Strict',
+      domain: ".tssw.info"
+    };
+
+    Cookies.remove('authToken', cookieOptions);
+    Cookies.remove('uid', cookieOptions);
+    Cookies.remove('roomieId', cookieOptions);
+
+    console.log('Tokens después de eliminar:', {
+      authToken: Cookies.get('authToken'),
+      uid: Cookies.get('uid'),
+      roomieId: Cookies.get('roomieId')
+  });
+  }
   return (
     <div className={`flex flex-col min-h-screen font-ubuntu ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-[#DAEDF2] text-black'}`}>
       {/* Header */}
@@ -43,7 +72,7 @@ const Layout2 = () => {
               Perfil
             </NavLink>
             <NavLink
-              to="/main"//colocar la ruta correcta del main
+              to="/main"
               className={({ isActive }) =>
                 isActive
                   ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded ml-5 font-bold italic text-lg'
@@ -52,6 +81,13 @@ const Layout2 = () => {
             >
               Volver
             </NavLink>
+
+            <NavLink
+              to="https://ulink.tssw.info"
+              className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+              onClick={Logout}>
+              Cerrar sesion
+              </NavLink>
           </div>
         </div>
       </header>

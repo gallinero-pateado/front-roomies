@@ -59,7 +59,12 @@ export function RoomieCard({
           usuario_id: id,
           usuario_favorito_id: ID,
         };
-        await axios.post(`${apiurl}/FavoritosRoomie`, newFav, {});
+        await axios.post(`${apiurl}/FavoritosRoomie`, newFav, {
+          headers: {
+            "Content-Type": "application/json ",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         window.alert("Usuario añadido a favoritos");
         setIsFav(true);
       }
@@ -221,7 +226,7 @@ export function RoomieCard({
                     <form onSubmit={sendMessage} >
                     <div className="mb-4 flex flex-col">
                         <label htmlFor="Asunto" className="font-bold">Asunto:</label>
-                        <input type="text" className={`${styles.inputText} rounded border border-gray-600 my-3 py-1`} value={subject} onChange={(e)=>setSubject(e.target.value)} />
+                        <input type="text" className={`${styles.inputText} ${styles.inputBg} rounded border border-gray-600 my-3 py-1`} value={subject} onChange={(e)=>setSubject(e.target.value)} />
                         <textarea
                             name="message"
                             id="message"

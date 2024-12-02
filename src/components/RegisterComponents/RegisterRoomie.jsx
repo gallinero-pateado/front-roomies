@@ -33,30 +33,33 @@ const RegisterRoomie = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const uid = Cookies.get('uid');
-  const authToken = Cookies.get("authToken");
-
+  const uid = "YxWi75XB2yfUCAX50m98qDspgyX2"
+  //const authToken = Cookies.get("authToken");
+  
   useEffect(() => {
     const checkRoomieProfile = async () => {
       try {
         // Verificar que el id y el authToken estén disponibles
-        if (!uid || !authToken) {
+       /*if (!uid || !authToken) {
           console.log('Falta id o authToken');
           return;
-        }
-        const response = await axios.get(`${apiurl}/Usuario/${uid}`);
+        }*/
+        //const response = await axios.get(`${apiurl}/Usuario/${uid}`);
+        const response = await axios.get(`http://localhost:8080/Usuario/${uid}`)
+        console.log(response);
         setUser(response.data);
 
         // Verificar si el perfil del roomie existe
         const userId = response.data.Id;
-        const roomie = await axios.get(`${apiurl}/UsuarioRoomie/${userId}`);
+        //const roomie = await axios.get(`${apiurl}/UsuarioRoomie/${userId}`);
+        const roomie = await axios.get(`http://localhost:8080/UsuarioRoomie/${userId}`);
 
         //redirigue si existe el perfil de roomie
         if (roomie.data) {
           Cookies.set("roomieId", userId, cookieOptions); // Almacenar `roomieId` en cookies si es necesario
           console.log(roomie);
 
-          navigate("profile");
+          navigate("/profile");
         }
       } catch (error) {
         console.error("Error al verificar la completación del perfil:", error);
@@ -124,11 +127,11 @@ const RegisterRoomie = () => {
         console.log(profileFormData);
 
         // Crea el roomie
-        await axios.post(`${apiurl}/UsuarioRoomie`, profileFormData, {
+        await axios.post(`${apiurl}/UsuarioRoomie`, profileFormData/*, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        });
+        }*/);
         console.log("Register attempt with:", formData);
         window.alert("Se ha registrado como roomie correctamente!");
         Cookies.set("roomieId", user.Id, cookieOptions);
