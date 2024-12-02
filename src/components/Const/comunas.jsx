@@ -24,7 +24,7 @@ const comunas = [
     { value: 'Peñalolén', label: 'Peñalolén' },
     { value: 'Providencia', label: 'Providencia' },
     { value: 'Pudahuel', label: 'Pudahuel' },
-    {value: 'Puente Alto',label: 'Puente Alto'}
+    {value: 'Puente Alto',label: 'Puente Alto'},
     { value: 'Quilicura', label: 'Quilicura' },
     { value: 'Quinta Normal', label: 'Quinta Normal' },
     { value: 'Recoleta', label: 'Recoleta' },

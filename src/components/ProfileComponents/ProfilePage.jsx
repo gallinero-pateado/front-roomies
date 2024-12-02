@@ -4,8 +4,7 @@ import Profile from "./Profile";
 import Notification from "../NotificationComponents/Notifications";
 
 const PageProfile = () => {
-  const userId = localStorage.getItem("uid");
-
+  const id = parseInt(Cookies.get("roomieId"));
   return (
     <div className="flex h-full min-h-screen">
       {/* Sidebar con margen derecho */}

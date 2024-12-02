@@ -58,7 +58,7 @@ const Filter = ({ onFilter }) => {
         <select
           value={selectedComuna}
           onChange={handleComunaChange}
-          className={`${styles.inputText} w-full mt-1 p-2 border border-gray-300 rounded `}
+          className={`${styles.inputText} ${styles.inputBg} w-full mt-1 p-2 border border-gray-300 rounded `}
         >
           {comunas.map((comuna, index) => (
             <option key={`comuna-${index}`} value={comuna.value}>
@@ -121,11 +121,11 @@ const Filter = ({ onFilter }) => {
       </div>
 
       <div className="mb-4">
-        <label className={`${styles.text} block text-md `}>Carrera:</label>
+        <label className={`${styles.text}  block text-md `}>Carrera:</label>
         <select
           value={selectedCarrera}
           onChange={handleCarreraChange}
-          className={`${styles.inputText} w-full mt-1 p-2 border border-gray-300 rounded `}
+          className={`${styles.inputText} ${styles.inputBg} w-full mt-1 p-2 border border-gray-300 rounded `}
         >
           {carreras.filter(carrera => carrera.value).map((carrera) => (
             <option key={carrera.value} value={carrera.value}>
