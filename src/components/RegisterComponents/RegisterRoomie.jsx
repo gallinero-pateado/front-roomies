@@ -36,15 +36,17 @@ const RegisterRoomie = () => {
   const uid = Cookies.get('uid');
   const authToken = Cookies.get("authToken");
 
+  
   useEffect(() => {
     const checkRoomieProfile = async () => {
       try {
         // Verificar que el id y el authToken estén disponibles
-        if (!uid || !authToken) {
+       if (!uid || !authToken) {
           console.log('Falta id o authToken');
           return;
         }
         const response = await axios.get(`${apiurl}/Usuario/${uid}`);
+        console.log(response);
         setUser(response.data);
 
         // Verificar si el perfil del roomie existe
@@ -124,11 +126,11 @@ const RegisterRoomie = () => {
         console.log(profileFormData);
 
         // Crea el roomie
-        await axios.post(`${apiurl}/UsuarioRoomie`, profileFormData, {
-          headers: {
+        await axios.post(`${apiurl}/UsuarioRoomie`, profileFormData, /*{
+          /*headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        });
+        }*/);
         console.log("Register attempt with:", formData);
         window.alert("Se ha registrado como roomie correctamente!");
         Cookies.set("roomieId", user.Id, cookieOptions);

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet,NavLink } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import DarkModeToggle from "../DarkModeToggle";
 import themeStyles from "../Const/themes"
@@ -19,6 +19,16 @@ const Layout = () => {
         <div className="flex justify-between items-center mx-auto">
           <h1 className="text-5xl font-bold italic">ULINK</h1>
           <DarkModeToggle />
+          <NavLink
+              to="main"
+              className={({ isActive }) =>
+                isActive
+                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-5 py-3 rounded  ml-5 font-bold italic text-lg'
+                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
+              }
+            >
+              Volver
+            </NavLink>
         </div>
       </header>
       {/* Body */}
