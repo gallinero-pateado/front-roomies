@@ -23,7 +23,8 @@ const Profile = () => {
   const [pref, setPreferencias] = useState([]);
 
 
-  const uid ="YxWi75XB2yfUCAX50m98qDspgyX2"
+  //const uid = Cookies.get('uid');
+  const uid = "YxWi75XB2yfUCAX50m98qDspgyX2";
   const roomieId = Cookies.get("roomieId");
   const authToken = Cookies.get("authToken");
 
@@ -31,8 +32,8 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const [userResponse, roomieResponse] = await Promise.all([
-          axios.get(`http://localhost:8080/Usuario/${uid}`),
-          axios.get(`http://localhost:8080/UsuarioRoomie/${roomieId}`),
+          //axios.get(`${apiurl}/Usuario/${uid}`),
+          //axios.get(`${apiurl}/UsuarioRoomie/${roomieId}`),
         ]);
 
         const userData = userResponse.data;
@@ -273,7 +274,7 @@ const Profile = () => {
             <img
               src={profileData.Foto_Perfil }
               alt="imagen de perfil"
-              className="rounded-full w-52 h-52"
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-300 object-cover mb-4"
             />
             <div className="flex flex-col">
               <h2 className={`${styles.text}  font-bold text-lg mb-1`}>
