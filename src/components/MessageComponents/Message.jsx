@@ -18,7 +18,7 @@ const Message = () => {
         const response = await axios.get(`${apiurl}/Mensajes/Recibidos/${id}`); //mensajes recibidos
         const sendResponse = await axios.get(
           `${apiurl}/Mensajes/Enviados/${id}`
-        ); //mensajes enviados
+        ); //mensajes enviados*/
 
         const sendMessage = sendResponse.data;
         const message = response.data;
