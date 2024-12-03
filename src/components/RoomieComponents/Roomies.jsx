@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { RoomieCard } from "./RoomieCard";
 import carreras from "../Const/carreras";
 import Filter from "../FilterComponents/Filter"; 
+import { ThemeContext } from "../../context/ThemeContext";
+import themeStyles from "../Const/themes"
 
 
 const apiurl = "https://api-roomies.tssw.info";
@@ -11,7 +13,8 @@ const apiurl = "https://api-roomies.tssw.info";
 export function RoomiesList() {
   // Estado para almacenar los usuarios obtenidos de la base de datos
 
-
+  const { theme } = useContext(ThemeContext);
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
   const [users, setUsers] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -106,7 +109,7 @@ export function RoomiesList() {
           placeholder="Buscar usuario..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-4 rounded py-2 px-2"
+          className={`${styles.inputBg} ${styles.inputText} mb-4 rounded py-2 px-2`}
         />
 
         {/*filtro*/}
@@ -128,7 +131,8 @@ export function RoomiesList() {
                 Apellidos={user.Apellidos}
                 Id_carrera={user.NombreCarrera}
                 Ano_Ingreso={user.Ano_Ingreso}
-                Foto_perfil={user.Foto_perfil}
+                Foto_perfil={user.Foto_Perfil
+                }
                 Genero={user.Usuario_Roomie.Genero}
                 Biografia={user.Usuario_Roomie.Biografia}
                 Intereses={user.Usuario_Roomie.Intereses.split(",").map(

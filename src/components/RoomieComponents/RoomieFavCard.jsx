@@ -9,6 +9,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
 
   const { theme } = useContext(ThemeContext);
   const styles = themeStyles[theme]; // Obtener estilos según el tema
+
   //obtener los datos adicionales del roomie
   const [roomie, setRoomie] = useState({});
   const [user, setUser] = useState({});
@@ -33,7 +34,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
         const preferencesArray = roomieRespone.data.Preferencias.split(",");
 
         setRoomie(roomieRespone.data);
-        setUser(userResponse.data);
+        setUser(userResponse.data.usuario);
 
         // Agregar el array de intereses al estado
         setIntereses(interesesArray);
@@ -55,6 +56,11 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
           Authorization: `Bearer ${authToken}`,
         },
       });
+      await axios.delete(`http://localhost:8080/FavoritosRoomie/${IdFavorito}`,{
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
       window.alert("Usuario eliminado de favoritos con exito");
     } catch (error) {
       console.error("Error al eliminar de favoritos", error);
@@ -103,6 +109,13 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
         },
       });
 
+      await axios.post(`http://localhost:8080/MensajesRoomie`,userMessague,{
+        headers: {
+          "Content-Type": "application/json ",
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+
       setSubject("");
       setMessage("");
 
@@ -116,9 +129,9 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
   return (
     <article className={`${styles.card}  shadow-md rounded-lg p-4 min-w-[900px]`}>
         <header className="flex items-center mb-4">
-            <img className="w-16 h-16 rounded-full mr-4" src={user.Foto_perfil} alt={`${user.Nombres} perfil`} />
+            <img className="w-16 h-16 rounded-full mr-4" src={user.Foto_Perfil} alt={`${user.Nombres} perfil`} />
             <div>
-                <strong>{user.Nombres} {user.Apellidos}</strong>
+                <strong className="font-bold text-xl mb-1">{user.Nombres} {user.Apellidos}</strong>
                 <p>{user.Correo}</p>
                 <span className="text-sm text-gray-500">{roomie.Biografia}</span>
             </div>
@@ -140,8 +153,8 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[850px] max-h-[90vh] overflow-y-auto`}>
                     <div className="flex items-center gap-6 mb-4">
-                        <img src="" alt="imagen de perfil" className="rounded-full w-16 h-16" />
-                        <div className="flex flex-col">
+                        <img src={user.Foto_Perfil} alt="imagen de perfil" className="w-32 h-32 rounded-full "  />
+                        <div className="flex flex-col ml-4">
                             <h1 className="font-bold text-2xl">{user.Nombres} {user.Apellidos}</h1>
                             <p className="text-gray-500 text-2sm">{user.Correo}</p>
                         </div>
@@ -193,7 +206,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
                     <form onSubmit={sendMessage}>
                     <div className="mb-4 flex flex-col">
                         <label htmlFor="Asunto" className="font-bold">Asunto:</label>
-                        <input type="text"className={`${styles.inputText} rounded border border-gray-600 my-3 py-1`} value={subject} onChange={(e)=>setSubject(e.target.value)} />
+                        <input type="text"className={`${styles.inputBg}  ${styles.inputText} rounded border border-gray-600 my-3 py-1`} value={subject} onChange={(e)=>setSubject(e.target.value)} />
                         <textarea
                             name="message"
                             id="message"
@@ -209,7 +222,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
                         <button  type="submit" className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2" >
                             Enviar mensaje
                         </button>
-                        <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">Cancelar</button>
+                        <button onClick={closeModal} className={`text-white  bg-[#f00000] hover:bg-[#CA0C0CFF]`}>Cancelar</button>
                     </div>
                     </form>
                     

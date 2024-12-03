@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -6,7 +6,7 @@ import intereses from "../Const/intereses";
 import preferencias from "../Const/preferences";
 import comunas from "../Const/comunas";
 import { ThemeContext } from "../../context/ThemeContext";
-import themeStyles from "../Const/themes";
+import themeStyles from "../Const/themes"
 const apiurl = "https://api-roomies.tssw.info";
 
 const RegisterRoomie = () => {
@@ -35,38 +35,45 @@ const RegisterRoomie = () => {
 
   const uid = Cookies.get("uid");
   const authToken = Cookies.get("authToken");
-
+  
   useEffect(() => {
-    const checkRoomieProfile = async () => {
+    const fetchUser = async () => {
       try {
-        if (!uid || !authToken) {
-          console.log("Falta id o authToken");
-          return;
+        if(!uid || !authToken){
+          console.log('Falta el Id o el authtoken, por favor iniciar sesion denuevo');
+          window.location.href = 'https://ulink.tssw.info'
         }
 
         const response = await axios.get(`${apiurl}/Usuario/${uid}`);
-        console.log(response);
-        setUser(response.data);
-
-        // Verificar si el perfil del roomie existe
-        const userId = response.data.Id;
-
-        const roomie = await axios.get(`${apiurl}/UsuarioRoomie/${userId}`);
-
-        //redirigue si existe el perfil de roomie
+        console.log(response.data.usuario);
+        setUser(response.data.usuario); // Actualiza el estado de usuario
+      } catch (error) {
+        console.error("Error al encontrar usuario:", error);
+      }
+    };
+  
+    fetchUser();
+  }, [uid]); // Ejecutar solo cuando `uid` cambia
+  
+  useEffect(() => {
+    const checkRoomie = async () => {
+      if (!user) return; // Asegurarse de que el usuario esté definido antes de proceder
+      try {
+        const userId = user.Id;
+        console.log(userId);
+        const roomie = await axios.get(`${apiurl}/UsuarioRoomie/${userId}`)
         if (roomie.data) {
-          Cookies.set("roomieId", userId, cookieOptions); // Almacenar `roomieId` en cookies si es necesario
+          Cookies.set("roomieId", userId, cookieOptions);
           console.log(roomie);
-
           navigate("/profile");
         }
       } catch (error) {
-        console.error("Error al verificar la completación del perfil:", error);
+        console.error("Error al encontrar usuario roomie:", error);
       }
     };
-
-    checkRoomieProfile();
-  }, [navigate]);
+  
+    checkRoomie();
+  }, [user, navigate]); // Ejecutar solo cuando `user` o `navigate` cambien
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -131,6 +138,8 @@ const RegisterRoomie = () => {
             Authorization: `Bearer ${authToken}`,
           },
         });
+
+
         console.log("Register attempt with:", formData);
         window.alert("Se ha registrado como roomie correctamente!");
         Cookies.set("roomieId", user.Id, cookieOptions);
@@ -223,15 +232,14 @@ const RegisterRoomie = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center  `}>
+    <div  className={`min-h-screen flex items-center justify-center  `}>
       <form
         onSubmit={handleSubmit}
         className={`${styles.card} shadow-2xl rounded-3xl px-10 pt-10 pb-12 mb-4 w-full max-w-3xl`}
+      
       >
         <div className="text-center">
-          <h2
-            className={`text-5xl font-bold mb-8 ${styles.accent} text-center`}
-          >
+          <h2 className={`text-5xl font-bold mb-8 ${styles.accent} text-center`}>
             Perfil Roomie
           </h2>
           <span className="text-lg   text-center">
@@ -264,6 +272,7 @@ const RegisterRoomie = () => {
         {/* Intereses */}
         <div className="mb-10">
           <label className={`${styles.accent} block  font-bold mb-2`}>
+          
             Intereses
           </label>
           <button
@@ -333,14 +342,10 @@ const RegisterRoomie = () => {
 
         {/*Genero*/}
         <div className="mb-6">
-          <label
-            htmlFor="Genero"
-            className={`${styles.accent} block  font-bold mb-2`}
-          >
-            Género:{" "}
-          </label>
+          <label htmlFor="Genero" className={`${styles.accent} block  font-bold mb-2`}>Género: </label>
           <select
-            className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
+          className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
+            
             name="Genero"
             value={formData.Genero}
             onChange={handleChange}
@@ -358,14 +363,9 @@ const RegisterRoomie = () => {
 
         {/*Ubicacion*/}
         <div className="mb-6">
-          <label
-            htmlFor="Ubicacion"
-            className={`${styles.accent} block  font-bold mb-2`}
-          >
-            Ubicacion:{" "}
-          </label>
+          <label htmlFor="Ubicacion" className={`${styles.accent} block  font-bold mb-2`}>Ubicacion: </label>
           <select
-            className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
+          className={`${styles.inputBg} shadow  border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
             name="Ubicacion"
             value={formData.Ubicacion}
             onChange={handleChange}
@@ -393,9 +393,7 @@ const RegisterRoomie = () => {
       {/* Modal para seleccionar intereses */}
       {isModalOpen && (
         <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
-          <div
-            className={`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] `}
-          >
+          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] `}>
             <h2 className="text-2xl font-bold mb-4">
               Selecciona tus intereses
             </h2>
@@ -435,9 +433,7 @@ const RegisterRoomie = () => {
 
       {isModalOpenP && (
         <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
-          <div
-            className={`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[900px] `}
-          >
+          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[900px] `}>
             <h2 className="text-2xl font-bold mb-4">
               Selecciona tus preferencias
             </h2>
