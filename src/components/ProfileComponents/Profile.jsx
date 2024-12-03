@@ -92,12 +92,17 @@ const Profile = () => {
     let i = 0; //contador para los errores
     try {
       const userData = {
+        Id:profileData.Id,
+        Firebase_usuario: profileData.Firebase_usuario,
         Nombres: profileData.Nombres,
         Apellidos: profileData.Apellidos,
         Correo: profileData.Correo,
         Fecha_Nacimiento: profileData.Fecha_Nacimiento,
         Ano_Ingreso: profileData.Ano_Ingreso,
         Id_Carrera: parseInt(getId(profileData.NombreCarrera)),
+        Foto_Perfil: profileData.Foto_Perfil,
+        Id_Estado_Usuario: profileData.Id_Estado_Usuario,
+        Rol:profileData.Rol,
       };
 
       //actualizar info del perfil
