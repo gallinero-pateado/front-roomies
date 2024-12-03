@@ -44,11 +44,14 @@ const Filter = ({ onFilter }) => {
       preferencias: selectedPreferencias,
       carrera: selectedCarrera,
     });
+  
+    // Resetar estados de forma consistente
     setSelectedCarrera('');
     setSelectedComuna('');
-    setSelectedIntereses('');
-    setSelectedPreferencias('');
+    setSelectedIntereses([]); // Reinicia como un array vacío
+    setSelectedPreferencias([]); // Reinicia como un array vacío
   };
+  
   return (
     <div className={`${styles.card}  w-64  ${styles.inputBorder} rounded-lg p-4 shadow-md`}>
       <h2 className={`${styles.text} text-xl font-semibold mb-4 `}>Filtrar Roomies</h2>

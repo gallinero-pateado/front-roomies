@@ -33,42 +33,47 @@ const RegisterRoomie = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const uid = "YxWi75XB2yfUCAX50m98qDspgyX2"
-  //const uid = Cookies.get("uid");
-  //const authToken = Cookies.get("authToken");
+  const uid = Cookies.get("uid");
+  const authToken = Cookies.get("authToken");
   
   useEffect(() => {
-    const checkRoomieProfile = async () => {
+    const fetchUser = async () => {
       try {
-        // Verificar que el id y el authToken estén disponibles
-       /*if (!uid || !authToken) {
-          console.log('Falta id o authToken');
-          return;
-        }*/
-        //const response = await axios.get(`${apiurl}/Usuario/${uid}`);
-        const response = await axios.get(`http://localhost:8080/Usuario/${uid}`)
-        console.log(response);
-        setUser(response.data);
+        if(!uid || !authToken){
+          console.log('Falta el Id o el authtoken, por favor iniciar sesion denuevo');
+          window.location.href = 'https://ulink.tssw.info'
+        }
 
-        // Verificar si el perfil del roomie existe
-        const userId = response.data.Id;
-        //const roomie = await axios.get(`${apiurl}/UsuarioRoomie/${userId}`);
-        const roomie = await axios.get(`http://localhost:8080/UsuarioRoomie/${userId}`);
-
-        //redirigue si existe el perfil de roomie
+        const response = await axios.get(`${apiurl}/Usuario/${uid}`);
+        console.log(response.data.usuario);
+        setUser(response.data.usuario); // Actualiza el estado de usuario
+      } catch (error) {
+        console.error("Error al encontrar usuario:", error);
+      }
+    };
+  
+    fetchUser();
+  }, [uid]); // Ejecutar solo cuando `uid` cambia
+  
+  useEffect(() => {
+    const checkRoomie = async () => {
+      if (!user) return; // Asegurarse de que el usuario esté definido antes de proceder
+      try {
+        const userId = user.Id;
+        console.log(userId);
+        const roomie = await axios.get(`${apiurl}/UsuarioRoomie/${userId}`)
         if (roomie.data) {
-          Cookies.set("roomieId", userId, cookieOptions); // Almacenar `roomieId` en cookies si es necesario
+          Cookies.set("roomieId", userId, cookieOptions);
           console.log(roomie);
-
           navigate("/profile");
         }
       } catch (error) {
-        console.error("Error al verificar la completación del perfil:", error);
+        console.error("Error al encontrar usuario roomie:", error);
       }
     };
-
-    checkRoomieProfile();
-  }, [navigate]);
+  
+    checkRoomie();
+  }, [user, navigate]); // Ejecutar solo cuando `user` o `navigate` cambien
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -128,11 +133,13 @@ const RegisterRoomie = () => {
         console.log(profileFormData);
 
         // Crea el roomie
-        await axios.post(`${apiurl}/UsuarioRoomie`, profileFormData/*, {
+        await axios.post(`${apiurl}/UsuarioRoomie`, profileFormData, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        }*/);
+        });
+
+
         console.log("Register attempt with:", formData);
         window.alert("Se ha registrado como roomie correctamente!");
         Cookies.set("roomieId", user.Id, cookieOptions);

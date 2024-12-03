@@ -23,8 +23,7 @@ const Profile = () => {
   const [pref, setPreferencias] = useState([]);
 
 
-  //const uid = Cookies.get('uid');
-  const uid = "YxWi75XB2yfUCAX50m98qDspgyX2";
+  const uid = Cookies.get('uid');
   const roomieId = Cookies.get("roomieId");
   const authToken = Cookies.get("authToken");
 
@@ -32,11 +31,12 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const [userResponse, roomieResponse] = await Promise.all([
-          //axios.get(`${apiurl}/Usuario/${uid}`),
-          //axios.get(`${apiurl}/UsuarioRoomie/${roomieId}`),
+          axios.get(`${apiurl}/Usuario/${uid}`),
+          axios.get(`${apiurl}/UsuarioRoomie/${roomieId}`),
         ]);
 
-        const userData = userResponse.data;
+        const userData = userResponse.data.usuario;
+        console.log(userData);
         const finalProfileData = {
           ...userData,
           NombreCarrera: getCarrera(userData.Id_carrera),
@@ -51,6 +51,8 @@ const Profile = () => {
         setRoomieData(roomieData);
         setIntereses(interesesArray);
         setPreferencias(preferencesArray);
+        console.log(profileData)
+        console.log(roomieData);
       } catch (error) {
         console.error("Error al obtener los datos", error);
       }
@@ -105,6 +107,7 @@ const Profile = () => {
           Authorization: `Bearer ${authToken}`,
         },
       });
+
     } catch (error) {
       console.error("Error al editar el perfil", error);
       i += 1;
@@ -135,6 +138,7 @@ const Profile = () => {
           Authorization: `Bearer ${authToken}`,
         },
       });
+
     } catch (error) {
       console.error("Error al editar la informacion de roomie", error);
       i += 1;
@@ -219,15 +223,18 @@ const Profile = () => {
   };
 
   // Cerrar el modal
-  const closeModal = () => {
-    setIntereses(confirmedInterests);
-    setIsModalOpen(false);
-  };
+  // Cerrar el modal de intereses sin confirmar cambios
+const closeModal = () => {
+  setTempSelectedInterests(confirmedInterests); // Restaura los intereses confirmados
+  setIsModalOpen(false); // Cierra el modal
+};
 
-  const closeModalP = () => {
-    setPreferencias(confirmedPreferences);
-    setIsModalOpenP(false);
-  };
+// Cerrar el modal de preferencias sin confirmar cambios
+const closeModalP = () => {
+  setTempSelectedPreferences(confirmedPreferences); // Restaura las preferencias confirmadas
+  setIsModalOpenP(false); // Cierra el modal
+};
+
 
   // Estado para almacenar el perfil antes de editar
   const [perfilBackup, setPerfilBackup] = useState(null);
@@ -239,27 +246,25 @@ const Profile = () => {
   // Función para alternar entre perfil y formulario
   const toggleEdit = () => {
     if (!isEditing) {
-      setPerfilBackup(profileData); // Guarda una copia del perfil antes de editar
-      setRoomieBackup(roomieData);
-    } else {
-      setPerfilBackup(null); // Restablece el backup si se cancela la edición
-      setRoomieBackup(null);
+      setPerfilBackup({ ...profileData }); // Crea una copia del perfil actual
+      setRoomieBackup({ ...roomieData }); // Crea una copia de roomieData
     }
-    setIsEditing(!isEditing); // Cambia entre vista y edición
+    setIsEditing(!isEditing); // Alterna entre vista y edición
   };
+  
 
   // Función para manejar el clic en el botón de cancelar
   const handleCancel = (e) => {
     e.preventDefault();
     if (perfilBackup) {
-      setProfileData(perfilBackup); // Restaurar el perfil a su estado antes de editar
+      setProfileData(perfilBackup); // Restaura desde el backup
     }
-
     if (roomieBackup) {
-      setRoomieBackup(roomieBackup); //
+      setRoomieData(roomieBackup); // Restaura desde el backup
     }
-    setIsEditing(false); // Volver a la vista del perfil
+    setIsEditing(false); // Sale del modo de edición
   };
+  
 
  
 
@@ -392,10 +397,10 @@ const Profile = () => {
               />
             </div>
   
-            <div className="flex justify-between gap-5">
+            <div className="flex justify-between gap-5 mt-5">
               {/* Intereses */}
-              <div className="mb-10">
-                <label className="block text-[#0092BC] font-bold mb-2">
+              <div className=" w-1/2 mb-10">
+                <label className={`${styles.accent} block font-bold mb-2 text-xl `}>
                   Intereses
                 </label>
                 <button
@@ -409,14 +414,14 @@ const Profile = () => {
                 {/* Mostrar intereses confirmados debajo */}
                 {inte.length > 0 && (
                   <div className="mt-4">
-                    <h3 className="text-black font-bold mb-2">
+                    <h3 className={`${styles.accent} font-bold mb-2`}>
                       Intereses seleccionados:
                     </h3>
                     <div className="flex flex-wrap gap-4">
                       {inte.map((Intereses) => (
                         <span
                           key={Intereses}
-                          className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                          className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
                         >
                           {Intereses}
                         </span>
@@ -427,8 +432,8 @@ const Profile = () => {
               </div>
   
               {/* preferncias */}
-              <div className="mb-10">
-                <label className="block text-[#0092BC] font-bold mb-2">
+              <div className="w-1/2 mb-10">
+                <label className={`${styles.accent} block font-bold mb-2 text-xl `}>
                   Preferencias
                 </label>
                 <button
@@ -442,14 +447,14 @@ const Profile = () => {
                 {/* Mostrar preferencias confirmados debajo */}
                 {pref.length > 0 && (
                   <div className="mt-4">
-                    <h3 className="text-black font-bold mb-2">
+                    <h3 className={`${styles.accent} font-bold mb-2`}>
                       Preferencias seleccionadas:
                     </h3>
                     <div className="flex flex-wrap gap-4">
                       {pref.map((Preferencias) => (
                         <span
                           key={Preferencias}
-                          className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                          className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
                         >
                           {Preferencias}
                         </span>
@@ -483,8 +488,8 @@ const Profile = () => {
         <div className="flex justify-between py-5">
           <section className="w-1/2">
           <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información Personal</h2>
-          <h3 className="font-bold text-lg mb-5" >Fecha de nacimiento:</h3>
-          <p className="text-xl" >{profileData.Fecha_Nacimiento}</p>
+          <h3 className="font-bold text-lg " >Fecha de nacimiento:</h3>
+          <p className="text-xl mb-3" >{profileData.Fecha_Nacimiento}</p>
   
           <h3 className="font-bold text-lg ">Género:</h3>
           <p className="text-xl mb-3" >{roomieData.Genero}</p>
@@ -506,16 +511,16 @@ const Profile = () => {
           </section>
         </div>
   
-        <div className="pt-5">
+        <div className="pt-5 ">
           <div className="Biografia">
-            <h2 className='font-bold text-lg mb-2'>Biografía</h2>
+            <h2 className={`${styles.accent} font-bold text-xl mb-2 `}>Biografía</h2>
             <p className={`text-black break-words bg-gray-300 rounded p-2 text-lg border border-gray-300 w-full max-w-[700px]`}>{roomieData.Biografia}</p>
           </div>
           
-          <div className="flex justify-between gap-5">
+          <div className="flex justify-between gap-5 mt-5">
             {/* Intereses */}
           <div className="w-1/2 mb-10">
-            <label className="block text-[#0092BC] font-bold mb-2">Intereses</label>
+            <label className={`${styles.accent} block font-bold mb-2 text-xl `}>Intereses</label>
             
   
           {/* Mostrar intereses confirmados debajo */}
@@ -525,7 +530,7 @@ const Profile = () => {
                   {inte.map((intereses) => (
                   <span
                     key={intereses}
-                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                    className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
                   >
                     {intereses}
                   </span>
@@ -539,7 +544,7 @@ const Profile = () => {
   
             { /*preferncias*/ }
        <div className="w-1/2 mb-10">
-          <label className="block text-[#0092BC] font-bold mb-2">Preferencias</label>
+          <label className={`${styles.accent} block font-bold mb-2 text-xl `}>Preferencias</label>
           
   
           {/* Mostrar intereses confirmados debajo */}
@@ -549,7 +554,7 @@ const Profile = () => {
                   {pref.map((preferencia) => (
                   <span
                     key={preferencia}
-                    className="bg-[#0092BC] text-white px-3 py-2 rounded-3xl"
+                    className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
                   >
                     {preferencia}
                   </span>
@@ -578,12 +583,11 @@ const Profile = () => {
                   type="button"
                   key={interest}
                   onClick={() => toggleInterest(interest)}
-                  className={` px-4 py-2 rounded-lg ${
+                  className={`flex justify-center items-center text-center px-4 py-2 rounded-xl whitespace-normal break-words ${
                     tempSelectedInterests.includes(interest)
                       ? "bg-[#0092BC] text-white"
                       : `${styles.btn} text-white`
                   }`}
-                  
                 >
                   
                   {interest}
@@ -593,8 +597,8 @@ const Profile = () => {
             <div className="flex justify-end p-5">
               <button
                 onClick={confirmInterests}
-                className="bg-[#0092BC]  hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2"
-              >
+                className="bg-[#0092BC]  hover:bg-[#007a9a] text-white font-bold py-1 text-center px-6 rounded-xl mr-2"
+              >  
                 Confirmar
               </button>
               <button
@@ -619,7 +623,7 @@ const Profile = () => {
                   type="button"
                   key={preference}
                   onClick={() => togglePrefrerences(preference)}
-                  className={` px-4 py-2 rounded-lg ${
+                  className={`flex justify-center items-center text-center px-4 py-2 rounded-xl whitespace-normal break-words ${
                     tempSelectedPreferences.includes(preference)
                       ? "bg-[#0092BC] text-white"
                       : `${styles.btn} text-white`

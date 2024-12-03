@@ -27,7 +27,7 @@ export function RoomieCard({
 }) {
 
   const { theme } = useContext(ThemeContext);
-    const styles = themeStyles[theme]; // Obtener estilos según el tema
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
     
   const [isFav, setIsFav] = useState(false); // Obtener el estado inicial de favoritos del localStorage
   const [idFav, setIdFav] = useState("");
@@ -79,6 +79,7 @@ export function RoomieCard({
   // Abrir el modal
   const openModal = () => {
     setIsModalOpen(true);
+    console.log(FotoPerfil)
   };
 
   // Cerrar el modal
@@ -167,9 +168,9 @@ export function RoomieCard({
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[850px] max-h-[90vh] overflow-y-auto`}>
                     <div className="flex items-center gap-6 mb-4">
-                        <img src={FotoPerfil} alt={`${Nombres} perfil`} className="rounded-full w-16 h-16" />
+                    <img src={Foto_perfil} alt="imagen de perfil" className="w-32 h-32 rounded-full "  />
                         <div className="flex flex-col">
-                            <h1 className="font-bold text-2xl">{Nombres}  {Apellidos} </h1>
+                            <h1 className={`${styles.text} font-bold text-2xl `}>{Nombres}  {Apellidos} </h1>
                             <p className="text-gray-500 text-2sm">{Correo}</p>
                         </div>
                     </div>
@@ -204,7 +205,7 @@ export function RoomieCard({
                             <h2 className="font-bold text-md">Intereses:</h2>
                             <div className="grid grid-cols-2 gap-2">
                                 {Intereses.map((interes, index) => (
-                                    <p key={index} className="text-sm bg-[#0092BC] text-white px-2 py-1 rounded-full">
+                                    <p key={index} className="text-sm bg-[#0092BC] font-bold text-center text-white px-2 py-1 mb-2 rounded-xl">
                                         {interes}
                                     </p>
                                 ))}
@@ -215,7 +216,7 @@ export function RoomieCard({
                             <h2 className="font-bold text-md">Preferencias:</h2>
                             <div className="grid grid-cols-2 gap-2">
                                 {Preferencias.map((preferencia, index) => (
-                                    <p key={index} className="text-sm bg-[#0092BC] text-white px-2 py-1 rounded-full">
+                                    <p key={index} className="text-sm bg-[#0092BC] font-bold text-center text-white px-2 py-1 mb-2 rounded-xl">
                                         {preferencia}
                                     </p>
                                 ))}
@@ -243,7 +244,7 @@ export function RoomieCard({
                         <button  type="submit" className="bg-[#0092BC] hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2" >
                             Enviar mensaje
                         </button>
-                        <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">Cancelar</button>
+                        <button onClick={closeModal} className=" bg-[#f00000] hover:bg-[#CA0C0CFF] text-white">Cancelar</button>
                     </div>
                     </form>
                     
