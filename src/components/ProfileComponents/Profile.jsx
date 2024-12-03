@@ -94,7 +94,7 @@ const Profile = () => {
       const userData = {
         Nombres: profileData.Nombres,
         Apellidos: profileData.Apellidos,
-        Correo: profileData.Apellidos,
+        Correo: profileData.Correo,
         Fecha_Nacimiento: profileData.Fecha_Nacimiento,
         Ano_Ingreso: profileData.Ano_Ingreso,
         Id_Carrera: parseInt(getId(profileData.NombreCarrera)),
