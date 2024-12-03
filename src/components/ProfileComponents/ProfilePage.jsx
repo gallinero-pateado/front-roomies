@@ -2,10 +2,10 @@ import React from "react";
 import Sidebar from "../NavComponents/Sidebar";
 import Profile from "./Profile";
 import Notification from "../NotificationComponents/Notifications";
+import cookie from "js-cookie";
 
 const PageProfile = () => {
-  const userId = localStorage.getItem("uid");
-
+  const id = parseInt(cookie.get("roomieId"));
   return (
     <div className="flex h-full min-h-screen">
       {/* Sidebar con margen derecho */}

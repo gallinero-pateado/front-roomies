@@ -8,10 +8,8 @@ const Notification = () => {
   const [message, setMessage] = useState("");
   const [recibidos, setRecibidos] = useState(0);
 
-  const id = parseInt(localStorage.getItem("roomieId")); // PARA PROBAR SIN LOGIN
-
   // DESCOMENTAR EN VERSIÓN FINAL
-  // const id = parseInt(Cookies.get('roomieId'));
+  const id = parseInt(Cookies.get("roomieId"));
 
   useEffect(() => {
     const fetchMessages = async () => {
