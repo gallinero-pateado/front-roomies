@@ -30,10 +30,6 @@ function App() {
       <Route path="fav" element={<Layout2><FavPage /></Layout2>} />
       <Route path="roomies" element={<Layout2><RoomiesList /></Layout2>} />
       <Route path="my-messages" element={<Layout2><Messpage /></Layout2>} />
- 
-     
-
-    
   </Routes>
   </Router>
   );
