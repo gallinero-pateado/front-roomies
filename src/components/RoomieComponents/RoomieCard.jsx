@@ -133,31 +133,31 @@ export function RoomieCard({
     setIsReportFormOpen(false);
   };
   return (
-    <article className={`${styles.card}  shadow-md rounded-lg p-4 min-w-[900px]`}>
-        <header className="flex items-center mb-4">
-            <img className="w-16 h-16 rounded-full mr-4" src={Foto_perfil} alt={`${Nombres} perfil`} />
-            <div>
+    <article className={`${styles.card} shadow-md rounded-lg p-4 w-full max-w-[900px] mx-auto`}>
+        <header className="flex flex-col sm:flex-row items-center mb-4">
+            <img className="w-16 h-16 rounded-full mr-4 mb-4 sm:mb-0" src={Foto_perfil} alt={`${Nombres} perfil`} />
+            <div className="text-center sm:text-left">
                 <strong>{Nombres} {Apellidos} </strong>
                 <p>{Correo}</p>
 
-                <p>{Biografia}</p>
+                <p className="text-sm sm:block hidden">{Biografia}</p>
                 <span className="text-sm text-gray-500">Ubicación: {Ubicacion}</span>
             </div>
         </header>
 
-        <aside className="flex justify-between">
+        <aside className="flex flex-col sm:flex-row justify-between sm:items-center">
             <button
-                className={`py-2 px-4 rounded ${isFav ? 'bg-[#FFD166] text-[#1D4157]' : 'bg-gray-200 text-black'}`}
+                className={`py-2 px-4 rounded mb-2 sm:mb-0 ${isFav ? 'bg-[#FFD166] text-[#1D4157]' : 'bg-gray-200 text-black'}`}
                 onClick={handleClick}
             >
                 {isFav ? 'Favorito' : 'Agregar a Favoritos'}
             </button>
-            <div >
-            <button type="button" className="py-2 px-4 bg-[#0092BC] text-white rounded" onClick={openModal}>
+            <div className="flex flex-col sm:flex-row gap-4" >
+            <button type="button" className="py-2 px-4 bg-[#0092BC] text-white rounded sm:mb-0" onClick={openModal}>
                 Ver perfil
             </button>
             <button onClick={openReportForm}
-                        className=" ml-6 py-2 px-4 text-white rounded bg-gray-500 hover:bg-gray-700">
+                        className="py-2 px-4 text-white rounded bg-gray-500 hover:bg-gray-700">
                         Reportar
             </button>
             </div>
@@ -166,29 +166,29 @@ export function RoomieCard({
 
         {isModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[850px] max-h-[90vh] overflow-y-auto`}>
+                <div className={`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg sm:max-w-2xl lg:max-w-4xl min-w-[300px] max-h-[90vh] overflow-y-auto`}>
                     <div className="flex items-center gap-6 mb-4">
-                    <img src={Foto_perfil} alt="imagen de perfil" className="w-32 h-32 rounded-full "  />
+                    <img src={Foto_perfil} alt="imagen de perfil" className="w-32 h-32 rounded-full"  />
                         <div className="flex flex-col">
                             <h1 className={`${styles.text} font-bold text-2xl `}>{Nombres}  {Apellidos} </h1>
                             <p className="text-gray-500 text-2sm">{Correo}</p>
                         </div>
                     </div>
 
-                    <div className="flex flex-w mb-4 text-center">
-                    <div className="w-1/4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-center">
+                    <div >
                             <h2 className="font-bold text-md">Ubicacion</h2>
                             <p className="text-md">{Ubicacion}</p>
                         </div>
-                        <div className="w-1/4">
+                        <div >
                             <h2 className="font-bold text-md">Genero</h2>
                             <p className="text-md">{Genero}</p>
                         </div>
-                        <div className="w-1/4">
+                        <div >
                             <h2 className="font-bold text-md">Carrera</h2>
                             <p className="text-md">{Id_carrera}</p>
                         </div>
-                        <div className="w-1/4">
+                        <div >
                             <h2 className="font-bold text-md">Año de ingreso</h2>
                             <p className="text-md">{Ano_Ingreso}</p>
                         </div>
@@ -200,8 +200,8 @@ export function RoomieCard({
                         <p className="text-md text-justify">{Biografia}</p>
                     </div>
 
-                    <div className="flex gap-4 mb-4">
-                        <div className="w-1/2">
+                    <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                        <div className="w-full sm:w-1/2">
                             <h2 className="font-bold text-md">Intereses:</h2>
                             <div className="grid grid-cols-2 gap-2">
                                 {Intereses.map((interes, index) => (
@@ -212,7 +212,7 @@ export function RoomieCard({
                             </div>
                         </div>
 
-                        <div className="w-1/2">
+                        <div className="w-full sm:w-1/2">
                             <h2 className="font-bold text-md">Preferencias:</h2>
                             <div className="grid grid-cols-2 gap-2">
                                 {Preferencias.map((preferencia, index) => (
@@ -224,6 +224,7 @@ export function RoomieCard({
                         </div>
                     </div>
 
+                    {/*Formulario de mensaje */}
                     <form onSubmit={sendMessage} >
                     <div className="mb-4 flex flex-col">
                         <label htmlFor="Asunto" className="font-bold">Asunto:</label>

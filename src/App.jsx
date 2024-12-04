@@ -26,16 +26,13 @@ function App() {
     </Route>
 
   
-    <Route path="/" element={<Layout2 />}>
-      <Route path="/profile" element={  <PageProfile /> } /> 
-      <Route path="fav" element={<FavPage />} />
-      <Route path="roomies" element={<RoomiesList />} />
-      <Route path="my-messages" element={<Messpage />} />
-    </Route>
+      <Route path="/profile" element={<Layout2><PageProfile /></Layout2> } /> 
+      <Route path="fav" element={<Layout2><FavPage /></Layout2>} />
+      <Route path="roomies" element={<Layout2><RoomiesList /></Layout2>} />
+      <Route path="my-messages" element={<Layout2><Messpage /></Layout2>} />
+ 
      
 
-      {/*Redirecciona al main pague para elegir servicio */}
-    <Route path="main" element={<MainPage />} />
     
   </Routes>
   </Router>

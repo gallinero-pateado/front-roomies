@@ -53,7 +53,7 @@ const Filter = ({ onFilter }) => {
   };
   
   return (
-    <div className={`${styles.card}  w-64  ${styles.inputBorder} rounded-lg p-4 shadow-md`}>
+    <div className={`${styles.card}  w-full  ${styles.inputBorder} rounded-lg p-4 shadow-md`}>
       <h2 className={`${styles.text} text-xl font-semibold mb-4 `}>Filtrar Roomies</h2>
 
       <div className="mb-4">

@@ -1,21 +1,47 @@
-import React, { useContext } from 'react';
-import { Outlet, useLocation, NavLink } from 'react-router-dom';
+import React, { useContext,useState, useEffect } from 'react';
+import { Outlet, useLocation, NavLink, Link } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
 import Notification from '../NotificationComponents/Notifications';
 import DarkModeToggle from '../DarkModeToggle';
+import themeStyles from "../Const/themes";
+import { Menu, X, ChevronRight } from 'lucide-react';
 import Cookies from 'js-cookie';
 
-const Layout2 = () => {
+const Layout2 = ({children}) => {
   const { theme } = useContext(ThemeContext);
+  const styles = themeStyles[theme]; // Obtener estilos según el tema
+
   const location = useLocation(); // Para conocer la ruta actual
 
-  // Verifica si la ruta actual pertenece a alguna sección del Sidebar
-  const isSidebarActive = ['/profile', '/fav', '/my-messages'].some((path) =>
-    location.pathname.startsWith(path)
-  );
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
- 
+  
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setIsMenuOpen(false);
+    }, 150);
 
+    return () => clearTimeout(timer);
+}, [location.pathname]);
+
+useEffect(() => {
+  const token = Cookies.get("authToken") || undefined;
+
+  if (!token) {
+    // Redirigir si el token no existe
+    window.location.href = "https://ulink.tssw.info";
+  }
+}, []);
+
+const toggleMenu = () => {
+  setIsMenuOpen(!isMenuOpen);
+};
+
+const toggleSubMenu = () => {
+  setIsSubMenuOpen(!isSubMenuOpen); // Alternar la visibilidad del submenú
+};
 
   const Logout =() =>{
 
@@ -43,62 +69,95 @@ const Layout2 = () => {
   });
   }
   return (
-    <div className={`flex flex-col min-h-screen font-ubuntu ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-[#DAEDF2] text-black'}`}>
+    <div className={`flex flex-col min-h-screen font-ubuntu  ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-[#DAEDF2] text-black'} transition-colors duration-300`}>
       {/* Header */}
-      <header className="bg-[#0092BC] text-white p-6">
+      <header className="bg-[#0092BC] text-white p-6 relative z-20">
         <div className="flex justify-between items-center mx-auto">
-          <h1 className="text-5xl font-bold italic">ULINK</h1>
+          <Link to="/main" className="text-5xl font-bold italic">ULINK</Link>
           
           <div className='flex '>
-            <DarkModeToggle  />     
-            <NavLink
-              to="/roomies"
-              className={({ isActive }) =>
-                isActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-5 py-3 rounded  ml-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
-              }
-            >
-              Roomies
-            </NavLink>
-            <NavLink
-              to="/profile"
-              className={() =>
-                isSidebarActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded ml-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
-              }
-            >
-              Perfil
-            </NavLink>
-            <NavLink
-              to="/main"
-              className={({ isActive }) =>
-                isActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-8 py-3 rounded ml-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
-              }
-            >
-              Volver
-            </NavLink>
+            <div><DarkModeToggle  /></div>
 
-            <NavLink
-              to="https://ulink.tssw.info"
-              className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-              onClick={Logout}>
-              Cerrar sesion
-              </NavLink>
+            <button
+                            onClick={toggleMenu}
+                            className={`p-2 ${styles.menuButton} rounded-full`}
+                        >
+                            {isMenuOpen ?
+                                <X color={styles.menuButtonIcon} size={32} /> :
+                                <Menu color={styles.menuButtonIcon} size={32} />
+                            }
+            </button>
+
+            {/* Sidebar Menu */}
+            {isMenuOpen && (
+                <div className="fixed top-0 right-0 h-full w-64 bg-[#0092BC] text-white shadow-lg z-30 flex flex-col p-6 transition-transform duration-300">
+                    {/* Perfil con Submenú */}
+                <div>
+                  <p
+                    onClick={toggleSubMenu}
+                    className=" cursor-pointer block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                  >
+                    Perfil
+                  </p>
+                  {isSubMenuOpen && (
+                    <div className="pl-4">
+                      <Link
+                        to="/profile"
+                        className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                      >
+                        - Mi Perfil
+                      </Link>
+                      <Link
+                        to="/fav"
+                        className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                      >
+                         - Favoritos
+                      </Link>
+                      <Link
+                        to="/my-messages"
+                        className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                      >
+                        - Mensajes
+                      </Link>
+                    </div>
+                  )}
+                </div>
+                    <Link
+                        to="/roomies"
+                        className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                    >
+                        Roomies
+                    </Link>
+                    <a
+                        href="https://ulink.tssw.info/unificacion"
+                        className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                    >
+                        Volver Atras
+                    </a>
+                    <Link
+                        to="https://ulink.tssw.info"
+                        className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                        onClick={Logout}
+                    >
+                        Salir
+                    </Link>
+
+                    <ChevronRight
+                        onClick={toggleMenu}
+                        className="mt-auto self-end cursor-pointer hover:text-[#DAEDF2] transition duration-300"
+                        size={24}
+                        color="white"
+                    />
+                </div>
+            )}
           </div>
         </div>
       </header>
 
       {/* Body */}
-      <main className="flex-grow flex flex-col md:flex-row container mx-auto my-8 w-full">
-        <div className="flex flex-col items-start max-w-3xl w-full">
-          <Outlet /> {/* Aquí se renderizarán los componentes de las rutas internas */}
-        </div>
-      </main>
-
+      <main className="flex-grow">
+                {children}
+            </main>
       {/* Footer */}
       <footer className="bg-[#0092BC] text-white text-center p-2">
         <p>Desarrollado por estudiantes UTEM</p>

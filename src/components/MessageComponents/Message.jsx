@@ -38,7 +38,7 @@ const Message = () => {
 
   return (
     <section className="flex flex-wrap gap-4 p-4">
-      <div className="flex gap-10">
+      <div className="flex justify-center items-center gap-10 w-full flex-col sm:flex-row">
         <button
           className={
             page
