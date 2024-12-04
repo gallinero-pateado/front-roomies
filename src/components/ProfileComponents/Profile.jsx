@@ -22,6 +22,7 @@ const Profile = () => {
   const [inte, setIntereses] = useState([]);
   const [pref, setPreferencias] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(true);
 
   const uid = Cookies.get('uid');
   const roomieId = Cookies.get("roomieId");
@@ -55,6 +56,8 @@ const Profile = () => {
         console.log(roomieData);  
       } catch (error) {
         console.error("Error al obtener los datos", error);
+      }finally {
+        setIsLoading(false); // Finaliza la carga
       }
     };
 
@@ -281,9 +284,9 @@ const closeModalP = () => {
     window.location.reload();
   };
   
-  
-
- 
+  if (isLoading) {
+    return <div>cargando perfil de roomie</div>; // Mostrar un indicador de carga mientras verifica
+  }
 
   return (
     <main className={`${styles.card} shadow-md rounded-lg p-4 sm:p-8 lg:p-20 w-full`}  >  
@@ -548,7 +551,7 @@ const closeModalP = () => {
           {/* Mostrar intereses confirmados debajo */}
           {inte.length > 0 && (
                 <div className="mt-4 ">
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-wrap gap-4">
                   {inte.map((intereses) => (
                   <span
                     key={intereses}
@@ -571,19 +574,22 @@ const closeModalP = () => {
   
           {/* Mostrar intereses confirmados debajo */}
           {pref.length > 0 && (
-                <div className="mt-4 ">
-                  <div className="grid grid-cols-2 gap-2">
-                  {pref.map((preferencia) => (
-                  <span
-                    key={preferencia}
-                    className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
-                  >
-                    {preferencia}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+                  <div className="mt-4">
+                    <h3 className={`${styles.accent} font-bold mb-2`}>
+                      Preferencias seleccionadas:
+                    </h3>
+                    <div className="flex flex-wrap gap-4">
+                      {pref.map((Preferencias) => (
+                        <span
+                          key={Preferencias}
+                          className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
+                        >
+                          {Preferencias}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
   
               

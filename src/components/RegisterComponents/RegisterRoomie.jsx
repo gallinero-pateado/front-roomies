@@ -17,6 +17,8 @@ const RegisterRoomie = () => {
     path: "/", // Cookie available across the entire site
   };
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const { theme } = useContext(ThemeContext);
   const styles = themeStyles[theme]; // Obtener estilos según el tema
 
@@ -70,11 +72,15 @@ const RegisterRoomie = () => {
         }
       } catch (error) {
         console.error("Error al encontrar usuario roomie:", error);
+      }finally {
+        setIsLoading(false); // Finaliza la carga
       }
     };
   
     checkRoomie();
   }, [user, navigate]); // Ejecutar solo cuando `user` o `navigate` cambien
+
+ 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -231,6 +237,10 @@ const RegisterRoomie = () => {
   const closeModalP = () => {
     setIsModalOpenP(false);
   };
+
+  if (isLoading) {
+    return <div>Verificando perfil de roomie</div>; // Mostrar un indicador de carga mientras verifica
+  }
 
   return (
     <div  className={`min-h-screen flex items-center justify-center  `}>
