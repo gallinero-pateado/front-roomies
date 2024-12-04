@@ -6,7 +6,9 @@ const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
 
   return (
-    <aside className={`rounded-lg p-5 h-[450px] w-[250px] text-center float-left ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-[#0092BC] text-black'}`}>
+    <aside 
+      className={`rounded-lg p-5 h-[450px] w-[250px] text-center float-left ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-[#0092BC] text-black'} lg:block hidden`}
+    >
       <section className="pt-7 text-xl">
         <ul className="list-none">
           <li className="pb-4 font-bold text-left">

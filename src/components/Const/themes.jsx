@@ -8,7 +8,9 @@ const themeStyles = {
       inputText: "text-black",
       inputBorder: "border-gray-300",
       card: "bg-white",
-      btn: "bg-gray-500"
+      btn: "bg-gray-500",
+      menuButton: 'bg-[#DAEDF2]',
+      menuButtonIcon: '#0092BC',
 
     },
     dark: {
@@ -19,7 +21,10 @@ const themeStyles = {
       inputText: "text-black",
       inputBorder: "border-gray-600",
       card: "bg-gray-800",
-      btn: "bg-gray-500"
+      btn: "bg-gray-500",
+      menuButton: 'bg-gray-700',
+      menuButtonIcon: '#ffffff',
+
     },
   };
 

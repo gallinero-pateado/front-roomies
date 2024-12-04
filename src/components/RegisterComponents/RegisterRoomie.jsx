@@ -53,7 +53,8 @@ const RegisterRoomie = () => {
     };
   
     fetchUser();
-  }, [uid]); // Ejecutar solo cuando `uid` cambia
+  }, [uid]); 
+   // Ejecutar solo cuando `uid` cambia
   
   useEffect(() => {
     const checkRoomie = async () => {
@@ -392,8 +393,8 @@ const RegisterRoomie = () => {
 
       {/* Modal para seleccionar intereses */}
       {isModalOpen && (
-        <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
-          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] `}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px]  `}>
             <h2 className="text-2xl font-bold mb-4">
               Selecciona tus intereses
             </h2>

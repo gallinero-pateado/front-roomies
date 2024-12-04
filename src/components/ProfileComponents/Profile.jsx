@@ -51,8 +51,8 @@ const Profile = () => {
         setRoomieData(roomieData);
         setIntereses(interesesArray);
         setPreferencias(preferencesArray);
-        console.log(profileData)
-        console.log(roomieData);
+        console.log(profileData);
+        console.log(roomieData);  
       } catch (error) {
         console.error("Error al obtener los datos", error);
       }
@@ -76,14 +76,17 @@ const Profile = () => {
   // Función para manejar los cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
     setProfileData({
       ...profileData, // Crea una copia del estado actual del perfil
       [name]: value, // Actualiza el campo correspondiente
     });
+    
     setRoomieData({
       ...roomieData,
       [name]: value,
     });
+    
   };
 
   // Función para manejar el envío del formulario
@@ -99,7 +102,7 @@ const Profile = () => {
         Correo: profileData.Correo,
         Fecha_Nacimiento: profileData.Fecha_Nacimiento,
         Ano_Ingreso: profileData.Ano_Ingreso,
-        Id_Carrera: parseInt(getId(profileData.NombreCarrera)),
+        Id_Carrera: parseInt(profileData.Id_carrera),
         Foto_Perfil: profileData.Foto_Perfil,
         Id_Estado_Usuario: profileData.Id_Estado_Usuario,
         Rol:profileData.Rol,
@@ -170,6 +173,7 @@ const Profile = () => {
         progress: undefined,
       });
     }
+
   };
 
   //modal para manejar las etiquetas de int y pref
@@ -261,40 +265,51 @@ const closeModalP = () => {
   // Función para manejar el clic en el botón de cancelar
   const handleCancel = (e) => {
     e.preventDefault();
+  
+    // Si tienes backups de los intereses (confirmados antes de la edición), restaura esos
     if (perfilBackup) {
-      setProfileData(perfilBackup); // Restaura desde el backup
+      setProfileData(perfilBackup); // Restaura el perfil a su estado original
+      setRoomieBackup(roomieBackup); 
     }
-    if (roomieBackup) {
-      setRoomieData(roomieBackup); // Restaura desde el backup
-    }
-    setIsEditing(false); // Sale del modo de edición
+  
+    // Aquí se asegura de restaurar los intereses y preferencias confirmados antes de la edición.
+    setTempSelectedInterests(confirmedInterests); // Restauramos los intereses previos a la edición
+    setTempSelectedPreferences(confirmedPreferences); // Restauramos las preferencias previas a la edición
+    
+    // También puedes limpiar cualquier cambio temporal en otros datos si es necesario
+    setIsEditing(false); // Salir del modo de edición
+    window.location.reload();
   };
+  
   
 
  
 
   return (
-    <aside className={`${styles.card} shadow-md rounded-lg p-20 min-w-[900px] f`}  >
-  
+    <main className={`${styles.card} shadow-md rounded-lg p-4 sm:p-8 lg:p-20 w-full`}  >  
       <ToastContainer />
       {/*si isEditing es true, mostrara el formulario*/}
       {isEditing ? (
-        <form onSubmit={handleSubmit} >
-          <div className="flex items-center gap-8 ">
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-4" >
+          <div className="flex flex-col sm:flex-row items-center gap-8 ">
             <img
               src={profileData.Foto_Perfil }
               alt="imagen de perfil"
               className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-300 object-cover mb-4"
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1">
               <h2 className={`${styles.text}  font-bold text-lg mb-1`}>
                 {profileData.Nombres} {profileData.Apellidos}
               </h2>
               <p className="text-gray-500">{profileData.Correo}</p>
             </div>
+            <div>
+              
+            </div>
+            <div className="flex flex-col">
             <button
               type="submit"
-              className="bg-[#0091BD] hover:bg-[#0B6985FF] text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
+              className="bg-[#0091BD] hover:bg-[#0B6985FF] mb-2 text-white font-bold py-4 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300"
             >
               Confirmar
               {console.log(profileData)}
@@ -305,10 +320,12 @@ const closeModalP = () => {
             >
               Cancelar
             </button>
+            </div>
+            
           </div>
   
-          <div className="flex justify-between py-5">
-            <section className="w-1/2 flex flex-col pr-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section className="w-full  flex flex-col pr-10">
               <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información Personal</h2>
               <h3 className={`${styles.text} font-bold text-lg mb-1`}>Fecha de nacimiento:</h3>
               <p className="text-lg">{profileData.Fecha_Nacimiento}</p>
@@ -346,7 +363,7 @@ const closeModalP = () => {
               </select>
             </section>
   
-            <section className="w-1/2 flex flex-col ">
+            <section className="w-full  flex flex-col">
               <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información académica</h2>
               <h3 className={`${styles.text} font-bold text-lg mb-1`}>Universidad:</h3>
               <p className="text-lg">Universidad Tecnologica Metropolitana</p>
@@ -356,9 +373,9 @@ const closeModalP = () => {
               </label>
               <select
                 className={`${styles.inputBg} shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500`}
-                name="Id_Carrera"
-                id="Id_Carrera"
-                value={profileData.Id_Carrera}
+                name="Id_carrera"
+                id="Id_carrera"
+                value={profileData.Id_carrera}
                 onChange={handleChange}
               >
                 {carreras.map((carreraa) => (
@@ -475,7 +492,7 @@ const closeModalP = () => {
         <div >
         {/*Si isEditing es false, se mostrara la vista de perfil*/ }
           
-        <div className="flex items-center gap-8 ">
+        <div className="flex flex-col sm:flex-row items-center gap-8">
           <img src={profileData.Foto_Perfil } alt="" className='w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-300 object-cover mb-4'/>
           <div className="flex flex-col">
             <h2 className="font-bold text-xl mb-1">{profileData.Nombres} {profileData.Apellidos}</h2>
@@ -490,8 +507,8 @@ const closeModalP = () => {
         </button>
         </div>
   
-        <div className="flex justify-between py-5">
-          <section className="w-1/2">
+        <div className="flex flex-col sm:flex-row justify-between py-5">
+          <section className="w-full sm:w-1/2">
           <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información Personal</h2>
           <h3 className="font-bold text-lg " >Fecha de nacimiento:</h3>
           <p className="text-xl mb-3" >{profileData.Fecha_Nacimiento}</p>
@@ -503,7 +520,7 @@ const closeModalP = () => {
           <p className="text-xl mb-3" >{roomieData.Ubicacion}</p>
           </section>
   
-          <section className="w-1/2">
+          <section className="w-full sm:w-1/2">
             <h2 className={`${styles.accent} font-bold mb-6 text-xl text-center`}>Información académica</h2>
             <h3 className="font-bold text-lg ">Universidad:</h3>
             <p className="text-xl mb-3">Universidad Tecnologica Metropolitana</p>
@@ -607,7 +624,9 @@ const closeModalP = () => {
                 Confirmar
               </button>
               <button
-                onClick={closeModal}
+                onClick={() => {
+                  closeModal(); // Restablece los intereses seleccionados al estado inicial
+                }}
                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
               >
                 Cancelar
@@ -657,7 +676,7 @@ const closeModalP = () => {
           </div>
         </div>
       )}
-    </aside>
+    </main>
   );
   };
   export default Profile;

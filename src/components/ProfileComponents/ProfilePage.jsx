@@ -5,18 +5,18 @@ import Notification from "../NotificationComponents/Notifications";
 import cookie from "js-cookie";
 
 const PageProfile = () => {
-  const id = parseInt(cookie.get("roomieId"));
+
   return (
-    <div className="flex h-full min-h-screen">
+    <aside className="flex flex-col lg:flex-row mx-auto w-full max-w-screen-xl mt-10">
       {/* Sidebar con margen derecho */}
-      <div className="w-1/4 h-full">
+      <div className="lg:w-1/4 w-full">
         <Sidebar />
       </div>
       {/* Profile con separación */}
-      <div className="w-3/4 h-full px-10  ">
+      <div className="lg:w-3/4 w-full px-4 lg:px-10">
         <Profile />
       </div>
-    </div>
+    </aside>
   );
 };
 
