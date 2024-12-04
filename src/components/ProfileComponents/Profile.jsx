@@ -548,7 +548,7 @@ const closeModalP = () => {
           {/* Mostrar intereses confirmados debajo */}
           {inte.length > 0 && (
                 <div className="mt-4 ">
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-wrap gap-4">
                   {inte.map((intereses) => (
                   <span
                     key={intereses}
@@ -571,19 +571,22 @@ const closeModalP = () => {
   
           {/* Mostrar intereses confirmados debajo */}
           {pref.length > 0 && (
-                <div className="mt-4 ">
-                  <div className="grid grid-cols-2 gap-2">
-                  {pref.map((preferencia) => (
-                  <span
-                    key={preferencia}
-                    className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
-                  >
-                    {preferencia}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+                  <div className="mt-4">
+                    <h3 className={`${styles.accent} font-bold mb-2`}>
+                      Preferencias seleccionadas:
+                    </h3>
+                    <div className="flex flex-wrap gap-4">
+                      {pref.map((Preferencias) => (
+                        <span
+                          key={Preferencias}
+                          className="bg-[#0092BC] font-bold text-center text-white px-3 py-1 mb-2 rounded-xl"
+                        >
+                          {Preferencias}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
   
               
