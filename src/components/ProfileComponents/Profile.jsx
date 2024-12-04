@@ -288,9 +288,6 @@ const closeModalP = () => {
     return <div>cargando perfil de roomie</div>; // Mostrar un indicador de carga mientras verifica
   }
 
-
- 
-
   return (
     <main className={`${styles.card} shadow-md rounded-lg p-4 sm:p-8 lg:p-20 w-full`}  >  
       <ToastContainer />
