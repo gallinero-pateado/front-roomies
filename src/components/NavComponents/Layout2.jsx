@@ -26,14 +26,14 @@ const Layout2 = ({children}) => {
     return () => clearTimeout(timer);
 }, [location.pathname]);
 
-/*useEffect(() => {
+useEffect(() => {
   const token = Cookies.get("authToken") || undefined;
 
   if (!token) {
     // Redirigir si el token no existe
     window.location.href = "https://ulink.tssw.info";
   }
-}, []);*/
+}, []);
 
 const toggleMenu = () => {
   setIsMenuOpen(!isMenuOpen);

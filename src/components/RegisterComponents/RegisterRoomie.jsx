@@ -394,22 +394,21 @@ const RegisterRoomie = () => {
       {/* Modal para seleccionar intereses */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px]  `}>
-            <h2 className="text-2xl font-bold mb-4">
-              Selecciona tus intereses
-            </h2>
+           <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px] `}>
+            <h2 className={`${styles.accent} text-2xl font-bold mb-4"`}>Selecciona tus intereses</h2>
             <div className="grid grid-cols-5 gap-4 ">
-              {intereses.map((interest) => (
+            {intereses.map((interest) => (
                 <button
                   type="button"
                   key={interest}
                   onClick={() => toggleInterest(interest)}
-                  className={` px-4 py-2 rounded-lg ${
+                  className={`flex justify-center items-center text-center px-4 py-2 rounded-xl whitespace-normal break-words ${
                     tempSelectedInterests.includes(interest)
                       ? "bg-[#0092BC] text-white"
                       : `${styles.btn} text-white`
                   }`}
                 >
+                  
                   {interest}
                 </button>
               ))}
@@ -417,12 +416,14 @@ const RegisterRoomie = () => {
             <div className="flex justify-end p-5">
               <button
                 onClick={confirmInterests}
-                className="bg-[#0092BC]  hover:bg-[#007a9a] text-white font-bold py-2 px-4 rounded-lg mr-2"
-              >
+                className="bg-[#0092BC]  hover:bg-[#007a9a] text-white font-bold py-1 text-center px-6 rounded-xl mr-2"
+              >  
                 Confirmar
               </button>
               <button
-                onClick={closeModal}
+                onClick={() => {
+                  closeModal(); // Restablece los intereses seleccionados al estado inicial
+                }}
                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
               >
                 Cancelar
@@ -433,8 +434,8 @@ const RegisterRoomie = () => {
       )}
 
       {isModalOpenP && (
-        <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
-          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[900px] `}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className= {`${styles.card} rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[700px]`}>
             <h2 className="text-2xl font-bold mb-4">
               Selecciona tus preferencias
             </h2>
