@@ -22,6 +22,7 @@ const Profile = () => {
   const [inte, setIntereses] = useState([]);
   const [pref, setPreferencias] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(true);
 
   const uid = Cookies.get('uid');
   const roomieId = Cookies.get("roomieId");
@@ -55,6 +56,8 @@ const Profile = () => {
         console.log(roomieData);  
       } catch (error) {
         console.error("Error al obtener los datos", error);
+      }finally {
+        setIsLoading(false); // Finaliza la carga
       }
     };
 
@@ -281,7 +284,10 @@ const closeModalP = () => {
     window.location.reload();
   };
   
-  
+  if (isLoading) {
+    return <div>cargando perfil de roomie</div>; // Mostrar un indicador de carga mientras verifica
+  }
+
 
  
 
