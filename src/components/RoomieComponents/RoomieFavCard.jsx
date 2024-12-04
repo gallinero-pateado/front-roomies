@@ -127,17 +127,19 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
   };
 
   return (
-    <article className={`${styles.card}  shadow-md rounded-lg p-4 min-w-[900px]`}>
-        <header className="flex items-center mb-4">
-            <img className="w-16 h-16 rounded-full mr-4" src={user.Foto_Perfil} alt={`${user.Nombres} perfil`} />
-            <div>
-                <strong className="font-bold text-xl mb-1">{user.Nombres} {user.Apellidos}</strong>
+    <article className={`${styles.card} shadow-md rounded-lg p-4 w-full max-w-[900px] mx-auto`}>
+         <header className="flex flex-col sm:flex-row items-center mb-4">
+            <img className="w-16 h-16 rounded-full mr-4 mb-4 sm:mb-0" src={user.Foto_perfil} alt={`${user.Nombres} perfil`} />
+            <div className="text-center sm:text-left">
+                <strong>{user.Nombres} {user.Apellidos} </strong>
                 <p>{user.Correo}</p>
-                <span className="text-sm text-gray-500">{roomie.Biografia}</span>
+
+                <p className="text-sm sm:block hidden">{roomie.Biografia}</p>
+                <span className="text-sm text-gray-500">Ubicación: {roomie.Ubicacion}</span>
             </div>
         </header>
 
-        <aside className="flex justify-between">
+        <aside className="flex justify-between mb-4">
             <button
                 className={`py-2 px-4 rounded bg-[#FFD166] text-[#1D4157]`}
                 onClick={handleClick}
@@ -151,7 +153,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
 
         {isModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg min-w-[850px] max-h-[90vh] overflow-y-auto`}>
+                <div className={`${styles.card}  rounded-lg shadow-lg p-5 w-full max-w-lg sm:max-w-2xl lg:max-w-4xl min-w-[300px] max-h-[90vh] overflow-y-auto`}>
                     <div className="flex items-center gap-6 mb-4">
                         <img src={user.Foto_Perfil} alt="imagen de perfil" className="w-32 h-32 rounded-full "  />
                         <div className="flex flex-col ml-4">
@@ -161,15 +163,15 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
                     </div>
 
                     <div className="flex flex-w mb-4 text-center">
-                        <div className="w-1/3">
+                        <div className="w-full sm:w-1/3 mb-4 sm:mb-0">
                             <h2 className="font-bold text-md">Genero</h2>
                             <p className="text-md">{roomie.Genero}</p>
                         </div>
-                        <div className="w-1/3">
+                        <div className="w-full sm:w-1/3 mb-4 sm:mb-0">
                             <h2 className="font-bold text-md">Carrera</h2>
                             <p className="text-md">{user.Id_carrera}</p>
                         </div>
-                        <div className="w-1/3">
+                        <div className="w-full sm:w-1/3 mb-4 sm:mb-0">
                             <h2 className="font-bold text-md">Año de ingreso</h2>
                             <p className="text-md">{user.Ano_ingreso}</p>
                         </div>
@@ -182,7 +184,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
                     </div>
 
                     <div className="flex gap-4 mb-4">
-                        <div className="w-1/2">
+                        <div className="w-full sm:w-1/2 mb-4 sm:mb-0">
                             <h2 className="font-bold text-md">Intereses:</h2>
                             <div className="grid grid-cols-2 gap-2">
                                 {intereses.map((interes, index) => (
@@ -193,7 +195,7 @@ export function RoomieFavCard({ IdFavorito, UsuarioId, UsuarioFavoritoId }) {
                             </div>
                         </div>
 
-                        <div className="w-1/2">
+                        <div className="w-full sm:w-1/2">
                             <h2 className="font-bold text-md">Preferencias:</h2>
                             {preferencias.map((preferencia, index) => (
                                     <p key={index} className="text-sm bg-[#0092BC] text-white px-2 py-1 rounded">

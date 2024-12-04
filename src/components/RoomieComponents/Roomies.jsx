@@ -101,22 +101,22 @@ export function RoomiesList() {
   };
 
   return (
-    <section className="flex p-4 gap-4">
-      <div className="w-1/4">
+    <main className="flex flex-col sm:flex-row p-4 gap-4">
+      <div className="w-full sm:w-1/4  mb-4 md:mb-0 ">
         {/*Barra de busqueda*/}
         <input
           type="text"
           placeholder="Buscar usuario..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className={`${styles.inputBg} ${styles.inputText} mb-4 rounded py-2 px-2`}
+          className={`${styles.inputBg} ${styles.inputText} mb-4 rounded py-2 px-2 w-full`}
         />
 
         {/*filtro*/}
         <Filter onFilter={handleFilter} />
       </div>
 
-      <div className="w-3/4">
+      <div className="w-full sm:w-3/4">
         {/*Lista de usuarios*/}
 
         {filteredUsers.map((user) => (
@@ -151,7 +151,7 @@ export function RoomiesList() {
           </div>
         ))}
       </div>
-    </section>
+    </main>
   );
 }
 export default RoomiesList;
