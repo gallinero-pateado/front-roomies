@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
-import { Outlet,NavLink } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import DarkModeToggle from "../DarkModeToggle";
-import themeStyles from "../Const/themes"
+import themeStyles from "../Const/themes";
 const apiurl = "https://api-roomies.tssw.info";
-
-
 
 const Layout = () => {
   const { theme } = useContext(ThemeContext);
@@ -20,15 +18,15 @@ const Layout = () => {
           <h1 className="text-5xl font-bold italic">ULINK</h1>
           <DarkModeToggle />
           <NavLink
-              to="https://ulink.tssw.info/unificacion"
-              className={({ isActive }) =>
-                isActive
-                  ? 'border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-5 py-3 rounded  ml-5 font-bold italic text-lg'
-                  : 'text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300'
-              }
-            >
-              Volver
-            </NavLink>
+            to="https://ulink.tssw.info/unificacion"
+            className={({ isActive }) =>
+              isActive
+                ? "border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-5 py-3 rounded  ml-5 font-bold italic text-lg"
+                : "text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300"
+            }
+          >
+            Volver
+          </NavLink>
         </div>
       </header>
       {/* Body */}
@@ -44,7 +42,6 @@ const Layout = () => {
         <p>tallersistemasdesoftware@utem.cl / Teléfono (---) --- --- ---</p>
         <p>&copy; 2024 ULINK. Todos los derechos reservados.</p>
       </footer>
-
     </div>
   );
 };
