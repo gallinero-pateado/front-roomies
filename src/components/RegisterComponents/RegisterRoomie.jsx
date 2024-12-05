@@ -41,10 +41,10 @@ const RegisterRoomie = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        if(!uid || !authToken){
-          console.log('Falta el Id o el authtoken, por favor iniciar sesion denuevo');
-          window.location.href = 'https://ulink.tssw.info'
-        }
+        // if(!uid || !authToken){
+        //   console.log('Falta el Id o el authtoken, por favor iniciar sesion denuevo');
+        //   window.location.href = 'https://ulink.tssw.info'
+        // }
 
         const response = await axios.get(`${apiurl}/Usuario/${uid}`);
         console.log(response.data.usuario);

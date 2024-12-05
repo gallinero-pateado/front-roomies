@@ -1,29 +1,30 @@
-# Utilizamos una imagen de Node para la construcción
+# Etapa de construcción
 FROM node:18 AS build
 
-# Establecemos el directorio de trabajo
+# Configura el directorio de trabajo
 WORKDIR /app
 
-# Copiamos los archivos del proyecto
-COPY package*.json ./
-
-# Instalamos dependencias
+# Copia los archivos del proyecto
+COPY package.json package-lock.json ./
 RUN npm install
 
-# Copiamos el resto de los archivos
+# Copia el resto de los archivos del proyecto
 COPY . .
 
-# Construimos la aplicación
+# Construye la aplicación
 RUN npm run build
 
-# Utilizamos una imagen ligera para servir el frontend
+# Etapa de producción con Nginx
 FROM nginx:alpine
 
-# Copiamos el build al directorio de nginx
+# Copia los archivos estáticos generados al directorio de Nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Exponemos el puerto 80
+# Copia el archivo nginx.conf personalizado
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expone el puerto 80
 EXPOSE 80
 
-# Iniciamos nginx
+# Comando por defecto para arrancar nginx
 CMD ["nginx", "-g", "daemon off;"]
