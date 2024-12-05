@@ -67,104 +67,103 @@ const Layout2 = ({ children }) => {
   };
   return (
     <div
-      className={`flex flex-col min-h-screen font-ubuntu  ${
-        theme === "dark" ? "bg-gray-900 text-white" : "bg-[#DAEDF2] text-black"
-      } transition-colors duration-300`}
+      className={`flex flex-col min-h-screen font-ubuntu  ${theme === "dark" ? "bg-gray-900 text-white" : "bg-[#DAEDF2] text-black"
+        } transition-colors duration-300`}
     >
       {/* Header */}
       <header className="bg-[#0092BC] text-white p-6 relative z-20">
-        <div className="flex justify-between items-center mx-auto">
+        <div className="flex items-center  justify-between ">
           <h1 className="text-5xl font-bold italic">
-            <div className="flex items-center space-x-4">
+            <div className=" w-fit flex items-center space-x-4">
               <img src="./logo.png" alt="Logo de Ulink" className="h-20" />
               <a
                 href="https://ulink.tssw.info/unificacion"
                 className="hover:no-underline"
               >
-                ULINK
+                <h1 className="text-5xl font-bold italic hover:text-blue-100 hover:cursor-pointer duration-300 transition">
+                  ULINK
+                </h1>
               </a>
             </div>
           </h1>
 
-          <div className="flex ">
-            <div>
-              <DarkModeToggle />
-            </div>
-
-            <button
-              onClick={toggleMenu}
-              className={`p-2 ${styles.menuButton} rounded-full`}
-            >
-              {isMenuOpen ? (
-                <X color={styles.menuButtonIcon} size={32} />
-              ) : (
-                <Menu color={styles.menuButtonIcon} size={32} />
-              )}
-            </button>
-
-            {/* Sidebar Menu */}
-            {isMenuOpen && (
-              <div className="fixed top-0 right-0 h-full w-64 bg-[#0092BC] text-white shadow-lg z-30 flex flex-col p-6 transition-transform duration-300">
-                {/* Perfil con Submenú */}
-                <div>
-                  <p
-                    onClick={toggleSubMenu}
-                    className=" cursor-pointer block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                  >
-                    Perfil
-                  </p>
-                  {isSubMenuOpen && (
-                    <div className="pl-4">
-                      <Link
-                        to="/profile"
-                        className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                      >
-                        - Mi Perfil
-                      </Link>
-                      <Link
-                        to="/fav"
-                        className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                      >
-                        - Favoritos
-                      </Link>
-                      <Link
-                        to="/my-messages"
-                        className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                      >
-                        - Mensajes
-                      </Link>
-                    </div>
-                  )}
-                </div>
-                <Link
-                  to="/roomies"
-                  className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                >
-                  Roomies
-                </Link>
-                <a
-                  href="https://ulink.tssw.info/unificacion"
-                  className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                >
-                  Volver Atras
-                </a>
-                <Link
-                  to="https://ulink.tssw.info"
-                  className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
-                  onClick={Logout}
-                >
-                  Salir
-                </Link>
-
-                <ChevronRight
-                  onClick={toggleMenu}
-                  className="mt-auto self-end cursor-pointer hover:text-[#DAEDF2] transition duration-300"
-                  size={24}
-                  color="white"
-                />
-              </div>
-            )}
+          <div>
+            <DarkModeToggle />
           </div>
+
+          <button
+            onClick={toggleMenu}
+            className={`p-2 ${styles.menuButton} rounded-full`}
+          >
+            {isMenuOpen ? (
+              <X color={styles.menuButtonIcon} size={32} />
+            ) : (
+              <Menu color={styles.menuButtonIcon} size={32} />
+            )}
+          </button>
+
+          {/* Sidebar Menu */}
+          {isMenuOpen && (
+            <div className="fixed top-0 right-0 h-full w-64 bg-[#0092BC] text-white shadow-lg z-30 flex flex-col p-6 transition-transform duration-300">
+              {/* Perfil con Submenú */}
+              <div>
+                <p
+                  onClick={toggleSubMenu}
+                  className=" cursor-pointer block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                >
+                  Perfil
+                </p>
+                {isSubMenuOpen && (
+                  <div className="pl-4">
+                    <Link
+                      to="/profile"
+                      className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                    >
+                      - Mi Perfil
+                    </Link>
+                    <Link
+                      to="/fav"
+                      className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                    >
+                      - Favoritos
+                    </Link>
+                    <Link
+                      to="/my-messages"
+                      className="block py-2 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                    >
+                      - Mensajes
+                    </Link>
+                  </div>
+                )}
+              </div>
+              <Link
+                to="/roomies"
+                className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+              >
+                Roomies
+              </Link>
+              <a
+                href="https://ulink.tssw.info/unificacion"
+                className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+              >
+                Volver Atras
+              </a>
+              <Link
+                to="https://ulink.tssw.info"
+                className="block py-4 px-2 rounded-md transition-colors duration-200 hover:bg-[#DAEDF2] hover:text-[#0092BC] active:bg-[#DAEDF2] active:text-[#0092BC]"
+                onClick={Logout}
+              >
+                Salir
+              </Link>
+
+              <ChevronRight
+                onClick={toggleMenu}
+                className="mt-auto self-end cursor-pointer hover:text-[#DAEDF2] transition duration-300"
+                size={24}
+                color="white"
+              />
+            </div>
+          )}
         </div>
       </header>
 
