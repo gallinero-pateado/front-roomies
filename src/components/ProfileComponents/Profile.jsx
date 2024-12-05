@@ -251,6 +251,8 @@ const closeModalP = () => {
   // Estado para almacenar el perfil antes de editar
   const [perfilBackup, setPerfilBackup] = useState(null);
   const [roomieBackup, setRoomieBackup] = useState(null);
+  const [interesesBackup, setInteresesBackup] = useState(null)
+  const [preferenciasBackup, setPreferenciasBackup] = useState(null)
 
   // Estado para controlar la vista de formulario/perfil
   const [isEditing, setIsEditing] = useState(false);
@@ -260,6 +262,9 @@ const closeModalP = () => {
     if (!isEditing) {
       setPerfilBackup({ ...profileData }); // Crea una copia del perfil actual
       setRoomieBackup({ ...roomieData }); // Crea una copia de roomieData
+      setInteresesBackup({ ...inte }); // Crea una copia actual
+      setPreferenciasBackup({ ...pref }); //crea una copia actua
+      
     }
     setIsEditing(!isEditing); // Alterna entre vista y edición
   };
@@ -272,7 +277,9 @@ const closeModalP = () => {
     // Si tienes backups de los intereses (confirmados antes de la edición), restaura esos
     if (perfilBackup) {
       setProfileData(perfilBackup); // Restaura el perfil a su estado original
-      setRoomieBackup(roomieBackup); 
+      setRoomieData(roomieBackup); 
+      setIntereses(interesesBackup);
+      setConfirmedPreferences(preferenciasBackup);
     }
   
     // Aquí se asegura de restaurar los intereses y preferencias confirmados antes de la edición.
@@ -281,7 +288,6 @@ const closeModalP = () => {
     
     // También puedes limpiar cualquier cambio temporal en otros datos si es necesario
     setIsEditing(false); // Salir del modo de edición
-    window.location.reload();
   };
   
   if (isLoading) {
