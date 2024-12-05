@@ -3,6 +3,7 @@ import { Outlet, NavLink } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import DarkModeToggle from "../DarkModeToggle";
 import themeStyles from "../Const/themes";
+import { ChevronLeft } from "lucide-react";
 const apiurl = "https://api-roomies.tssw.info";
 
 const Layout = () => {
@@ -15,16 +16,16 @@ const Layout = () => {
       {/* Header */}
       <header className="bg-[#0092BC] text-white p-6">
         <div className="flex justify-between items-center mx-auto">
-          <h1 className="text-5xl font-bold italic">ULINK</h1>
+          <img src="./logo.png" alt="Logo de Ulink" className="h-20" />
+
+          <h1 className="text-5xl font-bold italic hover:text-blue-100 hover:cursor-pointer duration-300 transition">
+            ULINK</h1>
           <DarkModeToggle />
           <NavLink
             to="https://ulink.tssw.info/unificacion"
-            className={({ isActive }) =>
-              isActive
-                ? "border-b-4 border-[#7B4B94] text-[#1D4157] bg-[#A3D9D3] px-5 py-3 rounded  ml-5 font-bold italic text-lg"
-                : "text-[#1D4157] px-8 py-3 rounded ml-5 font-bold italic text-lg hover:bg-[#A3D9D3] transition duration-300"
-            }
+            className={`flex items-center gap-2 hover:cursor-pointer hover:text-blue-300 duration-300 transition`}
           >
+            <ChevronLeft size={24} />
             Volver
           </NavLink>
         </div>
